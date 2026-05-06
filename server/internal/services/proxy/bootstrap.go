@@ -22,3 +22,13 @@ func (cs *ProxyService) BootstrapSaveRoutes(ctx context.Context, routes []proxy.
 	})
 	return err
 }
+
+func (cs *ProxyService) BootstrapSaveRedirects(ctx context.Context, redirects []proxy.RedirectInput) error {
+	if len(redirects) == 0 {
+		return nil
+	}
+	_, err := cs.saveRedirects(&proxy.SaveRedirectsRequest{
+		Redirects: redirects,
+	})
+	return err
+}

@@ -122,15 +122,22 @@ export * from './promptSvcTextToTextParameters';
 export * from './promptSvcTypesResponse';
 export * from './proxySvcCert';
 export * from './proxySvcCertInput';
+export * from './proxySvcDeleteRedirectsRequest';
 export * from './proxySvcDeleteRoutesRequest';
 export * from './proxySvcErrorResponse';
 export * from './proxySvcListCertsRequest';
 export * from './proxySvcListCertsResponse';
+export * from './proxySvcListRedirectsRequest';
+export * from './proxySvcListRedirectsResponse';
 export * from './proxySvcListRoutesRequest';
 export * from './proxySvcListRoutesResponse';
+export * from './proxySvcRedirect';
+export * from './proxySvcRedirectInput';
 export * from './proxySvcRoute';
 export * from './proxySvcRouteInput';
 export * from './proxySvcSaveCertsRequest';
+export * from './proxySvcSaveRedirectsRequest';
+export * from './proxySvcSaveRedirectsResponse';
 export * from './proxySvcSaveRoutesRequest';
 export * from './proxySvcSaveRoutesResponse';
 export * from './registrySvcAPISpec';
@@ -362,15 +369,22 @@ import { PromptSvcTextToTextParameters } from './promptSvcTextToTextParameters';
 import { PromptSvcTypesResponse } from './promptSvcTypesResponse';
 import { ProxySvcCert } from './proxySvcCert';
 import { ProxySvcCertInput } from './proxySvcCertInput';
+import { ProxySvcDeleteRedirectsRequest } from './proxySvcDeleteRedirectsRequest';
 import { ProxySvcDeleteRoutesRequest } from './proxySvcDeleteRoutesRequest';
 import { ProxySvcErrorResponse } from './proxySvcErrorResponse';
 import { ProxySvcListCertsRequest } from './proxySvcListCertsRequest';
 import { ProxySvcListCertsResponse } from './proxySvcListCertsResponse';
+import { ProxySvcListRedirectsRequest } from './proxySvcListRedirectsRequest';
+import { ProxySvcListRedirectsResponse } from './proxySvcListRedirectsResponse';
 import { ProxySvcListRoutesRequest } from './proxySvcListRoutesRequest';
 import { ProxySvcListRoutesResponse } from './proxySvcListRoutesResponse';
+import { ProxySvcRedirect } from './proxySvcRedirect';
+import { ProxySvcRedirectInput } from './proxySvcRedirectInput';
 import { ProxySvcRoute } from './proxySvcRoute';
 import { ProxySvcRouteInput } from './proxySvcRouteInput';
 import { ProxySvcSaveCertsRequest } from './proxySvcSaveCertsRequest';
+import { ProxySvcSaveRedirectsRequest } from './proxySvcSaveRedirectsRequest';
+import { ProxySvcSaveRedirectsResponse } from './proxySvcSaveRedirectsResponse';
 import { ProxySvcSaveRoutesRequest } from './proxySvcSaveRoutesRequest';
 import { ProxySvcSaveRoutesResponse } from './proxySvcSaveRoutesResponse';
 import { RegistrySvcAPISpec } from './registrySvcAPISpec';
@@ -622,15 +636,22 @@ let typeMap = {
     "PromptSvcTypesResponse": PromptSvcTypesResponse,
     "ProxySvcCert": ProxySvcCert,
     "ProxySvcCertInput": ProxySvcCertInput,
+    "ProxySvcDeleteRedirectsRequest": ProxySvcDeleteRedirectsRequest,
     "ProxySvcDeleteRoutesRequest": ProxySvcDeleteRoutesRequest,
     "ProxySvcErrorResponse": ProxySvcErrorResponse,
     "ProxySvcListCertsRequest": ProxySvcListCertsRequest,
     "ProxySvcListCertsResponse": ProxySvcListCertsResponse,
+    "ProxySvcListRedirectsRequest": ProxySvcListRedirectsRequest,
+    "ProxySvcListRedirectsResponse": ProxySvcListRedirectsResponse,
     "ProxySvcListRoutesRequest": ProxySvcListRoutesRequest,
     "ProxySvcListRoutesResponse": ProxySvcListRoutesResponse,
+    "ProxySvcRedirect": ProxySvcRedirect,
+    "ProxySvcRedirectInput": ProxySvcRedirectInput,
     "ProxySvcRoute": ProxySvcRoute,
     "ProxySvcRouteInput": ProxySvcRouteInput,
     "ProxySvcSaveCertsRequest": ProxySvcSaveCertsRequest,
+    "ProxySvcSaveRedirectsRequest": ProxySvcSaveRedirectsRequest,
+    "ProxySvcSaveRedirectsResponse": ProxySvcSaveRedirectsResponse,
     "ProxySvcSaveRoutesRequest": ProxySvcSaveRoutesRequest,
     "ProxySvcSaveRoutesResponse": ProxySvcSaveRoutesResponse,
     "RegistrySvcAPISpec": RegistrySvcAPISpec,

@@ -15,17 +15,24 @@
 
 import * as runtime from '../runtime';
 import type {
+  ProxySvcDeleteRedirectsRequest,
   ProxySvcDeleteRoutesRequest,
   ProxySvcErrorResponse,
   ProxySvcListCertsRequest,
   ProxySvcListCertsResponse,
+  ProxySvcListRedirectsRequest,
+  ProxySvcListRedirectsResponse,
   ProxySvcListRoutesRequest,
   ProxySvcListRoutesResponse,
   ProxySvcSaveCertsRequest,
+  ProxySvcSaveRedirectsRequest,
+  ProxySvcSaveRedirectsResponse,
   ProxySvcSaveRoutesRequest,
   ProxySvcSaveRoutesResponse,
 } from '../models/index';
 import {
+    ProxySvcDeleteRedirectsRequestFromJSON,
+    ProxySvcDeleteRedirectsRequestToJSON,
     ProxySvcDeleteRoutesRequestFromJSON,
     ProxySvcDeleteRoutesRequestToJSON,
     ProxySvcErrorResponseFromJSON,
@@ -34,17 +41,29 @@ import {
     ProxySvcListCertsRequestToJSON,
     ProxySvcListCertsResponseFromJSON,
     ProxySvcListCertsResponseToJSON,
+    ProxySvcListRedirectsRequestFromJSON,
+    ProxySvcListRedirectsRequestToJSON,
+    ProxySvcListRedirectsResponseFromJSON,
+    ProxySvcListRedirectsResponseToJSON,
     ProxySvcListRoutesRequestFromJSON,
     ProxySvcListRoutesRequestToJSON,
     ProxySvcListRoutesResponseFromJSON,
     ProxySvcListRoutesResponseToJSON,
     ProxySvcSaveCertsRequestFromJSON,
     ProxySvcSaveCertsRequestToJSON,
+    ProxySvcSaveRedirectsRequestFromJSON,
+    ProxySvcSaveRedirectsRequestToJSON,
+    ProxySvcSaveRedirectsResponseFromJSON,
+    ProxySvcSaveRedirectsResponseToJSON,
     ProxySvcSaveRoutesRequestFromJSON,
     ProxySvcSaveRoutesRequestToJSON,
     ProxySvcSaveRoutesResponseFromJSON,
     ProxySvcSaveRoutesResponseToJSON,
 } from '../models/index';
+
+export interface DeleteRedirectsRequest {
+    body: ProxySvcDeleteRedirectsRequest;
+}
 
 export interface DeleteRoutesRequest {
     body: ProxySvcDeleteRoutesRequest;
@@ -52,6 +71,10 @@ export interface DeleteRoutesRequest {
 
 export interface ListCertsRequest {
     body?: ProxySvcListCertsRequest;
+}
+
+export interface ListRedirectsRequest {
+    body?: ProxySvcListRedirectsRequest;
 }
 
 export interface ListRoutesRequest {
@@ -62,6 +85,10 @@ export interface SaveCertsRequest {
     body: ProxySvcSaveCertsRequest;
 }
 
+export interface SaveRedirectsRequest {
+    body: ProxySvcSaveRedirectsRequest;
+}
+
 export interface SaveRoutesRequest {
     body: ProxySvcSaveRoutesRequest;
 }
@@ -70,6 +97,51 @@ export interface SaveRoutesRequest {
  * 
  */
 export class ProxySvcApi extends runtime.BaseAPI {
+
+    /**
+     * Delete specific redirects by their IDs.
+     * Delete Redirects
+     */
+    async deleteRedirectsRaw(requestParameters: DeleteRedirectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling deleteRedirects().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+
+        let urlPath = `/proxy-svc/redirects`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ProxySvcDeleteRedirectsRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Delete specific redirects by their IDs.
+     * Delete Redirects
+     */
+    async deleteRedirects(requestParameters: DeleteRedirectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.deleteRedirectsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      * Delete specific routes by their IDs.
@@ -155,6 +227,44 @@ export class ProxySvcApi extends runtime.BaseAPI {
     }
 
     /**
+     * List redirects that the edge proxy applies before routing requests.
+     * List Redirects
+     */
+    async listRedirectsRaw(requestParameters: ListRedirectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcListRedirectsResponse>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+
+        let urlPath = `/proxy-svc/redirects`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ProxySvcListRedirectsRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcListRedirectsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * List redirects that the edge proxy applies before routing requests.
+     * List Redirects
+     */
+    async listRedirects(requestParameters: ListRedirectsRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxySvcListRedirectsResponse> {
+        const response = await this.listRedirectsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
      * List routes that the edge proxy will use to route requests.
      * List Routes
      */
@@ -234,6 +344,51 @@ export class ProxySvcApi extends runtime.BaseAPI {
      */
     async saveCerts(requestParameters: SaveCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.saveCertsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Save redirects that the edge proxy will apply before routing requests.
+     * Save Redirects
+     */
+    async saveRedirectsRaw(requestParameters: SaveRedirectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcSaveRedirectsResponse>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling saveRedirects().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+
+        let urlPath = `/proxy-svc/redirects`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ProxySvcSaveRedirectsRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcSaveRedirectsResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Save redirects that the edge proxy will apply before routing requests.
+     * Save Redirects
+     */
+    async saveRedirects(requestParameters: SaveRedirectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxySvcSaveRedirectsResponse> {
+        const response = await this.saveRedirectsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

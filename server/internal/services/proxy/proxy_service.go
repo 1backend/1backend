@@ -55,11 +55,13 @@ type ProxyService struct {
 	credentialStore datastore.DataStore
 	certStore       datastore.DataStore
 	routeStore      datastore.DataStore
+	redirectStore   datastore.DataStore
 
-	routeCache sync.Map
-	sf         singleflight.Group
-	backendSf  singleflight.Group
-	CertStore  *CertStore
+	routeCache    sync.Map
+	redirectCache sync.Map
+	sf            singleflight.Group
+	backendSf     singleflight.Group
+	CertStore     *CertStore
 
 	reverseProxy  *httputil.ReverseProxy
 	instanceCache sync.Map
@@ -91,6 +93,14 @@ func NewProxyService(
 		return nil, errors.Wrap(err, "failed to create route store")
 	}
 
+	redirectStore, err := options.DataStoreFactory.Create(
+		"proxySvcRedirects",
+		&proxy.Redirect{},
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create redirect store")
+	}
+
 	maxCachedFileSize := 2 << 20 // 2MB default
 	if options.EdgeCacheItemMaxSize != 0 {
 		maxCachedFileSize = int(options.EdgeCacheItemMaxSize)
@@ -100,6 +110,7 @@ func NewProxyService(
 		maxCachedFileSize: maxCachedFileSize,
 		options:           options,
 		routeStore:        routeStore,
+		redirectStore:     redirectStore,
 		certStore:         certStore,
 		CertStore: &CertStore{
 			SyncCertsToFiles: options.SyncCertsToFiles,
@@ -241,6 +252,21 @@ func (cs *ProxyService) RegisterRoutes(router *mux.Router) {
 
 	router.HandleFunc("/proxy-svc/routes", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
 		cs.DeleteRoutes(w, r)
+	}))).
+		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/proxy-svc/redirects", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.SaveRedirects(w, r)
+	}))).
+		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/proxy-svc/redirects", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.ListRedirects(w, r)
+	}))).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/proxy-svc/redirects", appl(service.Lazy(cs, func(w http.ResponseWriter, r *http.Request) {
+		cs.DeleteRedirects(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
 

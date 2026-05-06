@@ -56,6 +56,11 @@ data:
 	writeFile(t, filepath.Join(dir, "routes", "api.yaml"), `id: "api.example.com"
 target: "http://1backend:11337"
 `)
+	writeFile(t, filepath.Join(dir, "redirects", "_meta.yaml"), `entity: "proxy-svc:redirect"`)
+	writeFile(t, filepath.Join(dir, "redirects", "old-api.yaml"), `id: "old-api.example.com"
+target: "https://api.example.com"
+statusCode: 301
+`)
 	writeFile(t, filepath.Join(dir, "apps", "example.com", "secrets", "_meta.yaml"), `entity: "secret-svc:secret"`)
 	writeFile(t, filepath.Join(dir, "apps", "example.com", "secrets", "api-key.yaml"), `id: "api-key"
 value: "secret"
@@ -67,6 +72,7 @@ value: "but-has-no-meta"
 	var permits []user.PermitInput
 	var enrolls []user.EnrollInput
 	var routes []proxy.RouteInput
+	var redirects []proxy.RedirectInput
 
 	summary, err := Apply(context.Background(), dir, Services{
 		SavePermits: func(_ context.Context, items []user.PermitInput) error {
@@ -79,6 +85,10 @@ value: "but-has-no-meta"
 		},
 		SaveRoutes: func(_ context.Context, items []proxy.RouteInput) error {
 			routes = append(routes, items...)
+			return nil
+		},
+		SaveRedirects: func(_ context.Context, items []proxy.RedirectInput) error {
+			redirects = append(redirects, items...)
 			return nil
 		},
 	})
@@ -100,9 +110,15 @@ value: "but-has-no-meta"
 	require.Equal(t, "api.example.com", routes[0].Id)
 	require.Equal(t, "http://1backend:11337", routes[0].Target)
 
+	require.Len(t, redirects, 1)
+	require.Equal(t, "old-api.example.com", redirects[0].Id)
+	require.Equal(t, "https://api.example.com", redirects[0].Target)
+	require.Equal(t, 301, redirects[0].StatusCode)
+
 	require.Equal(t, 4, summary.AppliedPermits)
 	require.Equal(t, 1, summary.AppliedEnrolls)
 	require.Equal(t, 1, summary.AppliedRoutes)
+	require.Equal(t, 1, summary.AppliedRedirects)
 	require.Equal(t, 1, summary.SkippedSecrets)
 	require.Equal(t, 2, summary.SkippedUnsupported)
 }

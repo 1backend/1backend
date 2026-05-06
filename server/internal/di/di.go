@@ -574,9 +574,10 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 		if options.BootstrapPath != "" {
 			summary, err := bootstrap.Apply(context.Background(), options.BootstrapPath, bootstrap.Services{
-				SavePermits: userService.BootstrapSavePermits,
-				SaveEnrolls: userService.BootstrapSaveEnrolls,
-				SaveRoutes:  proxyService.BootstrapSaveRoutes,
+				SavePermits:   userService.BootstrapSavePermits,
+				SaveEnrolls:   userService.BootstrapSaveEnrolls,
+				SaveRoutes:    proxyService.BootstrapSaveRoutes,
+				SaveRedirects: proxyService.BootstrapSaveRedirects,
 			})
 			if err != nil {
 				return errors.Wrap(err, "bootstrap manifest apply failed")
@@ -586,6 +587,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 				slog.Int("permits", summary.AppliedPermits),
 				slog.Int("enrolls", summary.AppliedEnrolls),
 				slog.Int("routes", summary.AppliedRoutes),
+				slog.Int("redirects", summary.AppliedRedirects),
 				slog.Int("skippedSecrets", summary.SkippedSecrets),
 				slog.Int("skippedUnsupported", summary.SkippedUnsupported),
 				slog.Int("skippedFiles", summary.SkippedFiles),

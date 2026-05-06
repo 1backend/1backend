@@ -134,10 +134,13 @@ Class | Method | HTTP request | Description
 *PromptSvcAPI* | [**PromptTypes**](docs/PromptSvcAPI.md#prompttypes) | **Post** /prompt-svc/types | Prompt Types
 *PromptSvcAPI* | [**RemovePrompt**](docs/PromptSvcAPI.md#removeprompt) | **Post** /prompt-svc/remove | Remove Prompt
 *PromptSvcAPI* | [**SubscribeToPromptResponses**](docs/PromptSvcAPI.md#subscribetopromptresponses) | **Get** /prompt-svc/prompts/{threadId}/responses/subscribe | Subscribe to Prompt Responses by Thread
+*ProxySvcAPI* | [**DeleteRedirects**](docs/ProxySvcAPI.md#deleteredirects) | **Delete** /proxy-svc/redirects | Delete Redirects
 *ProxySvcAPI* | [**DeleteRoutes**](docs/ProxySvcAPI.md#deleteroutes) | **Delete** /proxy-svc/routes | Delete Routes
 *ProxySvcAPI* | [**ListCerts**](docs/ProxySvcAPI.md#listcerts) | **Post** /proxy-svc/certs | List Certs
+*ProxySvcAPI* | [**ListRedirects**](docs/ProxySvcAPI.md#listredirects) | **Post** /proxy-svc/redirects | List Redirects
 *ProxySvcAPI* | [**ListRoutes**](docs/ProxySvcAPI.md#listroutes) | **Post** /proxy-svc/routes | List Routes
 *ProxySvcAPI* | [**SaveCerts**](docs/ProxySvcAPI.md#savecerts) | **Put** /proxy-svc/certs | Save Certs
+*ProxySvcAPI* | [**SaveRedirects**](docs/ProxySvcAPI.md#saveredirects) | **Put** /proxy-svc/redirects | Save Redirects
 *ProxySvcAPI* | [**SaveRoutes**](docs/ProxySvcAPI.md#saveroutes) | **Put** /proxy-svc/routes | Save Routes
 *RegistrySvcAPI* | [**DeleteDefinition**](docs/RegistrySvcAPI.md#deletedefinition) | **Delete** /registry-svc/definition/{id} | Delete Definition
 *RegistrySvcAPI* | [**DeleteNode**](docs/RegistrySvcAPI.md#deletenode) | **Delete** /registry-svc/node/{url} | Delete Node
@@ -320,15 +323,22 @@ Class | Method | HTTP request | Description
  - [PromptSvcTypesResponse](docs/PromptSvcTypesResponse.md)
  - [ProxySvcCert](docs/ProxySvcCert.md)
  - [ProxySvcCertInput](docs/ProxySvcCertInput.md)
+ - [ProxySvcDeleteRedirectsRequest](docs/ProxySvcDeleteRedirectsRequest.md)
  - [ProxySvcDeleteRoutesRequest](docs/ProxySvcDeleteRoutesRequest.md)
  - [ProxySvcErrorResponse](docs/ProxySvcErrorResponse.md)
  - [ProxySvcListCertsRequest](docs/ProxySvcListCertsRequest.md)
  - [ProxySvcListCertsResponse](docs/ProxySvcListCertsResponse.md)
+ - [ProxySvcListRedirectsRequest](docs/ProxySvcListRedirectsRequest.md)
+ - [ProxySvcListRedirectsResponse](docs/ProxySvcListRedirectsResponse.md)
  - [ProxySvcListRoutesRequest](docs/ProxySvcListRoutesRequest.md)
  - [ProxySvcListRoutesResponse](docs/ProxySvcListRoutesResponse.md)
+ - [ProxySvcRedirect](docs/ProxySvcRedirect.md)
+ - [ProxySvcRedirectInput](docs/ProxySvcRedirectInput.md)
  - [ProxySvcRoute](docs/ProxySvcRoute.md)
  - [ProxySvcRouteInput](docs/ProxySvcRouteInput.md)
  - [ProxySvcSaveCertsRequest](docs/ProxySvcSaveCertsRequest.md)
+ - [ProxySvcSaveRedirectsRequest](docs/ProxySvcSaveRedirectsRequest.md)
+ - [ProxySvcSaveRedirectsResponse](docs/ProxySvcSaveRedirectsResponse.md)
  - [ProxySvcSaveRoutesRequest](docs/ProxySvcSaveRoutesRequest.md)
  - [ProxySvcSaveRoutesResponse](docs/ProxySvcSaveRoutesResponse.md)
  - [RegistrySvcAPISpec](docs/RegistrySvcAPISpec.md)

@@ -2039,6 +2039,15 @@ definitions:
     - cert
     - id
     type: object
+  proxy_svc.DeleteRedirectsRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  proxy_svc.DeleteRedirectsResponse:
+    type: object
   proxy_svc.DeleteRoutesRequest:
     properties:
       ids:
@@ -2067,6 +2076,20 @@ definitions:
           $ref: '#/definitions/proxy_svc.Cert'
         type: array
     type: object
+  proxy_svc.ListRedirectsRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  proxy_svc.ListRedirectsResponse:
+    properties:
+      redirects:
+        items:
+          $ref: '#/definitions/proxy_svc.Redirect'
+        type: array
+    type: object
   proxy_svc.ListRoutesRequest:
     properties:
       ids:
@@ -2080,6 +2103,39 @@ definitions:
         items:
           $ref: '#/definitions/proxy_svc.Route'
         type: array
+    type: object
+  proxy_svc.Redirect:
+    properties:
+      id:
+        description: |-
+          Id is the redirect matching key: host plus optional path prefix.
+          It follows the same longest-prefix lookup model as Route.Id.
+        type: string
+      statusCode:
+        description: |-
+          StatusCode is the HTTP redirect status code.
+          If omitted, the proxy uses 308 Permanent Redirect.
+        type: integer
+      target:
+        description: |-
+          Target is the redirect destination base URL or absolute path.
+          The unmatched request path suffix and query string are appended.
+        type: string
+    required:
+    - id
+    - target
+    type: object
+  proxy_svc.RedirectInput:
+    properties:
+      id:
+        type: string
+      statusCode:
+        type: integer
+      target:
+        type: string
+    required:
+    - id
+    - target
     type: object
   proxy_svc.Route:
     properties:
@@ -2137,6 +2193,20 @@ definitions:
         type: array
     type: object
   proxy_svc.SaveCertsResponse:
+    type: object
+  proxy_svc.SaveRedirectsRequest:
+    properties:
+      redirects:
+        items:
+          $ref: '#/definitions/proxy_svc.RedirectInput'
+        type: array
+    type: object
+  proxy_svc.SaveRedirectsResponse:
+    properties:
+      redirects:
+        items:
+          $ref: '#/definitions/proxy_svc.Redirect'
+        type: array
     type: object
   proxy_svc.SaveRoutesRequest:
     properties:
@@ -6236,6 +6306,114 @@ paths:
       security:
       - BearerAuth: []
       summary: Save Certs
+      tags:
+      - Proxy Svc
+  /proxy-svc/redirects:
+    delete:
+      consumes:
+      - application/json
+      description: Delete specific redirects by their IDs.
+      operationId: deleteRedirects
+      parameters:
+      - description: Delete Redirects Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/proxy_svc.DeleteRedirectsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Redirects deleted successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.DeleteRedirectsResponse'
+        "400":
+          description: Invalid JSON or missing IDs
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete Redirects
+      tags:
+      - Proxy Svc
+    post:
+      consumes:
+      - application/json
+      description: List redirects that the edge proxy applies before routing requests.
+      operationId: listRedirects
+      parameters:
+      - description: List Redirects Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/proxy_svc.ListRedirectsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Redirects listed successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.ListRedirectsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Redirects
+      tags:
+      - Proxy Svc
+    put:
+      consumes:
+      - application/json
+      description: Save redirects that the edge proxy will apply before routing requests.
+      operationId: saveRedirects
+      parameters:
+      - description: Save Redirects Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/proxy_svc.SaveRedirectsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Redirects saved successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.SaveRedirectsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Save Redirects
       tags:
       - Proxy Svc
   /proxy-svc/routes:

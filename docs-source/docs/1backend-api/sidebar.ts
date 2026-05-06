@@ -420,6 +420,24 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend-api/delete-redirects",
+          label: "Delete Redirects",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-redirects",
+          label: "List Redirects",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/save-redirects",
+          label: "Save Redirects",
+          className: "api-method put",
+        },
+        {
+          type: "doc",
           id: "1backend-api/delete-routes",
           label: "Delete Routes",
           className: "api-method delete",

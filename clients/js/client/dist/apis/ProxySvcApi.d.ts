@@ -10,18 +10,27 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { ProxySvcDeleteRoutesRequest, ProxySvcListCertsRequest, ProxySvcListCertsResponse, ProxySvcListRoutesRequest, ProxySvcListRoutesResponse, ProxySvcSaveCertsRequest, ProxySvcSaveRoutesRequest, ProxySvcSaveRoutesResponse } from '../models/index';
+import type { ProxySvcDeleteRedirectsRequest, ProxySvcDeleteRoutesRequest, ProxySvcListCertsRequest, ProxySvcListCertsResponse, ProxySvcListRedirectsRequest, ProxySvcListRedirectsResponse, ProxySvcListRoutesRequest, ProxySvcListRoutesResponse, ProxySvcSaveCertsRequest, ProxySvcSaveRedirectsRequest, ProxySvcSaveRedirectsResponse, ProxySvcSaveRoutesRequest, ProxySvcSaveRoutesResponse } from '../models/index';
+export interface DeleteRedirectsRequest {
+    body: ProxySvcDeleteRedirectsRequest;
+}
 export interface DeleteRoutesRequest {
     body: ProxySvcDeleteRoutesRequest;
 }
 export interface ListCertsRequest {
     body?: ProxySvcListCertsRequest;
 }
+export interface ListRedirectsRequest {
+    body?: ProxySvcListRedirectsRequest;
+}
 export interface ListRoutesRequest {
     body?: ProxySvcListRoutesRequest;
 }
 export interface SaveCertsRequest {
     body: ProxySvcSaveCertsRequest;
+}
+export interface SaveRedirectsRequest {
+    body: ProxySvcSaveRedirectsRequest;
 }
 export interface SaveRoutesRequest {
     body: ProxySvcSaveRoutesRequest;
@@ -30,6 +39,16 @@ export interface SaveRoutesRequest {
  *
  */
 export declare class ProxySvcApi extends runtime.BaseAPI {
+    /**
+     * Delete specific redirects by their IDs.
+     * Delete Redirects
+     */
+    deleteRedirectsRaw(requestParameters: DeleteRedirectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    /**
+     * Delete specific redirects by their IDs.
+     * Delete Redirects
+     */
+    deleteRedirects(requestParameters: DeleteRedirectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
      * Delete specific routes by their IDs.
      * Delete Routes
@@ -51,6 +70,16 @@ export declare class ProxySvcApi extends runtime.BaseAPI {
      */
     listCerts(requestParameters?: ListCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxySvcListCertsResponse>;
     /**
+     * List redirects that the edge proxy applies before routing requests.
+     * List Redirects
+     */
+    listRedirectsRaw(requestParameters: ListRedirectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcListRedirectsResponse>>;
+    /**
+     * List redirects that the edge proxy applies before routing requests.
+     * List Redirects
+     */
+    listRedirects(requestParameters?: ListRedirectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxySvcListRedirectsResponse>;
+    /**
      * List routes that the edge proxy will use to route requests.
      * List Routes
      */
@@ -70,6 +99,16 @@ export declare class ProxySvcApi extends runtime.BaseAPI {
      * Save Certs
      */
     saveCerts(requestParameters: SaveCertsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
+    /**
+     * Save redirects that the edge proxy will apply before routing requests.
+     * Save Redirects
+     */
+    saveRedirectsRaw(requestParameters: SaveRedirectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ProxySvcSaveRedirectsResponse>>;
+    /**
+     * Save redirects that the edge proxy will apply before routing requests.
+     * Save Redirects
+     */
+    saveRedirects(requestParameters: SaveRedirectsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProxySvcSaveRedirectsResponse>;
     /**
      * Save routes that the edge proxy will use to route requests.
      * Save Routes

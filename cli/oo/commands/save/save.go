@@ -199,6 +199,8 @@ func handleFileWithMeta(ctx context.Context, baseURL, token, filePath string, fo
 			meta = &permitMeta
 		case "proxy-svc:route":
 			meta = &routeMeta
+		case "proxy-svc:redirect":
+			meta = &redirectMeta
 		default:
 			return errors.Errorf("unknown hardcoded entity %s in %s", meta.Entity, filePath)
 		}

@@ -21,7 +21,7 @@ var permitMeta = Meta{
 	Transport: &Transport{
 		Endpoint:    "/user-svc/permits",
 		Method:      "PUT",
-		Body:        "permit",
+		Body:        "permits",
 		Array:       true,
 		ContentType: "application/json",
 	},
@@ -31,7 +31,17 @@ var routeMeta = Meta{
 	Transport: &Transport{
 		Endpoint:    "/proxy-svc/routes",
 		Method:      "PUT",
-		Body:        "route",
+		Body:        "routes",
+		Array:       true,
+		ContentType: "application/json",
+	},
+}
+
+var redirectMeta = Meta{
+	Transport: &Transport{
+		Endpoint:    "/proxy-svc/redirects",
+		Method:      "PUT",
+		Body:        "redirects",
 		Array:       true,
 		ContentType: "application/json",
 	},

@@ -10,12 +10,17 @@
  * Do not edit the class manually.
  */
 import http from 'http';
+import { ProxySvcDeleteRedirectsRequest } from '../model/proxySvcDeleteRedirectsRequest';
 import { ProxySvcDeleteRoutesRequest } from '../model/proxySvcDeleteRoutesRequest';
 import { ProxySvcListCertsRequest } from '../model/proxySvcListCertsRequest';
 import { ProxySvcListCertsResponse } from '../model/proxySvcListCertsResponse';
+import { ProxySvcListRedirectsRequest } from '../model/proxySvcListRedirectsRequest';
+import { ProxySvcListRedirectsResponse } from '../model/proxySvcListRedirectsResponse';
 import { ProxySvcListRoutesRequest } from '../model/proxySvcListRoutesRequest';
 import { ProxySvcListRoutesResponse } from '../model/proxySvcListRoutesResponse';
 import { ProxySvcSaveCertsRequest } from '../model/proxySvcSaveCertsRequest';
+import { ProxySvcSaveRedirectsRequest } from '../model/proxySvcSaveRedirectsRequest';
+import { ProxySvcSaveRedirectsResponse } from '../model/proxySvcSaveRedirectsResponse';
 import { ProxySvcSaveRoutesRequest } from '../model/proxySvcSaveRoutesRequest';
 import { ProxySvcSaveRoutesResponse } from '../model/proxySvcSaveRoutesResponse';
 import { Authentication, Interceptor } from '../model/models';
@@ -41,6 +46,19 @@ export declare class ProxySvcApi {
     setDefaultAuthentication(auth: Authentication): void;
     setApiKey(key: ProxySvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
+    /**
+     * Delete specific redirects by their IDs.
+     * @summary Delete Redirects
+     * @param body Delete Redirects Request
+     */
+    deleteRedirects(body: ProxySvcDeleteRedirectsRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: object;
+    }>;
     /**
      * Delete specific routes by their IDs.
      * @summary Delete Routes
@@ -68,6 +86,19 @@ export declare class ProxySvcApi {
         body: ProxySvcListCertsResponse;
     }>;
     /**
+     * List redirects that the edge proxy applies before routing requests.
+     * @summary List Redirects
+     * @param body List Redirects Request
+     */
+    listRedirects(body?: ProxySvcListRedirectsRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: ProxySvcListRedirectsResponse;
+    }>;
+    /**
      * List routes that the edge proxy will use to route requests.
      * @summary List Routes
      * @param body List Routes Request
@@ -92,6 +123,19 @@ export declare class ProxySvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body: object;
+    }>;
+    /**
+     * Save redirects that the edge proxy will apply before routing requests.
+     * @summary Save Redirects
+     * @param body Save Redirects Request
+     */
+    saveRedirects(body: ProxySvcSaveRedirectsRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: ProxySvcSaveRedirectsResponse;
     }>;
     /**
      * Save routes that the edge proxy will use to route requests.

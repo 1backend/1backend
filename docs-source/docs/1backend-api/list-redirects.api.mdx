@@ -1,0 +1,71 @@
+---
+id: list-redirects
+title: "List Redirects"
+description: "List redirects that the edge proxy applies before routing requests."
+sidebar_label: "List Redirects"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VsFu4zYQ/ZUBz4oUb1q01anJYtG6DRojTk5ODjQ1lrihSC5J2VEN/XsxpGU7sbcoFsVeLJmaGb6ZeW/ILavQCydtkEazkt1KH8BhJR2K4CE0PEBoELCqEawzrz1wa5VED0tcGYfgTBekrsHhlw598DnLmLHoOEWcVqxkSvpwP4ZkGdtZ3piqZ+WWCaMD6kCvMbSInsVnT4C2zIsGW05v1lHcINHTP1mlR8A2voTeIiuZD07qmg3ZuMCd4z0bDgtm+RlFYAMtnUl+jxTuE06K5dBbo33a+cPlJT3e+h7cKF2swHdCoPerTqmeZd+a5b4Vb3J9X4lTONMKpI+dGyNAy4NoqFMv2JfQGB/Aqs6DiT5cgeWhAetwJV/zJz0NsDJKmU0K43mLoIyu0YeLZATKmJfOQmsqVMA93JsuYD6tiAIn7fCBh85/NBWeop3vv42of394mB2gJ18QpkJCtgLTyhCwyqJtomXn0cPV5c8wQ9dyjfrQyiM8Uges0UV+cFdjOAXzENdPylehD1LHrsGSe4TH+1swDvjSG9UFjOXLn/RDg9DpWGysRlWk2vpuRWXjuoIvHboeUnWAOyRVoa7wXO2GJBnpsGLlgtq9B/98wur/wvshYz+c4/BUr7mSFfwxv/vr2ymLzhl3RpFfRTI5RfKoeRca4+TfWH03JD+er0lAR+qYo1ujg08x5veBRKpB0TkZelYutuwGuUN33YWGlYvngZrPa0+cmEUJzNeCGNFiaAwNXmt8YBkj7rGSFVEnF34tCnc0jX3My8cNOqfIsFBGcEUTopxMrq5+YrTViGROmaVkjvGcqKi3CE87kye2myVYwbIHDt5ygVEIwbygBi4Sv2HlTBt19+jRUUJwa2qpAXVljdRRypLiN8grpEZo3lLZrnd8iW04aIhb+ScmGVBr7g9Hz6dX3lqF+6NkMfbieaAtVmY8m7iIXcaWS6qO5wr9r17qulM8OKNzYdojHLMpzDtrjaPSp4I2IdiyKCZLLl5QV+RQsJPT53p6QeNljdBK4Qz1RQr0YBUPK+NaSl1JgdpH0ON+v81uYX2VX77ZzZdFsdls8lp3uXF1sfPzBa+turjKL/MmtCpOC3Stv1vN024HsH7D6xpdLk0RTQqqqQxUMDa5SYmwjBF1EvzL/Jd88oFCEu1aro9Avj1Y2bvMj64A/9P9Y9f8gK+hsIpLTbBidbY7NSzYXg3xRjJCe84Y8Z4Mtlsa849ODQMtx4lNusvYmjvJl1SKBZFlR0US0Av2rGQfUzoXpAGqEVdd4uK7OTFko8e1EGjDv9oeC3t2N39gGVvublBtPFSZ4xvKhW9YyeIljLzTLYLWtkxxXXe8JtsUk2TBd/I9CIYgZeMLZTV+0v0RwveCS4nQL6V11mW7TXIchr19+vRVj73KkzU18nkYhn8ALA66Eg==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Redirects"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/proxy-svc/redirects"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+List redirects that the edge proxy applies before routing requests.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"ids":{"items":{"type":"string"},"type":"array"}},"type":"object"}}},"description":"List Redirects Request"}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Redirects listed successfully","content":{"application/json":{"schema":{"properties":{"redirects":{"items":{"properties":{"id":{"description":"Id is the redirect matching key: host plus optional path prefix.\nIt follows the same longest-prefix lookup model as Route.Id.","type":"string"},"statusCode":{"description":"StatusCode is the HTTP redirect status code.\nIf omitted, the proxy uses 308 Permanent Redirect.","type":"integer"},"target":{"description":"Target is the redirect destination base URL or absolute path.\nThe unmatched request path suffix and query string are appended.","type":"string"}},"required":["id","target"],"type":"object"},"type":"array"}},"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

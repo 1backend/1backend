@@ -17,6 +17,7 @@ import (
 	instance "github.com/1backend/1backend/cli/oo/commands/instance"
 	"github.com/1backend/1backend/cli/oo/commands/node"
 	"github.com/1backend/1backend/cli/oo/commands/permit"
+	"github.com/1backend/1backend/cli/oo/commands/redirect"
 	"github.com/1backend/1backend/cli/oo/commands/route"
 	"github.com/1backend/1backend/cli/oo/commands/save"
 	secret "github.com/1backend/1backend/cli/oo/commands/secret"
@@ -70,6 +71,7 @@ func main() {
 	permit.AddPermitCommands(rootCmd)
 	enroll.AddEnrollCommands(rootCmd)
 	route.AddRouteCommands(rootCmd)
+	redirect.AddRedirectCommands(rootCmd)
 	cert.AddCertCommands(rootCmd)
 	config.AddConfigCommands(rootCmd)
 	save.AddSaveCommand(rootCmd)

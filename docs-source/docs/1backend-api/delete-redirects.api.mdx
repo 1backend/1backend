@@ -1,0 +1,71 @@
+---
+id: delete-redirects
+title: "Delete Redirects"
+description: "Delete specific redirects by their IDs."
+sidebar_label: "Delete Redirects"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VU1v4zYQ/SvEnBUp3rQoqlOTxijcBt0g3py8PoypscwNRXJJyo4q6L8vRrJsx3GL7mUvFk3Nx3sz80YtFBSkVy4qayCHe9IUSQRHUq2VFJ4K5UnGIFaNiBtSXszuQwoJWEce2WtWQA5F7/c0WkMCnr7WFOKdLRrIW5DWRDKRj+icVrL3zb4ETttCkBuqkE/Oc+SoKPA/VQyPSFV/iI0jyCFEr0wJXTJeoPfYQHe8sKsvJCN0fHWR4gGreBqQ7jErTwXk0dfU8UVw1oQBy4fra368jXYMM5SgEKGWkkJY11o3kPx/4u+Adwn8dCnlzGxRq0L8Of/4t7BeVCoEZUpuzPfke1to8t76CxW+VNEe2OQ9sGeDddxYr/6h4och+flyiSJ5g1rMyW/Ji2kf88dA6hIIJGuvYgP5ooU7Qk/+to4byBfLbplAxDJAvoBHb18bMd9KWCZQUdzYo5QgAYfsApljs6uwlZk/0VfomYU+Re01G2baStQbG2I+mdzc/AKcbMQyZ24DnVNE55X71DgSn/cmn0GsrdZ2RwXrH0VwKEmgKUS0L2QEykEwYu1txftBPAfyTEk82FIZQaZwVpnIG0Nx/A1hQdwKgxUX7nY/MX0j4Khnp/6iQdDcnKfjMpm+YuU0HZbDYuzGsuMUaztuG5R9n6lCxdUJqCn8xkKpNUZvTSptdYLjcSbmtXPW8yIYCrqJ0eVZNlmhfCFTsEMG7/bJ7ezKYFRbEpWS3nJflKQgnMa4tr5i6lpJMqEHPeb74/FBbG/S6zfZQp5lu90uLU2dWl9me7+QYen01U16nW5ipfu9R74KH9fzIdsRbNhhWZJPlc16k4xrqiIXDCZ3AxFIgEdngH+d/ppOPnBIZ0Os0JyAPF+VcMb9ZK1/x5dj3+JIrzFzGpXh5H0N2v3ML+Aw8/1WHtMvE+DpZoO2XWGgZ6+7jq+/1uRZbssEtugVrpjwgkdiP3AskxdqIIffB8hXPOlcCdT1MHFn+6BLRo9bKcnF/7Q9FfD99GH6aQoJrPbfvsoW7OVxx2xwBzn0H1D27wXZ37Wg0ZQ1lmw7ROXxx71Mj8JgUMl4YF7jK9OcYDwX1kCFf5nYRZe2HWTXdQf74dW/ehzUPFhzK5dd130D3Yze4w==
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete Redirects"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/proxy-svc/redirects"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete specific redirects by their IDs.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"ids":{"items":{"type":"string"},"type":"array"}},"type":"object"}}},"description":"Delete Redirects Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Redirects deleted successfully","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON or missing IDs","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

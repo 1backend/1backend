@@ -119,6 +119,35 @@ func TestProxyService_FrontendRoute(t *testing.T) {
 		require.Equal(t, "Hello from backend!", string(body))
 	})
 
+	t.Run("preserves Content-Length header", func(t *testing.T) {
+		contentLengthBackend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Length", "123")
+			w.WriteHeader(http.StatusOK)
+		}))
+		defer contentLengthBackend.Close()
+
+		t.Cleanup(func() {
+			routeReq.Routes[0].Target = openapi.PtrString(mockBackend.URL)
+			_, _, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+			require.NoError(t, err)
+		})
+
+		routeReq.Routes[0].Target = openapi.PtrString(contentLengthBackend.URL)
+		_, _, err := adminClient.ProxySvcAPI.SaveRoutes(context.Background()).Body(routeReq).Execute()
+		require.NoError(t, err)
+
+		req, err := http.NewRequest(http.MethodHead, edgeProxyUrl+"/v2/singulatron/harbor-smoke/blobs/sha256:abc", nil)
+		require.NoError(t, err)
+		req.Host = "test.localhost"
+
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		require.Equal(t, http.StatusOK, resp.StatusCode)
+		require.Equal(t, "123", resp.Header.Get("Content-Length"))
+	})
+
 	t.Run("proxies POST request to /echo", func(t *testing.T) {
 		req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/echo", edgeProxyUrl), strings.NewReader("echo me"))
 		require.NoError(t, err)

@@ -39,6 +39,36 @@ func (m *MockProxySvcAPI) EXPECT() *MockProxySvcAPIMockRecorder {
 	return m.recorder
 }
 
+// DeleteRedirects mocks base method.
+func (m *MockProxySvcAPI) DeleteRedirects(ctx context.Context) ApiDeleteRedirectsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteRedirects", ctx)
+	ret0, _ := ret[0].(ApiDeleteRedirectsRequest)
+	return ret0
+}
+
+// DeleteRedirects indicates an expected call of DeleteRedirects.
+func (mr *MockProxySvcAPIMockRecorder) DeleteRedirects(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRedirects", reflect.TypeOf((*MockProxySvcAPI)(nil).DeleteRedirects), ctx)
+}
+
+// DeleteRedirectsExecute mocks base method.
+func (m *MockProxySvcAPI) DeleteRedirectsExecute(r ApiDeleteRedirectsRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteRedirectsExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// DeleteRedirectsExecute indicates an expected call of DeleteRedirectsExecute.
+func (mr *MockProxySvcAPIMockRecorder) DeleteRedirectsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteRedirectsExecute", reflect.TypeOf((*MockProxySvcAPI)(nil).DeleteRedirectsExecute), r)
+}
+
 // DeleteRoutes mocks base method.
 func (m *MockProxySvcAPI) DeleteRoutes(ctx context.Context) ApiDeleteRoutesRequest {
 	m.ctrl.T.Helper()
@@ -99,6 +129,36 @@ func (mr *MockProxySvcAPIMockRecorder) ListCertsExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListCertsExecute", reflect.TypeOf((*MockProxySvcAPI)(nil).ListCertsExecute), r)
 }
 
+// ListRedirects mocks base method.
+func (m *MockProxySvcAPI) ListRedirects(ctx context.Context) ApiListRedirectsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRedirects", ctx)
+	ret0, _ := ret[0].(ApiListRedirectsRequest)
+	return ret0
+}
+
+// ListRedirects indicates an expected call of ListRedirects.
+func (mr *MockProxySvcAPIMockRecorder) ListRedirects(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRedirects", reflect.TypeOf((*MockProxySvcAPI)(nil).ListRedirects), ctx)
+}
+
+// ListRedirectsExecute mocks base method.
+func (m *MockProxySvcAPI) ListRedirectsExecute(r ApiListRedirectsRequest) (*ProxySvcListRedirectsResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRedirectsExecute", r)
+	ret0, _ := ret[0].(*ProxySvcListRedirectsResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListRedirectsExecute indicates an expected call of ListRedirectsExecute.
+func (mr *MockProxySvcAPIMockRecorder) ListRedirectsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRedirectsExecute", reflect.TypeOf((*MockProxySvcAPI)(nil).ListRedirectsExecute), r)
+}
+
 // ListRoutes mocks base method.
 func (m *MockProxySvcAPI) ListRoutes(ctx context.Context) ApiListRoutesRequest {
 	m.ctrl.T.Helper()
@@ -157,6 +217,36 @@ func (m *MockProxySvcAPI) SaveCertsExecute(r ApiSaveCertsRequest) (map[string]an
 func (mr *MockProxySvcAPIMockRecorder) SaveCertsExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveCertsExecute", reflect.TypeOf((*MockProxySvcAPI)(nil).SaveCertsExecute), r)
+}
+
+// SaveRedirects mocks base method.
+func (m *MockProxySvcAPI) SaveRedirects(ctx context.Context) ApiSaveRedirectsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveRedirects", ctx)
+	ret0, _ := ret[0].(ApiSaveRedirectsRequest)
+	return ret0
+}
+
+// SaveRedirects indicates an expected call of SaveRedirects.
+func (mr *MockProxySvcAPIMockRecorder) SaveRedirects(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveRedirects", reflect.TypeOf((*MockProxySvcAPI)(nil).SaveRedirects), ctx)
+}
+
+// SaveRedirectsExecute mocks base method.
+func (m *MockProxySvcAPI) SaveRedirectsExecute(r ApiSaveRedirectsRequest) (*ProxySvcSaveRedirectsResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SaveRedirectsExecute", r)
+	ret0, _ := ret[0].(*ProxySvcSaveRedirectsResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// SaveRedirectsExecute indicates an expected call of SaveRedirectsExecute.
+func (mr *MockProxySvcAPIMockRecorder) SaveRedirectsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveRedirectsExecute", reflect.TypeOf((*MockProxySvcAPI)(nil).SaveRedirectsExecute), r)
 }
 
 // SaveRoutes mocks base method.

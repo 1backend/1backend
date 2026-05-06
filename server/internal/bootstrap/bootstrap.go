@@ -15,22 +15,25 @@ import (
 )
 
 const (
-	EntityPermit = "user-svc:permit"
-	EntityEnroll = "user-svc:enroll"
-	EntityRoute  = "proxy-svc:route"
-	EntitySecret = "secret-svc:secret"
+	EntityPermit   = "user-svc:permit"
+	EntityEnroll   = "user-svc:enroll"
+	EntityRoute    = "proxy-svc:route"
+	EntityRedirect = "proxy-svc:redirect"
+	EntitySecret   = "secret-svc:secret"
 )
 
 type Services struct {
-	SavePermits func(context.Context, []user.PermitInput) error
-	SaveEnrolls func(context.Context, []user.EnrollInput) error
-	SaveRoutes  func(context.Context, []proxy.RouteInput) error
+	SavePermits   func(context.Context, []user.PermitInput) error
+	SaveEnrolls   func(context.Context, []user.EnrollInput) error
+	SaveRoutes    func(context.Context, []proxy.RouteInput) error
+	SaveRedirects func(context.Context, []proxy.RedirectInput) error
 }
 
 type Summary struct {
-	AppliedPermits int
-	AppliedEnrolls int
-	AppliedRoutes  int
+	AppliedPermits   int
+	AppliedEnrolls   int
+	AppliedRoutes    int
+	AppliedRedirects int
 
 	SkippedSecrets     int
 	SkippedUnsupported int
@@ -163,6 +166,18 @@ func applyFile(
 			return errors.Wrapf(err, "apply routes from %s", path)
 		}
 		summary.AppliedRoutes += len(items)
+	case EntityRedirect:
+		items, err := decodeEntities[proxy.RedirectInput](doc)
+		if err != nil {
+			return errors.Wrapf(err, "decode redirects from %s", path)
+		}
+		if services.SaveRedirects == nil {
+			return errors.Errorf("redirect bootstrap unsupported for %s", path)
+		}
+		if err := services.SaveRedirects(ctx, items); err != nil {
+			return errors.Wrapf(err, "apply redirects from %s", path)
+		}
+		summary.AppliedRedirects += len(items)
 	default:
 		summary.SkippedUnsupported++
 	}
@@ -338,6 +353,8 @@ func inferEntityFromPath(path string) string {
 		return EntityPermit
 	case "routes":
 		return EntityRoute
+	case "redirects":
+		return EntityRedirect
 	case "secrets":
 		return EntitySecret
 	default:
@@ -353,6 +370,8 @@ func inferEntityFromDir(path string) string {
 		return EntityPermit
 	case "routes":
 		return EntityRoute
+	case "redirects":
+		return EntityRedirect
 	case "secrets":
 		return EntitySecret
 	default:

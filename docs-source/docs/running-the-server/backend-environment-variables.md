@@ -36,8 +36,10 @@ Supported v1 entities:
 
 - `user-svc:permit`
 - `user-svc:enroll`
+- `proxy-svc:route`
+- `proxy-svc:redirect`
 
-Other entities, including apps, configs, routes, and secrets, are intentionally skipped by this v1 loader. Add those through their existing APIs or a later explicit bootstrap phase.
+Other entities, including apps, configs, and secrets, are intentionally skipped by this v1 loader. Add those through their existing APIs or a later explicit bootstrap phase.
 
 Secrets are intentionally not loaded by this mechanism. Any manifest with `entity: "secret-svc:secret"` and any file under a `secrets/` directory is skipped. Use a separate secret-management path for real secret values.
 
@@ -63,6 +65,13 @@ id: "site-owner"
 appHost: "tenant.example.com"
 contactId: "owner@example.com"
 role: "site-svc:admin"
+```
+
+```yaml
+# /etc/1backend/bootstrap/redirects/old-docs.yaml
+id: "example.com/old-docs"
+target: "https://example.com/docs"
+statusCode: 308
 ```
 
 ## `OB_CONTACT_EMAIL`

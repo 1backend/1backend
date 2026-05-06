@@ -21,11 +21,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { ProxySvcDeleteRoutesRequestToJSON, ProxySvcListCertsRequestToJSON, ProxySvcListCertsResponseFromJSON, ProxySvcListRoutesRequestToJSON, ProxySvcListRoutesResponseFromJSON, ProxySvcSaveCertsRequestToJSON, ProxySvcSaveRoutesRequestToJSON, ProxySvcSaveRoutesResponseFromJSON, } from '../models/index';
+import { ProxySvcDeleteRedirectsRequestToJSON, ProxySvcDeleteRoutesRequestToJSON, ProxySvcListCertsRequestToJSON, ProxySvcListCertsResponseFromJSON, ProxySvcListRedirectsRequestToJSON, ProxySvcListRedirectsResponseFromJSON, ProxySvcListRoutesRequestToJSON, ProxySvcListRoutesResponseFromJSON, ProxySvcSaveCertsRequestToJSON, ProxySvcSaveRedirectsRequestToJSON, ProxySvcSaveRedirectsResponseFromJSON, ProxySvcSaveRoutesRequestToJSON, ProxySvcSaveRoutesResponseFromJSON, } from '../models/index';
 /**
  *
  */
 export class ProxySvcApi extends runtime.BaseAPI {
+    /**
+     * Delete specific redirects by their IDs.
+     * Delete Redirects
+     */
+    deleteRedirectsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['body'] == null) {
+                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling deleteRedirects().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            let urlPath = `/proxy-svc/redirects`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+                body: ProxySvcDeleteRedirectsRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * Delete specific redirects by their IDs.
+     * Delete Redirects
+     */
+    deleteRedirects(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.deleteRedirectsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
     /**
      * Delete specific routes by their IDs.
      * Delete Routes
@@ -96,6 +132,39 @@ export class ProxySvcApi extends runtime.BaseAPI {
         });
     }
     /**
+     * List redirects that the edge proxy applies before routing requests.
+     * List Redirects
+     */
+    listRedirectsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            let urlPath = `/proxy-svc/redirects`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: ProxySvcListRedirectsRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcListRedirectsResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * List redirects that the edge proxy applies before routing requests.
+     * List Redirects
+     */
+    listRedirects() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
+            const response = yield this.listRedirectsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
      * List routes that the edge proxy will use to route requests.
      * List Routes
      */
@@ -161,6 +230,42 @@ export class ProxySvcApi extends runtime.BaseAPI {
     saveCerts(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.saveCertsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Save redirects that the edge proxy will apply before routing requests.
+     * Save Redirects
+     */
+    saveRedirectsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['body'] == null) {
+                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling saveRedirects().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            let urlPath = `/proxy-svc/redirects`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: ProxySvcSaveRedirectsRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => ProxySvcSaveRedirectsResponseFromJSON(jsonValue));
+        });
+    }
+    /**
+     * Save redirects that the edge proxy will apply before routing requests.
+     * Save Redirects
+     */
+    saveRedirects(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.saveRedirectsRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }

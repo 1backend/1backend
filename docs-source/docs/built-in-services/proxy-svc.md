@@ -172,6 +172,9 @@ oo routes save routes.yaml
 
 # Save routes from directory (processes all .yaml files)
 oo routes save ./config/routes/
+
+# Save redirects from YAML file
+oo redirects save redirects.yaml
 ```
 
 ### Route Configuration Files
@@ -196,6 +199,20 @@ target: "http://1backend:11337"
   target: "http://nginx:80"
 - id: "app.example.com"
   target: "http://react-app:3000"
+```
+
+### Redirect Configuration Files
+
+Redirect IDs use the same host plus optional path-prefix matching as routes. The proxy appends the unmatched path suffix and the original query string to the redirect target.
+
+```yaml
+# redirects.yaml
+- id: "old.example.com"
+  target: "https://example.com"
+  statusCode: 301
+- id: "example.com/old-docs"
+  target: "https://example.com/docs"
+  statusCode: 308
 ```
 
 ## Service Proxying (Internal Routing)
