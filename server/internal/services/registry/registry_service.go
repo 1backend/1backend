@@ -31,7 +31,6 @@ type RegistryService struct {
 	token     string
 
 	credentialStore datastore.DataStore
-	definitionStore datastore.DataStore
 	instanceStore   datastore.DataStore
 	nodeStore       datastore.DataStore
 
@@ -73,13 +72,6 @@ func NewRegistryService(
 	if err != nil {
 		return nil, err
 	}
-	definitionStore, err := options.DataStoreFactory.Create(
-		"registrySvcDefinitions",
-		&registry.Definition{},
-	)
-	if err != nil {
-		return nil, err
-	}
 	nodeStore, err := options.DataStoreFactory.Create("registrySvcNodes", &registry.Node{})
 	if err != nil {
 		return nil, err
@@ -89,7 +81,6 @@ func NewRegistryService(
 		options:         options,
 		nodeId:          options.NodeId,
 		credentialStore: credentialStore,
-		definitionStore: definitionStore,
 		instanceStore:   instanceStore,
 		nodeStore:       nodeStore,
 
@@ -117,28 +108,13 @@ func (rs *RegistryService) RegisterRoutes(router *mux.Router) {
 	})).
 		Methods("OPTIONS", "GET")
 
-	router.HandleFunc("/registry-svc/definitions", appl(func(w http.ResponseWriter, r *http.Request) {
-		rs.ListDefinitions(w, r)
-	})).
-		Methods("OPTIONS", "GET")
-
 	router.HandleFunc("/registry-svc/instance", appl(func(w http.ResponseWriter, r *http.Request) {
 		rs.RegisterInstance(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
 
-	router.HandleFunc("/registry-svc/definition", appl(func(w http.ResponseWriter, r *http.Request) {
-		rs.SaveDefinition(w, r)
-	})).
-		Methods("OPTIONS", "PUT")
-
 	router.HandleFunc("/registry-svc/instance/{id}", appl(func(w http.ResponseWriter, r *http.Request) {
 		rs.RemoveInstance(w, r)
-	})).
-		Methods("OPTIONS", "DELETE")
-
-	router.HandleFunc("/registry-svc/definition/{id}", appl(func(w http.ResponseWriter, r *http.Request) {
-		rs.DeleteDefinition(w, r)
 	})).
 		Methods("OPTIONS", "DELETE")
 

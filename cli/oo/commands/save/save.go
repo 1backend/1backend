@@ -15,8 +15,10 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/1backend/1backend/cli/oo/util"
@@ -175,7 +177,7 @@ func handleFileWithMeta(ctx context.Context, baseURL, token, filePath string, fo
 			if meta.Transport.Method == "" {
 				meta.Transport.Method = folderMeta.Transport.Method
 			}
-			if meta.Transport.Body == "" {
+			if isEmptyBody(meta.Transport.Body) {
 				meta.Transport.Body = folderMeta.Transport.Body
 			}
 			if meta.Transport.ContentType == "" {
@@ -201,6 +203,10 @@ func handleFileWithMeta(ctx context.Context, baseURL, token, filePath string, fo
 			meta = &routeMeta
 		case "proxy-svc:redirect":
 			meta = &redirectMeta
+		case "config-svc:config":
+			meta = &configMeta
+		case "policy-svc:instance":
+			meta = &policyInstanceMeta
 		default:
 			return errors.Errorf("unknown hardcoded entity %s in %s", meta.Entity, filePath)
 		}
@@ -245,8 +251,11 @@ func handleDynamic(
 	}
 
 	switch b := transport.Body.(type) {
+	case nil:
 	case string:
-		body = map[string]interface{}{b: body}
+		if b != "" {
+			body = map[string]interface{}{b: body}
+		}
 	default:
 		return errors.Errorf("only string body wrapping is supported for now, not %T", b)
 	}
@@ -284,7 +293,12 @@ func handleDynamic(
 		method = "PUT"
 	}
 
-	req, err := http.NewRequestWithContext(ctx, method, strings.TrimRight(baseURL, "/")+meta.Transport.Endpoint, bytes.NewReader(payload))
+	endpoint, err := expandEndpoint(meta.Transport.Endpoint, doc)
+	if err != nil {
+		return errors.Wrap(err, "expand endpoint")
+	}
+
+	req, err := http.NewRequestWithContext(ctx, method, strings.TrimRight(baseURL, "/")+endpoint, bytes.NewReader(payload))
 	if err != nil {
 		return errors.Wrap(err, "build request")
 	}
@@ -300,8 +314,54 @@ func handleDynamic(
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		fmt.Println(fail(fmt.Sprintf("dynamic save failed: %s: %s", resp.Status, string(bodyBytes))))
+		return errors.Errorf("dynamic save failed: %s", resp.Status)
 	}
 
 	fmt.Println(success("ok"))
 	return nil
+}
+
+var endpointVarPattern = regexp.MustCompile(`\{([A-Za-z0-9_.-]+)\}`)
+
+func expandEndpoint(endpoint string, doc map[string]interface{}) (string, error) {
+	var expandErr error
+	expanded := endpointVarPattern.ReplaceAllStringFunc(endpoint, func(match string) string {
+		if expandErr != nil {
+			return match
+		}
+		key := strings.TrimSuffix(strings.TrimPrefix(match, "{"), "}")
+		value, ok := lookupDocValue(doc, key)
+		if !ok {
+			expandErr = errors.Errorf("missing endpoint field %q", key)
+			return match
+		}
+		return url.PathEscape(fmt.Sprint(value))
+	})
+	if expandErr != nil {
+		return "", expandErr
+	}
+	return expanded, nil
+}
+
+func lookupDocValue(doc map[string]interface{}, key string) (interface{}, bool) {
+	var current interface{} = doc
+	for _, part := range strings.Split(key, ".") {
+		m, ok := current.(map[string]interface{})
+		if !ok {
+			return nil, false
+		}
+		current, ok = m[part]
+		if !ok {
+			return nil, false
+		}
+	}
+	return current, true
+}
+
+func isEmptyBody(body any) bool {
+	if body == nil {
+		return true
+	}
+	s, ok := body.(string)
+	return ok && s == ""
 }

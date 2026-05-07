@@ -31,36 +31,3 @@ SELECTED   NAME    URL                                DESCRIPTION
 $ ~/1backend/cli$ go run main.go whoami
 1backend
 ```
-
-### Service Definitions
-
-```sh
-~/1backend/cli$ cat fixtures/definitionA.yaml
-id: test-a
-image:
-  name: hashicorp/http-echo
-  port: 8080
-hostPort: 8887
-
-~/1backend/cli$ cat fixtures/definitionB.yaml
-id: test-b
-repository:
-  url: https://github.com/1backend/1backend.git
-  containerFile: server/docker/Dockerfile
-  port: 11337
-hostPort: 9998
-
-~/1backend/cli$ go run main.go definition save fixtures/definitionA.yaml
-~/1backend/cli$ go run main.go definition save fixtures/definitionB.yaml
-```
-
-### Deployments
-
-#### List
-
-```sh
-~/1backend/cli$ go run main.go deployment list
-ID                DEFINITION ID   STATUS   DETAILS
-depl_dy2PDIkzqf   test-b          Error    build failed: COPY failed: file not found in build context or excluded by…
-depl_dbOdi5eLQK   test-a          OK
-```

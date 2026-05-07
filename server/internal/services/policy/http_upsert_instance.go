@@ -2,8 +2,10 @@ package policyservice
 
 import (
 	"encoding/json"
+	"errors"
 	"log/slog"
 	"net/http"
+	"sync"
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/endpoint"
@@ -56,6 +58,11 @@ func (s *PolicyService) UpsertInstance(
 	}
 	defer r.Body.Close()
 
+	if req.Instance == nil {
+		endpoint.WriteString(w, http.StatusBadRequest, "Missing instance")
+		return
+	}
+
 	req.Instance.Id = mux.Vars(r)["instanceId"]
 
 	err = s.upsertInstance(req.Instance)
@@ -74,19 +81,25 @@ func (s *PolicyService) UpsertInstance(
 }
 
 func (s *PolicyService) upsertInstance(instance *policy.Instance) error {
+	if instance == nil {
+		return errors.New("policy instance is nil")
+	}
 	if instance.Id == "" {
 		instance.Id = sdk.Id("insta")
 	}
 
-	exists := false
-	for _, i := range s.instances {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	for idx, i := range s.instances {
 		if i.Id == instance.Id {
-			exists = true
+			s.instances[idx] = instance
+			s.rateLimiters = sync.Map{}
+			return s.instancesStore.Upsert(instance)
 		}
 	}
-	if exists {
-		return nil
-	}
+
 	s.instances = append(s.instances, instance)
+	s.rateLimiters = sync.Map{}
 	return s.instancesStore.Upsert(instance)
 }

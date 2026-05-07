@@ -462,24 +462,6 @@ const sidebar: SidebarsConfig = {
       items: [
         {
           type: "doc",
-          id: "1backend-api/save-definition",
-          label: "Register a Definition",
-          className: "api-method put",
-        },
-        {
-          type: "doc",
-          id: "1backend-api/delete-definition",
-          label: "Delete Definition",
-          className: "api-method delete",
-        },
-        {
-          type: "doc",
-          id: "1backend-api/list-definitions",
-          label: "List Definitions",
-          className: "api-method get",
-        },
-        {
-          type: "doc",
           id: "1backend-api/echo-get",
           label: "Echo the query parameters in the response body.",
           className: "api-method get",

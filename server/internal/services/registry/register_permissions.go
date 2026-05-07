@@ -35,17 +35,7 @@ func (ns *RegistryService) registerPermits() error {
 			{
 				AppHost:    openapi.PtrString("*"),
 				Slugs:      []string{"deploy-svc"},
-				Permission: openapi.PtrString(registry.PermissionDefinitionDelete),
-			},
-			{
-				AppHost:    openapi.PtrString("*"),
-				Slugs:      []string{"deploy-svc"},
 				Permission: openapi.PtrString(registry.PermissionNodeDelete),
-			},
-			{
-				AppHost:    openapi.PtrString("*"),
-				Slugs:      []string{"deploy-svc"},
-				Permission: openapi.PtrString(registry.PermissionDefinitionView),
 			},
 			{
 				AppHost:    openapi.PtrString("*"),
@@ -76,7 +66,6 @@ func (ns *RegistryService) registerPermits() error {
 		for _, permission := range app(
 			registrytypes.NodeAdminPermissions,
 			registrytypes.InstanceAdminPermissions,
-			registrytypes.DefinitionAdminPermissions,
 		) {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				AppHost:    openapi.PtrString("*"),
@@ -91,7 +80,6 @@ func (ns *RegistryService) registerPermits() error {
 	} {
 		for _, permission := range app(
 			registrytypes.InstanceUserPermissions,
-			registrytypes.DefinitionUserPermissions,
 		) {
 			req.Permits = append(req.Permits, openapi.UserSvcPermitInput{
 				AppHost:    openapi.PtrString("*"),

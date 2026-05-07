@@ -16,19 +16,15 @@
 import * as runtime from '../runtime';
 import type {
   RegistrySvcErrorResponse,
-  RegistrySvcListDefinitionsResponse,
   RegistrySvcListInstancesResponse,
   RegistrySvcListNodesRequest,
   RegistrySvcListNodesResponse,
   RegistrySvcNodeSelfResponse,
   RegistrySvcRegisterInstanceRequest,
-  RegistrySvcSaveDefinitionRequest,
 } from '../models/index';
 import {
     RegistrySvcErrorResponseFromJSON,
     RegistrySvcErrorResponseToJSON,
-    RegistrySvcListDefinitionsResponseFromJSON,
-    RegistrySvcListDefinitionsResponseToJSON,
     RegistrySvcListInstancesResponseFromJSON,
     RegistrySvcListInstancesResponseToJSON,
     RegistrySvcListNodesRequestFromJSON,
@@ -39,13 +35,7 @@ import {
     RegistrySvcNodeSelfResponseToJSON,
     RegistrySvcRegisterInstanceRequestFromJSON,
     RegistrySvcRegisterInstanceRequestToJSON,
-    RegistrySvcSaveDefinitionRequestFromJSON,
-    RegistrySvcSaveDefinitionRequestToJSON,
 } from '../models/index';
-
-export interface DeleteDefinitionRequest {
-    id: string;
-}
 
 export interface DeleteNodeRequest {
     url: string;
@@ -73,10 +63,6 @@ export interface RemoveInstanceRequest {
     id: string;
 }
 
-export interface SaveDefinitionRequest {
-    body: RegistrySvcSaveDefinitionRequest;
-}
-
 export interface SelfNodeRequest {
     body?: object;
 }
@@ -85,48 +71,6 @@ export interface SelfNodeRequest {
  * 
  */
 export class RegistrySvcApi extends runtime.BaseAPI {
-
-    /**
-     * Deletes a registered definition by ID.
-     * Delete Definition
-     */
-    async deleteDefinitionRaw(requestParameters: DeleteDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
-        if (requestParameters['id'] == null) {
-            throw new runtime.RequiredError(
-                'id',
-                'Required parameter "id" was null or undefined when calling deleteDefinition().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-
-        let urlPath = `/registry-svc/definition/{id}`;
-        urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'DELETE',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.VoidApiResponse(response);
-    }
-
-    /**
-     * Deletes a registered definition by ID.
-     * Delete Definition
-     */
-    async deleteDefinition(requestParameters: DeleteDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.deleteDefinitionRaw(requestParameters, initOverrides);
-    }
 
     /**
      * Deletes a registered node by node URL. This endpoint is useful when a node is no longer available but it\'s still present in the database.
@@ -272,41 +216,6 @@ export class RegistrySvcApi extends runtime.BaseAPI {
      */
     async echoPut(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: any; }> {
         const response = await this.echoPutRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Retrieves a list of all definitions or filters them by specific criteria.
-     * List Definitions
-     */
-    async listDefinitionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RegistrySvcListDefinitionsResponse>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-
-        let urlPath = `/registry-svc/definitions`;
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => RegistrySvcListDefinitionsResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Retrieves a list of all definitions or filters them by specific criteria.
-     * List Definitions
-     */
-    async listDefinitions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RegistrySvcListDefinitionsResponse> {
-        const response = await this.listDefinitionsRaw(initOverrides);
         return await response.value();
     }
 
@@ -496,51 +405,6 @@ export class RegistrySvcApi extends runtime.BaseAPI {
      */
     async removeInstance(requestParameters: RemoveInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.removeInstanceRaw(requestParameters, initOverrides);
-    }
-
-    /**
-     * Registers a new definition, associating an definition address with a slug acquired from the bearer token.
-     * Register a Definition
-     */
-    async saveDefinitionRaw(requestParameters: SaveDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters['body'] == null) {
-            throw new runtime.RequiredError(
-                'body',
-                'Required parameter "body" was null or undefined when calling saveDefinition().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
-        }
-
-
-        let urlPath = `/registry-svc/definition`;
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'PUT',
-            headers: headerParameters,
-            query: queryParameters,
-            body: RegistrySvcSaveDefinitionRequestToJSON(requestParameters['body']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse<any>(response);
-    }
-
-    /**
-     * Registers a new definition, associating an definition address with a slug acquired from the bearer token.
-     * Register a Definition
-     */
-    async saveDefinition(requestParameters: SaveDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.saveDefinitionRaw(requestParameters, initOverrides);
-        return await response.value();
     }
 
     /**

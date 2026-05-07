@@ -142,17 +142,14 @@ Class | Method | HTTP request | Description
 *ProxySvcAPI* | [**SaveCerts**](docs/ProxySvcAPI.md#savecerts) | **Put** /proxy-svc/certs | Save Certs
 *ProxySvcAPI* | [**SaveRedirects**](docs/ProxySvcAPI.md#saveredirects) | **Put** /proxy-svc/redirects | Save Redirects
 *ProxySvcAPI* | [**SaveRoutes**](docs/ProxySvcAPI.md#saveroutes) | **Put** /proxy-svc/routes | Save Routes
-*RegistrySvcAPI* | [**DeleteDefinition**](docs/RegistrySvcAPI.md#deletedefinition) | **Delete** /registry-svc/definition/{id} | Delete Definition
 *RegistrySvcAPI* | [**DeleteNode**](docs/RegistrySvcAPI.md#deletenode) | **Delete** /registry-svc/node/{url} | Delete Node
 *RegistrySvcAPI* | [**EchoGet**](docs/RegistrySvcAPI.md#echoget) | **Get** /registry-svc/echo | Echo the query parameters in the response body.
 *RegistrySvcAPI* | [**EchoPost**](docs/RegistrySvcAPI.md#echopost) | **Post** /registry-svc/echo | Echo the request body in the response body.
 *RegistrySvcAPI* | [**EchoPut**](docs/RegistrySvcAPI.md#echoput) | **Put** /registry-svc/echo | Echo the request body in the response body.
-*RegistrySvcAPI* | [**ListDefinitions**](docs/RegistrySvcAPI.md#listdefinitions) | **Get** /registry-svc/definitions | List Definitions
 *RegistrySvcAPI* | [**ListInstances**](docs/RegistrySvcAPI.md#listinstances) | **Get** /registry-svc/instances | List Service Instances
 *RegistrySvcAPI* | [**ListNodes**](docs/RegistrySvcAPI.md#listnodes) | **Post** /registry-svc/nodes | List Nodes
 *RegistrySvcAPI* | [**RegisterInstance**](docs/RegistrySvcAPI.md#registerinstance) | **Put** /registry-svc/instance | Register Instance
 *RegistrySvcAPI* | [**RemoveInstance**](docs/RegistrySvcAPI.md#removeinstance) | **Delete** /registry-svc/instance/{id} | Remove Instance
-*RegistrySvcAPI* | [**SaveDefinition**](docs/RegistrySvcAPI.md#savedefinition) | **Put** /registry-svc/definition | Register a Definition
 *RegistrySvcAPI* | [**SelfNode**](docs/RegistrySvcAPI.md#selfnode) | **Get** /registry-svc/node/self | View Self Node
 *SecretSvcAPI* | [**DecryptValue**](docs/SecretSvcAPI.md#decryptvalue) | **Post** /secret-svc/decrypt | Decrypt a Value
 *SecretSvcAPI* | [**EncryptValue**](docs/SecretSvcAPI.md#encryptvalue) | **Post** /secret-svc/encrypt | Encrypt a Value
@@ -341,28 +338,18 @@ Class | Method | HTTP request | Description
  - [ProxySvcSaveRedirectsResponse](docs/ProxySvcSaveRedirectsResponse.md)
  - [ProxySvcSaveRoutesRequest](docs/ProxySvcSaveRoutesRequest.md)
  - [ProxySvcSaveRoutesResponse](docs/ProxySvcSaveRoutesResponse.md)
- - [RegistrySvcAPISpec](docs/RegistrySvcAPISpec.md)
- - [RegistrySvcClient](docs/RegistrySvcClient.md)
- - [RegistrySvcDefinition](docs/RegistrySvcDefinition.md)
- - [RegistrySvcEnvVar](docs/RegistrySvcEnvVar.md)
  - [RegistrySvcErrorResponse](docs/RegistrySvcErrorResponse.md)
  - [RegistrySvcGPU](docs/RegistrySvcGPU.md)
- - [RegistrySvcImageSpec](docs/RegistrySvcImageSpec.md)
  - [RegistrySvcInstance](docs/RegistrySvcInstance.md)
  - [RegistrySvcInstanceStatus](docs/RegistrySvcInstanceStatus.md)
- - [RegistrySvcLanguage](docs/RegistrySvcLanguage.md)
- - [RegistrySvcListDefinitionsResponse](docs/RegistrySvcListDefinitionsResponse.md)
  - [RegistrySvcListInstancesResponse](docs/RegistrySvcListInstancesResponse.md)
  - [RegistrySvcListNodesRequest](docs/RegistrySvcListNodesRequest.md)
  - [RegistrySvcListNodesResponse](docs/RegistrySvcListNodesResponse.md)
  - [RegistrySvcNode](docs/RegistrySvcNode.md)
  - [RegistrySvcNodeSelfResponse](docs/RegistrySvcNodeSelfResponse.md)
- - [RegistrySvcPortMapping](docs/RegistrySvcPortMapping.md)
  - [RegistrySvcProcess](docs/RegistrySvcProcess.md)
  - [RegistrySvcRegisterInstanceRequest](docs/RegistrySvcRegisterInstanceRequest.md)
- - [RegistrySvcRepositorySpec](docs/RegistrySvcRepositorySpec.md)
  - [RegistrySvcResourceUsage](docs/RegistrySvcResourceUsage.md)
- - [RegistrySvcSaveDefinitionRequest](docs/RegistrySvcSaveDefinitionRequest.md)
  - [RegistrySvcUsage](docs/RegistrySvcUsage.md)
  - [SecretSvcChecksumAlgorithm](docs/SecretSvcChecksumAlgorithm.md)
  - [SecretSvcDecryptValueRequest](docs/SecretSvcDecryptValueRequest.md)

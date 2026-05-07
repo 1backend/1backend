@@ -10,10 +10,7 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { RegistrySvcListDefinitionsResponse, RegistrySvcListInstancesResponse, RegistrySvcListNodesRequest, RegistrySvcListNodesResponse, RegistrySvcNodeSelfResponse, RegistrySvcRegisterInstanceRequest, RegistrySvcSaveDefinitionRequest } from '../models/index';
-export interface DeleteDefinitionRequest {
-    id: string;
-}
+import type { RegistrySvcListInstancesResponse, RegistrySvcListNodesRequest, RegistrySvcListNodesResponse, RegistrySvcNodeSelfResponse, RegistrySvcRegisterInstanceRequest } from '../models/index';
 export interface DeleteNodeRequest {
     url: string;
 }
@@ -35,9 +32,6 @@ export interface RegisterInstanceRequest {
 export interface RemoveInstanceRequest {
     id: string;
 }
-export interface SaveDefinitionRequest {
-    body: RegistrySvcSaveDefinitionRequest;
-}
 export interface SelfNodeRequest {
     body?: object;
 }
@@ -45,16 +39,6 @@ export interface SelfNodeRequest {
  *
  */
 export declare class RegistrySvcApi extends runtime.BaseAPI {
-    /**
-     * Deletes a registered definition by ID.
-     * Delete Definition
-     */
-    deleteDefinitionRaw(requestParameters: DeleteDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
-    /**
-     * Deletes a registered definition by ID.
-     * Delete Definition
-     */
-    deleteDefinition(requestParameters: DeleteDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
     /**
      * Deletes a registered node by node URL. This endpoint is useful when a node is no longer available but it\'s still present in the database.
      * Delete Node
@@ -108,16 +92,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
         [key: string]: any;
     }>;
     /**
-     * Retrieves a list of all definitions or filters them by specific criteria.
-     * List Definitions
-     */
-    listDefinitionsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RegistrySvcListDefinitionsResponse>>;
-    /**
-     * Retrieves a list of all definitions or filters them by specific criteria.
-     * List Definitions
-     */
-    listDefinitions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RegistrySvcListDefinitionsResponse>;
-    /**
      * Retrieves a list of all instances or filters them by specific criteria (e.g., host, IP).
      * List Service Instances
      */
@@ -157,16 +131,6 @@ export declare class RegistrySvcApi extends runtime.BaseAPI {
      * Remove Instance
      */
     removeInstance(requestParameters: RemoveInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
-    /**
-     * Registers a new definition, associating an definition address with a slug acquired from the bearer token.
-     * Register a Definition
-     */
-    saveDefinitionRaw(requestParameters: SaveDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
-    /**
-     * Registers a new definition, associating an definition address with a slug acquired from the bearer token.
-     * Register a Definition
-     */
-    saveDefinition(requestParameters: SaveDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
      * Show the local node.
      * View Self Node

@@ -10,13 +10,11 @@
  * Do not edit the class manually.
  */
 import http from 'http';
-import { RegistrySvcListDefinitionsResponse } from '../model/registrySvcListDefinitionsResponse';
 import { RegistrySvcListInstancesResponse } from '../model/registrySvcListInstancesResponse';
 import { RegistrySvcListNodesRequest } from '../model/registrySvcListNodesRequest';
 import { RegistrySvcListNodesResponse } from '../model/registrySvcListNodesResponse';
 import { RegistrySvcNodeSelfResponse } from '../model/registrySvcNodeSelfResponse';
 import { RegistrySvcRegisterInstanceRequest } from '../model/registrySvcRegisterInstanceRequest';
-import { RegistrySvcSaveDefinitionRequest } from '../model/registrySvcSaveDefinitionRequest';
 import { Authentication, Interceptor } from '../model/models';
 import { ApiKeyAuth } from '../model/models';
 export declare enum RegistrySvcApiApiKeys {
@@ -40,19 +38,6 @@ export declare class RegistrySvcApi {
     setDefaultAuthentication(auth: Authentication): void;
     setApiKey(key: RegistrySvcApiApiKeys, value: string): void;
     addInterceptor(interceptor: Interceptor): void;
-    /**
-     * Deletes a registered definition by ID.
-     * @summary Delete Definition
-     * @param id Definition ID
-     */
-    deleteDefinition(id: string, options?: {
-        headers: {
-            [name: string]: string;
-        };
-    }): Promise<{
-        response: http.IncomingMessage;
-        body?: any;
-    }>;
     /**
      * Deletes a registered node by node URL. This endpoint is useful when a node is no longer available but it\'s still present in the database.
      * @summary Delete Node
@@ -107,18 +92,6 @@ export declare class RegistrySvcApi {
         body: {
             [key: string]: any;
         };
-    }>;
-    /**
-     * Retrieves a list of all definitions or filters them by specific criteria.
-     * @summary List Definitions
-     */
-    listDefinitions(options?: {
-        headers: {
-            [name: string]: string;
-        };
-    }): Promise<{
-        response: http.IncomingMessage;
-        body: RegistrySvcListDefinitionsResponse;
     }>;
     /**
      * Retrieves a list of all instances or filters them by specific criteria (e.g., host, IP).
@@ -177,19 +150,6 @@ export declare class RegistrySvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body?: any;
-    }>;
-    /**
-     * Registers a new definition, associating an definition address with a slug acquired from the bearer token.
-     * @summary Register a Definition
-     * @param body Register Service Definition Request
-     */
-    saveDefinition(body: RegistrySvcSaveDefinitionRequest, options?: {
-        headers: {
-            [name: string]: string;
-        };
-    }): Promise<{
-        response: http.IncomingMessage;
-        body: object;
     }>;
     /**
      * Show the local node.

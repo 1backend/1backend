@@ -77,7 +77,11 @@ func (s *PolicyService) Check(
 }
 
 func (s *PolicyService) check(request *policy.CheckRequest) (bool, error) {
-	for _, instance := range s.instances {
+	s.mutex.Lock()
+	instances := append([]*policy.Instance(nil), s.instances...)
+	s.mutex.Unlock()
+
+	for _, instance := range instances {
 
 		switch string(instance.TemplateId) {
 		case policy.RateLimitPolicyTemplate.GetId():

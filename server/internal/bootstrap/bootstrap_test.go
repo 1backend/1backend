@@ -8,11 +8,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	config "github.com/1backend/1backend/server/internal/services/config/types"
+	policy "github.com/1backend/1backend/server/internal/services/policy/types"
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
+	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
-func TestApplyLoadsSupportedManifestsAndSkipsSecrets(t *testing.T) {
+func TestApplyLoadsSupportedManifests(t *testing.T) {
 	dir := t.TempDir()
 
 	writeFile(t, filepath.Join(dir, "permits", "_meta.yaml"), `entity: "user-svc:permit"`)
@@ -49,6 +52,7 @@ role: "site-svc:admin"
 `)
 	writeFile(t, filepath.Join(dir, "apps", "tenant.example.com", "configs", "_meta.yaml"), `entity: "config-svc:config"`)
 	writeFile(t, filepath.Join(dir, "apps", "tenant.example.com", "configs", "payment.yaml"), `id: "paymentSvc"
+appHost: "tenant.example.com"
 data:
   publicKey: "pk_test"
 `)
@@ -63,7 +67,21 @@ statusCode: 301
 `)
 	writeFile(t, filepath.Join(dir, "apps", "example.com", "secrets", "_meta.yaml"), `entity: "secret-svc:secret"`)
 	writeFile(t, filepath.Join(dir, "apps", "example.com", "secrets", "api-key.yaml"), `id: "api-key"
-value: "secret"
+appHost: "example.com"
+value: "encrypted-secret"
+encrypted: true
+checksum: "12345678"
+checksumAlgorithm: "CRC32"
+`)
+	writeFile(t, filepath.Join(dir, "policies", "login-rate-limit.yaml"), `id: "login-rate-limit"
+endpoint: "/user-svc/login"
+templateId: "rate-limit"
+parameters:
+  rateLimit:
+    maxRequests: 20
+    timeWindow: "1m"
+    entity: "ip"
+    scope: "endpoint"
 `)
 	writeFile(t, filepath.Join(dir, "apps", "example.com", "unclassified.yaml"), `id: "looks-secretish"
 value: "but-has-no-meta"
@@ -73,6 +91,9 @@ value: "but-has-no-meta"
 	var enrolls []user.EnrollInput
 	var routes []proxy.RouteInput
 	var redirects []proxy.RedirectInput
+	var configs []config.SaveConfigRequest
+	var secrets []*secret.SecretInput
+	var policyInstances []*policy.Instance
 
 	summary, err := Apply(context.Background(), dir, Services{
 		SavePermits: func(_ context.Context, items []user.PermitInput) error {
@@ -89,6 +110,18 @@ value: "but-has-no-meta"
 		},
 		SaveRedirects: func(_ context.Context, items []proxy.RedirectInput) error {
 			redirects = append(redirects, items...)
+			return nil
+		},
+		SaveConfigs: func(_ context.Context, items []config.SaveConfigRequest) error {
+			configs = append(configs, items...)
+			return nil
+		},
+		SaveSecrets: func(_ context.Context, items []*secret.SecretInput) error {
+			secrets = append(secrets, items...)
+			return nil
+		},
+		SavePolicyInstances: func(_ context.Context, items []*policy.Instance) error {
+			policyInstances = append(policyInstances, items...)
 			return nil
 		},
 	})
@@ -115,12 +148,33 @@ value: "but-has-no-meta"
 	require.Equal(t, "https://api.example.com", redirects[0].Target)
 	require.Equal(t, 301, redirects[0].StatusCode)
 
+	require.Len(t, configs, 1)
+	require.Equal(t, "paymentSvc", configs[0].Id)
+	require.Equal(t, "tenant.example.com", configs[0].AppHost)
+	require.Equal(t, "pk_test", configs[0].Data["publicKey"])
+
+	require.Len(t, secrets, 1)
+	require.Equal(t, "api-key", secrets[0].Id)
+	require.Equal(t, "example.com", secrets[0].AppHost)
+	require.Equal(t, "encrypted-secret", secrets[0].Value)
+	require.True(t, secrets[0].Encrypted)
+	require.Equal(t, "12345678", secrets[0].Checksum)
+
+	require.Len(t, policyInstances, 1)
+	require.Equal(t, "login-rate-limit", policyInstances[0].Id)
+	require.Equal(t, "/user-svc/login", policyInstances[0].Endpoint)
+	require.Equal(t, policy.TemplateIdRateLimit, policyInstances[0].TemplateId)
+	require.Equal(t, 20, policyInstances[0].Parameters.RateLimit.MaxRequests)
+	require.Equal(t, policy.EntityIP, policyInstances[0].Parameters.RateLimit.Entity)
+
 	require.Equal(t, 4, summary.AppliedPermits)
 	require.Equal(t, 1, summary.AppliedEnrolls)
 	require.Equal(t, 1, summary.AppliedRoutes)
 	require.Equal(t, 1, summary.AppliedRedirects)
-	require.Equal(t, 1, summary.SkippedSecrets)
-	require.Equal(t, 2, summary.SkippedUnsupported)
+	require.Equal(t, 1, summary.AppliedConfigs)
+	require.Equal(t, 1, summary.AppliedSecrets)
+	require.Equal(t, 1, summary.AppliedPolicyInstances)
+	require.Equal(t, 1, summary.SkippedUnsupported)
 }
 
 func requirePermit(t *testing.T, permits []user.PermitInput, id, appHost string) {

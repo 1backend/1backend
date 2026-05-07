@@ -11,7 +11,6 @@ import (
 	"github.com/1backend/1backend/cli/oo/commands/app"
 	call "github.com/1backend/1backend/cli/oo/commands/call"
 	"github.com/1backend/1backend/cli/oo/commands/cert"
-	definition "github.com/1backend/1backend/cli/oo/commands/definition"
 	"github.com/1backend/1backend/cli/oo/commands/enroll"
 	"github.com/1backend/1backend/cli/oo/commands/env"
 	instance "github.com/1backend/1backend/cli/oo/commands/instance"
@@ -64,7 +63,6 @@ func main() {
 	app.AddAppCommands(rootCmd)
 	user.AddUserCommands(rootCmd)
 	env.AddEnvCommands(rootCmd)
-	definition.AddDefinitionCommands(rootCmd)
 	instance.AddInstanceCommands(rootCmd)
 	node.AddNodeCommands(rootCmd)
 	secret.AddSecretCommands(rootCmd)

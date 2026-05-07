@@ -142,28 +142,18 @@ export * from './proxySvcSaveRedirectsRequest';
 export * from './proxySvcSaveRedirectsResponse';
 export * from './proxySvcSaveRoutesRequest';
 export * from './proxySvcSaveRoutesResponse';
-export * from './registrySvcAPISpec';
-export * from './registrySvcClient';
-export * from './registrySvcDefinition';
-export * from './registrySvcEnvVar';
 export * from './registrySvcErrorResponse';
 export * from './registrySvcGPU';
-export * from './registrySvcImageSpec';
 export * from './registrySvcInstance';
 export * from './registrySvcInstanceStatus';
-export * from './registrySvcLanguage';
-export * from './registrySvcListDefinitionsResponse';
 export * from './registrySvcListInstancesResponse';
 export * from './registrySvcListNodesRequest';
 export * from './registrySvcListNodesResponse';
 export * from './registrySvcNode';
 export * from './registrySvcNodeSelfResponse';
-export * from './registrySvcPortMapping';
 export * from './registrySvcProcess';
 export * from './registrySvcRegisterInstanceRequest';
-export * from './registrySvcRepositorySpec';
 export * from './registrySvcResourceUsage';
-export * from './registrySvcSaveDefinitionRequest';
 export * from './registrySvcUsage';
 export * from './secretSvcChecksumAlgorithm';
 export * from './secretSvcDecryptValueRequest';
@@ -403,28 +393,18 @@ import { ProxySvcSaveRedirectsRequest } from './proxySvcSaveRedirectsRequest';
 import { ProxySvcSaveRedirectsResponse } from './proxySvcSaveRedirectsResponse';
 import { ProxySvcSaveRoutesRequest } from './proxySvcSaveRoutesRequest';
 import { ProxySvcSaveRoutesResponse } from './proxySvcSaveRoutesResponse';
-import { RegistrySvcAPISpec } from './registrySvcAPISpec';
-import { RegistrySvcClient } from './registrySvcClient';
-import { RegistrySvcDefinition } from './registrySvcDefinition';
-import { RegistrySvcEnvVar } from './registrySvcEnvVar';
 import { RegistrySvcErrorResponse } from './registrySvcErrorResponse';
 import { RegistrySvcGPU } from './registrySvcGPU';
-import { RegistrySvcImageSpec } from './registrySvcImageSpec';
 import { RegistrySvcInstance } from './registrySvcInstance';
 import { RegistrySvcInstanceStatus } from './registrySvcInstanceStatus';
-import { RegistrySvcLanguage } from './registrySvcLanguage';
-import { RegistrySvcListDefinitionsResponse } from './registrySvcListDefinitionsResponse';
 import { RegistrySvcListInstancesResponse } from './registrySvcListInstancesResponse';
 import { RegistrySvcListNodesRequest } from './registrySvcListNodesRequest';
 import { RegistrySvcListNodesResponse } from './registrySvcListNodesResponse';
 import { RegistrySvcNode } from './registrySvcNode';
 import { RegistrySvcNodeSelfResponse } from './registrySvcNodeSelfResponse';
-import { RegistrySvcPortMapping } from './registrySvcPortMapping';
 import { RegistrySvcProcess } from './registrySvcProcess';
 import { RegistrySvcRegisterInstanceRequest } from './registrySvcRegisterInstanceRequest';
-import { RegistrySvcRepositorySpec } from './registrySvcRepositorySpec';
 import { RegistrySvcResourceUsage } from './registrySvcResourceUsage';
-import { RegistrySvcSaveDefinitionRequest } from './registrySvcSaveDefinitionRequest';
 import { RegistrySvcUsage } from './registrySvcUsage';
 import { SecretSvcChecksumAlgorithm } from './secretSvcChecksumAlgorithm';
 import { SecretSvcDecryptValueRequest } from './secretSvcDecryptValueRequest';
@@ -532,7 +512,6 @@ let enumsMap: {[index: string]: any} = {
         "PromptSvcPromptType": PromptSvcPromptType,
         "PromptSvcStreamChunkType": PromptSvcStreamChunkType,
         "RegistrySvcInstanceStatus": RegistrySvcInstanceStatus,
-        "RegistrySvcLanguage": RegistrySvcLanguage,
         "SecretSvcChecksumAlgorithm": SecretSvcChecksumAlgorithm,
         "UserSvcListUsersOrderBy": UserSvcListUsersOrderBy,
         "UserSvcMembershipStatus": UserSvcMembershipStatus,
@@ -673,26 +652,17 @@ let typeMap: {[index: string]: any} = {
     "ProxySvcSaveRedirectsResponse": ProxySvcSaveRedirectsResponse,
     "ProxySvcSaveRoutesRequest": ProxySvcSaveRoutesRequest,
     "ProxySvcSaveRoutesResponse": ProxySvcSaveRoutesResponse,
-    "RegistrySvcAPISpec": RegistrySvcAPISpec,
-    "RegistrySvcClient": RegistrySvcClient,
-    "RegistrySvcDefinition": RegistrySvcDefinition,
-    "RegistrySvcEnvVar": RegistrySvcEnvVar,
     "RegistrySvcErrorResponse": RegistrySvcErrorResponse,
     "RegistrySvcGPU": RegistrySvcGPU,
-    "RegistrySvcImageSpec": RegistrySvcImageSpec,
     "RegistrySvcInstance": RegistrySvcInstance,
-    "RegistrySvcListDefinitionsResponse": RegistrySvcListDefinitionsResponse,
     "RegistrySvcListInstancesResponse": RegistrySvcListInstancesResponse,
     "RegistrySvcListNodesRequest": RegistrySvcListNodesRequest,
     "RegistrySvcListNodesResponse": RegistrySvcListNodesResponse,
     "RegistrySvcNode": RegistrySvcNode,
     "RegistrySvcNodeSelfResponse": RegistrySvcNodeSelfResponse,
-    "RegistrySvcPortMapping": RegistrySvcPortMapping,
     "RegistrySvcProcess": RegistrySvcProcess,
     "RegistrySvcRegisterInstanceRequest": RegistrySvcRegisterInstanceRequest,
-    "RegistrySvcRepositorySpec": RegistrySvcRepositorySpec,
     "RegistrySvcResourceUsage": RegistrySvcResourceUsage,
-    "RegistrySvcSaveDefinitionRequest": RegistrySvcSaveDefinitionRequest,
     "RegistrySvcUsage": RegistrySvcUsage,
     "SecretSvcDecryptValueRequest": SecretSvcDecryptValueRequest,
     "SecretSvcDecryptValueResponse": SecretSvcDecryptValueResponse,

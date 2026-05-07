@@ -163,7 +163,9 @@ definitions:
     type: object
   config_svc.Config:
     properties:
-      app:
+      appId:
+        type: string
+      branch:
         type: string
       createdAt:
         type: string
@@ -173,15 +175,17 @@ definitions:
       dataJson:
         type: string
       id:
-        description: |-
-          Id of the config.
-          It is deterministically created from the app and the key.
+        description: CamelCased slugs of the config owners
         type: string
-      key:
+      internalId:
         type: string
       updatedAt:
         type: string
+      version:
+        type: string
     required:
+    - appId
+    - branch
     - createdAt
     - data
     - dataJson
@@ -190,13 +194,41 @@ definitions:
     type: object
   config_svc.ListConfigsRequest:
     properties:
-      app:
+      appHost:
+        example: shoes.com
         type: string
-      keys:
-        description: Keys are camelCased slugs of the config owners.
+      branch:
+        description: Branch specifies the branch to get configs from.
+        type: string
+      ids:
+        description: |-
+          Ids are camelCased slugs of the config owners.
+          Specifying only the ids will mean all of the config will be returned
+          for that key.
+
+          If the configs are large, consider using the `Selector` request field.
         items:
           type: string
         type: array
+      scope:
+        allOf:
+        - $ref: '#/definitions/config_svc.ListConfigsScope'
+        example: branch
+      selector:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        description: |-
+          Selector allows dotPath-based filtering per config owner.
+          Example:
+          {
+            "user1": ["settings.theme", "featureFlags.enableNewUI"],
+            "user2": ["settings.language"]
+          }
+        type: object
+    required:
+    - appHost
     type: object
   config_svc.ListConfigsResponse:
     properties:
@@ -210,28 +242,128 @@ definitions:
     required:
     - configs
     type: object
+  config_svc.ListConfigsScope:
+    enum:
+    - all
+    - branch
+    type: string
+    x-enum-varnames:
+    - ListConfigsScopeAll
+    - ListConfigsScopeBranch
+  config_svc.ListVersionsRequest:
+    properties:
+      afterJson:
+        type: string
+      appHost:
+        example: shoes.com
+        type: string
+      branch:
+        description: Branch specifies the branch to get versions from.
+        type: string
+      ids:
+        description: |-
+          Ids are camelCased slugs of the config owners.
+          Specifying only the ids will mean all of the config will be returned
+          for that key.
+
+          If the configs are large, consider using the `Selector` request field.
+        items:
+          type: string
+        type: array
+      limit:
+        type: integer
+      selector:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        description: |-
+          Selector allows dotPath-based filtering per config owner.
+          Example:
+          {
+            "user1": ["settings.theme", "featureFlags.enableNewUI"],
+            "user2": ["settings.language"]
+          }
+        type: object
+      versionIds:
+        items:
+          type: string
+        type: array
+    required:
+    - appHost
+    type: object
+  config_svc.ListVersionsResponse:
+    properties:
+      afterJson:
+        description: |-
+          AfterJson is the cursor to fetch the next page, encoded as a JSON array string.
+          e.g. '["2023-08-01T12:00:00Z","versid-123"]'
+        type: string
+      versions:
+        description: Versions across all IDs, sorted by CreatedAt descending.
+        items:
+          $ref: '#/definitions/config_svc.Version'
+        type: array
+    type: object
   config_svc.SaveConfigRequest:
     properties:
-      app:
+      appHost:
         description: |-
-          App can only be specified by users who have the
+          AppHost can only be specified by users who have the
           `config-svc:config:edit-on-behalf` permission, who are typically admins.
 
           If not specified, the config will be saved for the current app of the user's token.
+        type: string
+      branch:
+        description: Branch specifies the branch to get configs from.
         type: string
       data:
         additionalProperties: true
         type: object
       dataJson:
         type: string
-      key:
+      id:
         description: |-
-          Key is the slug of the owner to save the config for.
+          Id is the slug of the owner to save the config for.
           Only user with the `config-svc:config:edit-on-behalf` can specify this.
           For everyone else, it is automatically set to the slug of the caller user.
         type: string
     type: object
   config_svc.SaveConfigResponse:
+    type: object
+  config_svc.Version:
+    properties:
+      appId:
+        type: string
+      branch:
+        type: string
+      createdAt:
+        type: string
+      data:
+        additionalProperties: true
+        type: object
+      dataJson:
+        type: string
+      id:
+        description: |-
+          CamelCased slugs of the config owners.
+          Same as Config.Id.
+        type: string
+      internalId:
+        type: string
+      updatedAt:
+        type: string
+      versionId:
+        type: string
+    required:
+    - appId
+    - branch
+    - createdAt
+    - data
+    - dataJson
+    - id
+    - updatedAt
+    - versionId
     type: object
   container_svc.Asset:
     properties:
@@ -793,12 +925,6 @@ definitions:
         items:
           type: string
         type: array
-      jsonValues:
-        description: |-
-          JSONValues is a JSON marshalled array of values.
-          It's JSON marhalled due to the limitations of the
-          Swaggo -> OpenAPI 2.0 -> OpenAPI Go generator toolchain.
-        type: string
       op:
         $ref: '#/definitions/datastore.Op'
       subFilters:
@@ -807,6 +933,8 @@ definitions:
         items:
           $ref: '#/definitions/datastore.Filter'
         type: array
+      valuesJson:
+        type: string
     type: object
   datastore.Op:
     enum:
@@ -816,6 +944,10 @@ definitions:
     - startsWith
     - intersects
     - isInList
+    - lessThan
+    - lessThanOrEqual
+    - greaterThan
+    - greaterThanOrEqual
     type: string
     x-enum-varnames:
     - OpOr
@@ -824,6 +956,10 @@ definitions:
     - OpStartsWith
     - OpIntersects
     - OpIsInList
+    - OpLessThan
+    - OpLessThanOrEqual
+    - OpGreaterThan
+    - OpGreaterThanOrEqual
   datastore.OrderBy:
     properties:
       desc:
@@ -832,10 +968,6 @@ definitions:
       field:
         description: The field by which to order the results
         type: string
-      randomize:
-        description: Randomize indicates that the results should be randomized instead
-          of ordered by the `field` and `desc` criteria
-        type: boolean
       sortingType:
         allOf:
         - $ref: '#/definitions/datastore.SortingType'
@@ -843,6 +975,12 @@ definitions:
     type: object
   datastore.Query:
     properties:
+      afterJson:
+        description: |-
+          AfterJson is used for cursor-based pagination, which is more
+          effective in scalable and distributed environments compared
+          to offset-based pagination.
+        type: string
       count:
         description: |-
           Count true means return the count of the dataset filtered by Filters
@@ -855,16 +993,6 @@ definitions:
         items:
           $ref: '#/definitions/datastore.Filter'
         type: array
-      jsonAfter:
-        description: |-
-          JSONAfter is used for cursor-based pagination, which is more
-          effective in scalable and distributed environments compared
-          to offset-based pagination.
-
-          JSONAfter is a JSON-encoded string due to limitations in Swaggo (e.g., []interface{} gets converted to []map[string]interface{}).
-          There is no way to specify a type that results in an any/interface{} type in the `go -> openapi -> go` generation process.
-          As a result, JSONAfter is a JSON-marshalled string representing an array, e.g., `[42]`.
-        type: string
       limit:
         description: Limit the number of records in the result set.
         type: integer
@@ -880,171 +1008,14 @@ definitions:
     - numeric
     - text
     - date
+    - random
     type: string
     x-enum-varnames:
     - SortingTypeDefault
     - SortingTypeNumeric
     - SortingTypeText
     - SortingTypeDate
-  deploy_svc.AutoScalingConfig:
-    properties:
-      cpuThreshold:
-        description: CPU usage threshold for scaling (as a percentage)
-        type: integer
-      maxReplicas:
-        description: Maximum number of replicas to run
-        type: integer
-      minReplicas:
-        description: Minimum number of replicas to run
-        type: integer
-    type: object
-  deploy_svc.DeleteDeploymentRequest:
-    properties:
-      deploymentId:
-        type: string
-    required:
-    - deploymentId
-    type: object
-  deploy_svc.DeleteDeploymentResponse:
-    type: object
-  deploy_svc.Deployment:
-    properties:
-      autoScaling:
-        allOf:
-        - $ref: '#/definitions/deploy_svc.AutoScalingConfig'
-        description: 'Optional: Auto-scaling rules'
-      definitionId:
-        description: DefinitionId is the id of the definition
-        example: def_deBXZMpxrQ
-        type: string
-      description:
-        description: Description of what this deployment does
-        example: Handles user service requests
-        type: string
-      details:
-        description: |-
-          Details provides additional information about the deployment's current state,
-          including both success and failure conditions (e.g., "Deployment in progress", "Error pulling image").
-        example: Deployment is in progress
-        type: string
-      envars:
-        additionalProperties:
-          type: string
-        description: |-
-          Envars is a map of environment variables that will be passed down to service instances (see Registry Svc Instance)
-          Also see the Registry Svc Definition for required envars.
-        type: object
-      id:
-        description: ID of the deployment (e.g., "depl_dbOdi5eLQK")
-        example: depl_dbOdi5eLQK
-        type: string
-      name:
-        description: Short name for easy reference (e.g., "user-service-v2")
-        example: user-service-v2
-        type: string
-      replicas:
-        description: Number of container instances to run
-        type: integer
-      resources:
-        allOf:
-        - $ref: '#/definitions/deploy_svc.ResourceLimits'
-        description: Resource requirements for each replica
-      status:
-        allOf:
-        - $ref: '#/definitions/deploy_svc.DeploymentStatus'
-        description: Current status of the deployment (e.g., "OK", "Error", "Pending")
-        example: OK
-      strategy:
-        allOf:
-        - $ref: '#/definitions/deploy_svc.DeploymentStrategy'
-        description: Deployment strategy (e.g., rolling update)
-      targetRegions:
-        description: Target deployment regions or clusters
-        items:
-          $ref: '#/definitions/deploy_svc.TargetRegion'
-        type: array
-    required:
-    - definitionId
-    - id
-    type: object
-  deploy_svc.DeploymentStatus:
-    enum:
-    - OK
-    - Error
-    - Pending
-    - Failed
-    - Deploying
-    type: string
-    x-enum-varnames:
-    - DeploymentStatusOK
-    - DeploymentStatusError
-    - DeploymentStatusPending
-    - DeploymentStatusFailed
-    - DeploymentStatusDeploying
-  deploy_svc.DeploymentStrategy:
-    properties:
-      maxSurge:
-        description: Max extra replicas during update
-        type: integer
-      maxUnavailable:
-        description: Max unavailable replicas during update
-        type: integer
-      type:
-        allOf:
-        - $ref: '#/definitions/deploy_svc.StrategyType'
-        description: Deployment strategy type (RollingUpdate, Recreate, etc.)
-    type: object
-  deploy_svc.ErrorResponse:
-    properties:
-      error:
-        type: string
-    type: object
-  deploy_svc.ListDeploymentsRequest:
-    type: object
-  deploy_svc.ListDeploymentsResponse:
-    properties:
-      deployments:
-        items:
-          $ref: '#/definitions/deploy_svc.Deployment'
-        type: array
-    type: object
-  deploy_svc.ResourceLimits:
-    properties:
-      cpu:
-        description: CPU limit, e.g., "500m" for 0.5 cores
-        type: string
-      memory:
-        description: Memory limit, e.g., "128Mi"
-        type: string
-      vram:
-        description: 'Optional: GPU VRAM requirement, e.g., "48GB"'
-        type: string
-    type: object
-  deploy_svc.SaveDeploymentRequest:
-    properties:
-      deployment:
-        $ref: '#/definitions/deploy_svc.Deployment'
-    type: object
-  deploy_svc.SaveDeploymentResponse:
-    type: object
-  deploy_svc.StrategyType:
-    enum:
-    - RollingUpdate
-    - Recreate
-    type: string
-    x-enum-varnames:
-    - StrategyRollingUpdate
-    - StrategyRecreate
-  deploy_svc.TargetRegion:
-    properties:
-      cluster:
-        description: Cluster or node where service should be deployed (e.g., "us-west1",
-          "local-docker")
-        type: string
-      zone:
-        description: 'Optional: Specific zone for the deployment'
-        type: string
-    type: object
+    - SortingTypeRandom
   email_svc.Attachment:
     properties:
       content:
@@ -1100,6 +1071,16 @@ definitions:
       contentType:
         description: 'Content type: "text/plain" or "text/html"'
         type: string
+      fromEmail:
+        description: |-
+          FromEmail specifies the sender's email address.
+          If left empty, it defaults to the value stored in the `sender-email` secret.
+        type: string
+      fromName:
+        description: |-
+          FromName specifies the display name of the sender.
+          If left empty, it defaults to the value stored in the `sender-name` secret.
+        type: string
       id:
         description: Unique identifier
         type: string
@@ -1139,6 +1120,12 @@ definitions:
       fileName:
         type: string
       filePath:
+        description: |-
+          FilePath is the canonical object path used by file-svc for both:
+          1) local node disk location and
+          2) storage backend object key/path.
+          The exact path-generation algorithm is an implementation detail and may
+          evolve over time; callers must treat FilePath as the source of truth.
         type: string
       fileSize:
         description: FileSize is the full final downloaded file size.
@@ -1216,13 +1203,22 @@ definitions:
         description: Filename is the original name of the file
         type: string
       filePath:
-        description: FilePath is the full node local path of the file
+        description: |-
+          FilePath is the canonical object path used by file-svc for both:
+          1) local node disk location and
+          2) storage backend object key/path.
+          The exact path-generation algorithm is an implementation detail and may
+          evolve over time; callers must treat FilePath as the source of truth.
         type: string
       fileSize:
         format: int64
         type: integer
       id:
         description: Unique ID for this replica
+        type: string
+      lastAccessedAt:
+        description: LastAccessedAt is updated asynchronously by the file service
+          when the file is served.
         type: string
       nodeId:
         description: ID of the node storing this replica
@@ -2043,6 +2039,24 @@ definitions:
     - cert
     - id
     type: object
+  proxy_svc.DeleteRedirectsRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  proxy_svc.DeleteRedirectsResponse:
+    type: object
+  proxy_svc.DeleteRoutesRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  proxy_svc.DeleteRoutesResponse:
+    type: object
   proxy_svc.ErrorResponse:
     properties:
       error:
@@ -2062,6 +2076,20 @@ definitions:
           $ref: '#/definitions/proxy_svc.Cert'
         type: array
     type: object
+  proxy_svc.ListRedirectsRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  proxy_svc.ListRedirectsResponse:
+    properties:
+      redirects:
+        items:
+          $ref: '#/definitions/proxy_svc.Redirect'
+        type: array
+    type: object
   proxy_svc.ListRoutesRequest:
     properties:
       ids:
@@ -2076,17 +2104,76 @@ definitions:
           $ref: '#/definitions/proxy_svc.Route'
         type: array
     type: object
+  proxy_svc.Redirect:
+    properties:
+      id:
+        description: |-
+          Id is the redirect matching key: host plus optional path prefix.
+          It follows the same longest-prefix lookup model as Route.Id.
+        type: string
+      statusCode:
+        description: |-
+          StatusCode is the HTTP redirect status code.
+          If omitted, the proxy uses 308 Permanent Redirect.
+        type: integer
+      target:
+        description: |-
+          Target is the redirect destination base URL or absolute path.
+          The unmatched request path suffix and query string are appended.
+        type: string
+    required:
+    - id
+    - target
+    type: object
+  proxy_svc.RedirectInput:
+    properties:
+      id:
+        type: string
+      statusCode:
+        type: integer
+      target:
+        type: string
+    required:
+    - id
+    - target
+    type: object
   proxy_svc.Route:
     properties:
-      createdAt:
-        type: string
       id:
-        description: Id is the host itself, e.g. "test.localhost"
+        description: |-
+          Id is the routing key: host plus optional path prefix.
+          Example:
+            "x.com"              -> root of the domain
+            "x.com/path1"        -> microfrontend at /path1
+            "x.com/path1/path2"  -> deeper microfrontend mounted at /path1/path2
+
+          Use case: multiple microfrontends served under the same host but
+          separated by URL path segments. For example:
+            - Marketing site at x.com
+            - Dashboard at x.com/app
+            - Admin UI at x.com/app/admin
+
+          Lookup algorithm:
+            1. Take the request host and path (e.g. "x.com/app/admin/users").
+            2. Try to match the longest registered Id by progressively stripping
+               trailing path segments:
+                  - x.com/app/admin/users   (no match)
+                  - x.com/app/admin         (match -> admin UI)
+            3. If still no match, strip again:
+                  - x.com/app               (match -> dashboard)
+            4. If still no match, fallback to host-only route:
+                  - x.com                   (match -> marketing site)
+            5. If no host-only route exists, return 404.
+
+          This provides deterministic longest-prefix routing without regex or
+          rule engines, keeping the model simple but enabling path-based
+          microfrontend composition.
         type: string
       target:
         type: string
-      updatedAt:
-        type: string
+    required:
+    - id
+    - target
     type: object
   proxy_svc.RouteInput:
     properties:
@@ -2095,6 +2182,8 @@ definitions:
         type: string
       target:
         type: string
+    required:
+    - id
     type: object
   proxy_svc.SaveCertsRequest:
     properties:
@@ -2104,6 +2193,20 @@ definitions:
         type: array
     type: object
   proxy_svc.SaveCertsResponse:
+    type: object
+  proxy_svc.SaveRedirectsRequest:
+    properties:
+      redirects:
+        items:
+          $ref: '#/definitions/proxy_svc.RedirectInput'
+        type: array
+    type: object
+  proxy_svc.SaveRedirectsResponse:
+    properties:
+      redirects:
+        items:
+          $ref: '#/definitions/proxy_svc.Redirect'
+        type: array
     type: object
   proxy_svc.SaveRoutesRequest:
     properties:
@@ -2118,97 +2221,6 @@ definitions:
         items:
           $ref: '#/definitions/proxy_svc.Route'
         type: array
-    type: object
-  registry_svc.APISpec:
-    properties:
-      metadata:
-        additionalProperties:
-          type: string
-        description: Additional metadata about the API (e.g., author, license, etc.)
-        type: object
-      protocolType:
-        description: Protocol type (e.g., OpenAPI, Swagger, etc.)
-        type: string
-      url:
-        description: URL to the OpenAPI file or other API definition
-        type: string
-      version:
-        description: Version of the API specification (e.g., 3.0.0)
-        type: string
-    type: object
-  registry_svc.Client:
-    properties:
-      language:
-        allOf:
-        - $ref: '#/definitions/registry_svc.Language'
-        description: Programming language.
-        example: JavaScript
-      url:
-        description: The URL of the client.
-        example: https://example.com/client.js
-        type: string
-    required:
-    - language
-    - url
-    type: object
-  registry_svc.Definition:
-    properties:
-      apiSpecs:
-        description: API Specs such as OpenAPI definitions etc.
-        items:
-          $ref: '#/definitions/registry_svc.APISpec'
-        type: array
-      clients:
-        description: Programming language clients such as on npm or GitHub.
-        items:
-          $ref: '#/definitions/registry_svc.Client'
-        type: array
-      envars:
-        description: |-
-          Envars is a map of Renvironment variables that a deployment (see Deploy Svc Deployment) of this definition will REQUIRE to run.
-          E.g., {"DB_URL": "mysql://user:password@host:port/db"}
-          These will be injected into the service instances (see Registry Svc Instance) at runtime.
-          The value of a key here is the default value. The actual value can be overridden at deployment time.
-        items:
-          $ref: '#/definitions/registry_svc.EnvVar'
-        type: array
-      id:
-        type: string
-      image:
-        allOf:
-        - $ref: '#/definitions/registry_svc.ImageSpec'
-        description: |-
-          Container specifications for Docker, K8s, etc.
-          Use this to deploy already built images.
-      ports:
-        description: |-
-          Ports have host ports and internal ports currently but they
-          really only should have internal ports as host ports should be assigned
-          by the system. Host ports might go away in the future.
-        items:
-          $ref: '#/definitions/registry_svc.PortMapping'
-        type: array
-      repository:
-        allOf:
-        - $ref: '#/definitions/registry_svc.RepositorySpec'
-        description: |-
-          Repository based definitions is an alternative to Image definitions.
-          Instead of deploying an already built and pushed image, a source code repository
-          url can be provided. The container will be built from the source.
-    required:
-    - id
-    type: object
-  registry_svc.EnvVar:
-    properties:
-      key:
-        description: Key is the environment variable name.
-        type: string
-      value:
-        description: Value is the environment variable value.
-        type: string
-    required:
-    - key
-    - value
     type: object
   registry_svc.ErrorResponse:
     properties:
@@ -2248,21 +2260,6 @@ definitions:
         type: array
       temperature:
         type: number
-    type: object
-  registry_svc.ImageSpec:
-    properties:
-      internalPorts:
-        description: InternalPorts are the ports the container will listen on internally
-        items:
-          type: integer
-        type: array
-      name:
-        description: Name is the container image name/URL to use for the container
-        example: nginx:latest
-        type: string
-    required:
-    - internalPorts
-    - name
     type: object
   registry_svc.Instance:
     properties:
@@ -2367,55 +2364,6 @@ definitions:
     - InstanceStatusDegraded
     - InstanceStatusUnreachable
     - InstanceStatusError
-  registry_svc.Language:
-    enum:
-    - JavaScript
-    - Python
-    - Java
-    - C#
-    - C++
-    - Ruby
-    - Go
-    - Swift
-    - PHP
-    - TypeScript
-    - Kotlin
-    - Scala
-    - Perl
-    - Rust
-    - Haskell
-    - Clojure
-    - Elixir
-    - Objective-C
-    - F#
-    type: string
-    x-enum-varnames:
-    - JavaScript
-    - Python
-    - Java
-    - CSharp
-    - CPlusPlus
-    - Ruby
-    - Go
-    - Swift
-    - PHP
-    - TypeScript
-    - Kotlin
-    - Scala
-    - Perl
-    - Rust
-    - Haskell
-    - Clojure
-    - Elixir
-    - ObjectiveC
-    - FSharp
-  registry_svc.ListDefinitionsResponse:
-    properties:
-      definitions:
-        items:
-          $ref: '#/definitions/registry_svc.Definition'
-        type: array
-    type: object
   registry_svc.ListInstancesResponse:
     properties:
       instances:
@@ -2480,16 +2428,6 @@ definitions:
     required:
     - node
     type: object
-  registry_svc.PortMapping:
-    properties:
-      host:
-        type: integer
-      internal:
-        type: integer
-    required:
-    - host
-    - internal
-    type: object
   registry_svc.Process:
     properties:
       memoryUsage:
@@ -2538,35 +2476,6 @@ definitions:
     type: object
   registry_svc.RegisterInstanceResponse:
     type: object
-  registry_svc.RepositorySpec:
-    properties:
-      buildContext:
-        description: Context is the path to the image build context
-        example: path/to/subfolder
-        type: string
-      containerFile:
-        description: |-
-          ContainerFile is the path to the file that contains the container build instructions
-          Relative from the build context. By default, it is assumed to be a Dockerfile.
-        example: docker/Dockerfile
-        type: string
-      internalPorts:
-        description: Ports the container will listen on internally
-        items:
-          type: integer
-        type: array
-      url:
-        description: URL is the URL to the repository
-        example: https://github.com/1backend/1backend.git
-        type: string
-      version:
-        description: Version of the code to use
-        example: v1.0.0
-        type: string
-    required:
-    - internalPorts
-    - url
-    type: object
   registry_svc.ResourceUsage:
     properties:
       cpu:
@@ -2581,13 +2490,6 @@ definitions:
         allOf:
         - $ref: '#/definitions/registry_svc.Usage'
         description: Memory usage metrics.
-    type: object
-  registry_svc.SaveDefinitionRequest:
-    properties:
-      definition:
-        $ref: '#/definitions/registry_svc.Definition'
-    type: object
-  registry_svc.SaveDefinitionResponse:
     type: object
   registry_svc.Usage:
     properties:
@@ -2662,9 +2564,14 @@ definitions:
     type: object
   secret_svc.ListSecretsRequest:
     properties:
-      key:
+      allApps:
+        description: |-
+          AllApps indicates whether to list secrets across all apps.
+          If false, the app from the authentication context is used.
+        type: boolean
+      id:
         type: string
-      keys:
+      ids:
         items:
           type: string
         type: array
@@ -2684,12 +2591,6 @@ definitions:
         items:
           type: string
         type: array
-      key:
-        type: string
-      keys:
-        items:
-          type: string
-        type: array
     type: object
   secret_svc.RemoveSecretsResponse:
     type: object
@@ -2697,15 +2598,14 @@ definitions:
     properties:
       secrets:
         items:
-          $ref: '#/definitions/secret_svc.Secret'
+          $ref: '#/definitions/secret_svc.SecretInput'
         type: array
     type: object
   secret_svc.SaveSecretsResponse:
     type: object
   secret_svc.Secret:
     properties:
-      app:
-        description: App of the secret
+      appId:
         type: string
       canChangeDeleters:
         description: Slugs of services/users who can change the deleters list
@@ -2740,14 +2640,13 @@ definitions:
           Whether the secret is encrypted
           All secrets are encrypted before written to the DB.
           This really only exists for write requests to know if the secret is already encrypted.
-          Ie: while most `secret save [key] [value]` commands are probably not encrypted,
+          Ie: while most `secret save [id] [value]` commands are probably not encrypted,
           File based saves, eg. `secret save secretA.yaml` are probably encrypted.
         type: boolean
       id:
-        description: Id of the secret
+        description: Envar- or slug-like id of the secret
         type: string
-      key:
-        description: Envar or slug-like key of the secret
+      internalId:
         type: string
       readers:
         description: Slugs of services/users who can read the secret
@@ -2762,6 +2661,69 @@ definitions:
         items:
           type: string
         type: array
+    required:
+    - appId
+    - id
+    - value
+    type: object
+  secret_svc.SecretInput:
+    properties:
+      appHost:
+        type: string
+      canChangeDeleters:
+        description: Slugs of services/users who can change the deleters list
+        items:
+          type: string
+        type: array
+      canChangeReaders:
+        description: Slugs of services/users who can change the readers list
+        items:
+          type: string
+        type: array
+      canChangeWriters:
+        description: Slugs of services/users who can change the writers list
+        items:
+          type: string
+        type: array
+      checksum:
+        description: Checksum of the secret value
+        type: string
+      checksumAlgorithm:
+        allOf:
+        - $ref: '#/definitions/secret_svc.ChecksumAlgorithm'
+        description: Algorithm used for the checksum (e.g., "CRC32")
+        example: CRC32
+      deleters:
+        description: Slugs of services/users who can delete the secret
+        items:
+          type: string
+        type: array
+      encrypted:
+        description: |-
+          Whether the secret is encrypted
+          All secrets are encrypted before written to the DB.
+          This really only exists for write requests to know if the secret is already encrypted.
+          Ie: while most `secret save [id] [value]` commands are probably not encrypted,
+          File based saves, eg. `secret save secretA.yaml` are probably encrypted.
+        type: boolean
+      id:
+        description: Envar- or slug-like id of the secret
+        type: string
+      readers:
+        description: Slugs of services/users who can read the secret
+        items:
+          type: string
+        type: array
+      value:
+        description: Secret Value
+        type: string
+      writers:
+        description: Slugs of services/users who can modify the secret
+        items:
+          type: string
+        type: array
+    required:
+    - id
     type: object
   source_svc.CheckoutRepoRequest:
     properties:
@@ -2921,70 +2883,43 @@ definitions:
       width:
         type: integer
     type: object
-  user_svc.AuthToken:
+  user_svc.AcceptMembershipRequest:
     properties:
-      active:
-        description: |-
-          Active tokens contain the most up-to-date information.
-          When a user's role changes—due to role assignment, organization
-          creation/assignment, etc.—all existing tokens are marked inactive.
-          Active tokens are reused during login, while inactive tokens
-          that have been recently refreshed (being used still) are kept for further refreshing
-          (unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, old tokens can be refreshed indefinitely.)
-
-          Active tokens contain the most up-to-date information.
-          When a user's role changes—due to role assignment, organization
-          creation/assignment, etc.—all existing tokens are marked inactive.
-          Active tokens are reused during login, while inactive tokens
-          that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing.
-          (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
+      activate:
         type: boolean
-      app:
-        example: unnamed,omitempty
+    type: object
+  user_svc.AcceptMembershipResponse:
+    properties:
+      membership:
+        $ref: '#/definitions/user_svc.Membership'
+      token:
+        $ref: '#/definitions/user_svc.Token'
+    required:
+    - membership
+    type: object
+  user_svc.ActivateOrganizationRequest:
+    properties:
+      organizationId:
         type: string
-      createdAt:
-        type: string
-      deletedAt:
-        type: string
-      device:
-        description: |-
-          The device the token is associated with.
-          This in combination with LastRefreshedAt can be used to
-          determine if the token is still in use, and lets us prune unused tokens.
-        type: string
-      expiresAt:
+    required:
+    - organizationId
+    type: object
+  user_svc.ActivateOrganizationResponse:
+    properties:
+      token:
+        $ref: '#/definitions/user_svc.Token'
+    required:
+    - token
+    type: object
+  user_svc.App:
+    properties:
+      host:
         type: string
       id:
         type: string
-      lastRefreshedAt:
-        description: |-
-          The last time the token was refreshed.
-          This is used to determine if the token is still in use.
-        type: string
-      token:
-        description: |-
-          Token is a signed JWT used to authenticate the user without querying the User Svc.
-          You can verify it using the public key at `/user-svc/public-key`.
-
-          The token is just a JSON object with fields like:
-          - "oui": the user ID (e.g., "usr_dC4K75Cbp6")
-          - "olu": the user slug (e.g., "test-user-slug-0")
-          - "oro": a list of roles, such as:
-            - "user-svc:user"
-            - "user-svc:org:{org_dC4K7NNDCG}:user"
-        type: string
-      updatedAt:
-        type: string
-      userId:
-        type: string
     required:
-    - createdAt
-    - device
-    - expiresAt
+    - host
     - id
-    - token
-    - updatedAt
-    - userId
     type: object
   user_svc.ChangePasswordRequest:
     properties:
@@ -3045,22 +2980,16 @@ definitions:
     type: object
   user_svc.ContactInput:
     properties:
-      handle:
-        description: |-
-          Handle is the platform local unique identifier.
-          Ie. while the `id` of a Twitter contact is `twitter.com/thejoe`, the value will be only `thejoe`.
-          For email and phones the `id` and the `value` will be the same.
-          This field mostly exists for display purposes.
-
-          Example values: "joe12" (1backend username), "thejoe" (twitter username), "joe@joesdomain.com" (email)
-        example: thejoe
-        type: string
       id:
         description: |-
           The unique identifier, which can be a URL.
 
           Example values: "joe12" (1backend username), "twitter.com/thejoe" (twitter url), "joe@joesdomain.com" (email)
         example: twitter.com/thejoe
+        type: string
+      otpCode:
+        type: string
+      otpId:
         type: string
       platform:
         description: Platform of the contact (e.g., "email", "phone", "twitter")
@@ -3072,8 +3001,8 @@ definitions:
     type: object
   user_svc.CreateUserRequest:
     properties:
-      app:
-        example: unnamed
+      appHost:
+        example: shoes.com
         type: string
       contacts:
         items:
@@ -3090,6 +3019,22 @@ definitions:
     type: object
   user_svc.CreateUserResponse:
     type: object
+  user_svc.DeactivateOrganizationResponse:
+    properties:
+      token:
+        $ref: '#/definitions/user_svc.Token'
+    required:
+    - token
+    type: object
+  user_svc.DeclineMembershipRequest:
+    type: object
+  user_svc.DeclineMembershipResponse:
+    properties:
+      membership:
+        $ref: '#/definitions/user_svc.Membership'
+    required:
+    - membership
+    type: object
   user_svc.DeleteMembershipRequest:
     type: object
   user_svc.DeleteMembershipResponse:
@@ -3098,12 +3043,11 @@ definitions:
     type: object
   user_svc.Enroll:
     properties:
-      app:
+      appId:
         description: |-
           App of the enroll.
           Use `*` to match all apps, such as when bootstrapping
           in services.
-        example: unnamed,omitempty
         type: string
       contactId:
         description: |-
@@ -3120,6 +3064,8 @@ definitions:
         type: string
       id:
         example: inv_fIYPbMHIcI
+        type: string
+      internalId:
         type: string
       role:
         description: |-
@@ -3139,6 +3085,7 @@ definitions:
           otherwise, it is applied upon registration.
         type: string
     required:
+    - appId
     - createdAt
     - id
     - role
@@ -3146,8 +3093,7 @@ definitions:
     type: object
   user_svc.EnrollInput:
     properties:
-      app:
-        example: unnamed,omitempty
+      appHost:
         type: string
       contactId:
         description: |-
@@ -3176,22 +3122,22 @@ definitions:
     type: object
   user_svc.ExchangeTokenRequest:
     properties:
-      newApp:
+      newAppHost:
         description: NewApp is the app of the new token that will be returned by this
           endpoint.
+        type: string
+      newAppId:
         type: string
       newDevice:
         description: NewDevice. If not provided, the device of the original token
           will be used.
         type: string
-    required:
-    - newApp
     type: object
   user_svc.ExchangeTokenResponse:
     properties:
       token:
         allOf:
-        - $ref: '#/definitions/user_svc.AuthToken'
+        - $ref: '#/definitions/user_svc.Token'
         description: Token is the new token that will be returned by this endpoint.
     required:
     - token
@@ -3206,6 +3152,8 @@ definitions:
   user_svc.HasPermissionResponse:
     properties:
       app:
+        $ref: '#/definitions/user_svc.App'
+      appId:
         type: string
       authorized:
         type: boolean
@@ -3214,9 +3162,31 @@ definitions:
       user:
         $ref: '#/definitions/user_svc.User'
     required:
+    - app
+    - appId
     - authorized
     - until
     - user
+    type: object
+  user_svc.ListAppsRequest:
+    properties:
+      host:
+        items:
+          type: string
+        type: array
+      ids:
+        items:
+          type: string
+        type: array
+    type: object
+  user_svc.ListAppsResponse:
+    properties:
+      apps:
+        items:
+          $ref: '#/definitions/user_svc.App'
+        type: array
+    required:
+    - apps
     type: object
   user_svc.ListEnrollsRequest:
     properties:
@@ -3236,6 +3206,39 @@ definitions:
     required:
     - enrolls
     type: object
+  user_svc.ListMembershipsRequest:
+    properties:
+      afterTime:
+        type: string
+      limit:
+        type: integer
+      organizationId:
+        type: string
+      status:
+        $ref: '#/definitions/user_svc.MembershipStatus'
+      userId:
+        type: string
+    type: object
+  user_svc.ListMembershipsResponse:
+    properties:
+      memberships:
+        items:
+          properties:
+            membership:
+              $ref: '#/definitions/user_svc.Membership'
+            organization:
+              $ref: '#/definitions/user_svc.Organization'
+            user:
+              $ref: '#/definitions/user_svc.User'
+          required:
+          - membership
+          - organization
+          - user
+          type: object
+        type: array
+    required:
+    - memberships
+    type: object
   user_svc.ListOrganizationsRequest:
     properties:
       afterTime:
@@ -3243,6 +3246,8 @@ definitions:
           Organizations by default come back ordered
           desc by `createdAt` field.
         type: string
+      all:
+        type: boolean
       ids:
         items:
           type: string
@@ -3338,23 +3343,67 @@ definitions:
     type: object
   user_svc.LoginRequest:
     properties:
-      app:
-        example: unnamed
+      appHost:
+        example: shoes.com
         type: string
       contact:
-        type: string
+        $ref: '#/definitions/user_svc.ContactInput'
       device:
         type: string
       password:
         type: string
       slug:
         type: string
+    required:
+    - appHost
     type: object
   user_svc.LoginResponse:
     properties:
       token:
-        $ref: '#/definitions/user_svc.AuthToken'
+        $ref: '#/definitions/user_svc.Token'
     type: object
+  user_svc.Membership:
+    properties:
+      acceptedAt:
+        type: string
+      appId:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: string
+      internalId:
+        type: string
+      invitedBy:
+        type: string
+      organizationId:
+        type: string
+      roles:
+        items:
+          type: string
+        type: array
+      status:
+        $ref: '#/definitions/user_svc.MembershipStatus'
+      updatedAt:
+        type: string
+      userId:
+        type: string
+    required:
+    - createdAt
+    - updatedAt
+    type: object
+  user_svc.MembershipStatus:
+    enum:
+    - pending
+    - accepted
+    - declined
+    type: string
+    x-enum-varnames:
+    - MembershipStatusPending
+    - MembershipStatusAccepted
+    - MembershipStatusDeclined
   user_svc.OrderDirection:
     enum:
     - asc
@@ -3365,14 +3414,15 @@ definitions:
     - OrderDirectionDesc
   user_svc.Organization:
     properties:
-      app:
-        example: unnamed
+      appId:
         type: string
       createdAt:
         type: string
       deletedAt:
         type: string
       id:
+        type: string
+      internalId:
         type: string
       name:
         description: Full name of the organization
@@ -3397,12 +3447,11 @@ definitions:
     type: object
   user_svc.Permit:
     properties:
-      app:
+      appId:
         description: |-
           App of the permit.
           Use `*` to match all apps, such as when bootstrapping
           in services.
-        example: unnamed,omitempty
         type: string
       createdAt:
         type: string
@@ -3411,7 +3460,10 @@ definitions:
       id:
         example: inv_fIYPbMHIcI
         type: string
+      internalId:
+        type: string
       permission:
+        description: Legacy single-permission form.
         type: string
       permissions:
         description: Canonical multi-permission form.
@@ -3435,13 +3487,14 @@ definitions:
       updatedAt:
         type: string
     required:
+    - appId
     - createdAt
     - id
     - updatedAt
     type: object
   user_svc.PermitInput:
     properties:
-      app:
+      appHost:
         description: |-
           App of the permit.
           Use `*` to match all apps, such as when bootstrapping
@@ -3452,6 +3505,7 @@ definitions:
         example: inv_fIYPbMHIcI
         type: string
       permission:
+        description: Legacy single-permission form.
         type: string
       permissions:
         description: Canonical multi-permission form.
@@ -3472,6 +3526,18 @@ definitions:
         items:
           type: string
         type: array
+    type: object
+  user_svc.ReadAppRequest:
+    properties:
+      host:
+        type: string
+    type: object
+  user_svc.ReadAppResponse:
+    properties:
+      app:
+        $ref: '#/definitions/user_svc.App'
+    required:
+    - app
     type: object
   user_svc.ReadSelfRequest:
     properties:
@@ -3511,14 +3577,14 @@ definitions:
   user_svc.RefreshTokenResponse:
     properties:
       token:
-        $ref: '#/definitions/user_svc.AuthToken'
+        $ref: '#/definitions/user_svc.Token'
     required:
     - token
     type: object
   user_svc.RegisterRequest:
     properties:
-      app:
-        example: unnamed
+      appHost:
+        example: shoes.com
         type: string
       contact:
         $ref: '#/definitions/user_svc.ContactInput'
@@ -3536,12 +3602,13 @@ definitions:
           If your project has no use for a slug, just derive it from the email or similar.
         type: string
     required:
+    - appHost
     - slug
     type: object
   user_svc.RegisterResponse:
     properties:
       token:
-        $ref: '#/definitions/user_svc.AuthToken'
+        $ref: '#/definitions/user_svc.Token'
     type: object
   user_svc.ResetPasswordRequest:
     properties:
@@ -3586,11 +3653,27 @@ definitions:
     - enrolls
     type: object
   user_svc.SaveMembershipRequest:
+    properties:
+      roles:
+        items:
+          type: string
+        type: array
     type: object
   user_svc.SaveMembershipResponse:
+    properties:
+      membership:
+        $ref: '#/definitions/user_svc.Membership'
+    required:
+    - membership
     type: object
   user_svc.SaveOrganizationRequest:
     properties:
+      activate:
+        description: |-
+          If true, the organization becomes the active organization for the
+          caller's current device and a fresh token is issued.
+        example: true
+        type: boolean
       id:
         type: string
       name:
@@ -3612,13 +3695,10 @@ definitions:
         $ref: '#/definitions/user_svc.Organization'
       token:
         allOf:
-        - $ref: '#/definitions/user_svc.AuthToken'
-        description: |-
-          Due to the nature of JWT tokens, the token must be refreshed after
-          creating an organization, as dynamic organization roles are embedded in it.
+        - $ref: '#/definitions/user_svc.Token'
+        description: A fresh token is returned only when the organization is activated.
     required:
     - organization
-    - token
     type: object
   user_svc.SavePermitsRequest:
     properties:
@@ -3652,6 +3732,124 @@ definitions:
         type: string
     type: object
   user_svc.SaveUserResponse:
+    type: object
+  user_svc.SendOtpRequest:
+    properties:
+      appHost:
+        type: string
+      contactHandle:
+        type: string
+      contactId:
+        type: string
+      contactPlatform:
+        type: string
+    required:
+    - appHost
+    - contactId
+    - contactPlatform
+    type: object
+  user_svc.SendOtpResponse:
+    properties:
+      body:
+        type: string
+      code:
+        description: In test mode, the OTP code is returned in the response for easier
+          testing.
+        type: string
+      contentType:
+        type: string
+      fromEmail:
+        type: string
+      fromName:
+        type: string
+      otpId:
+        type: string
+      subject:
+        description: In test mode, these email fields are returned
+        type: string
+    required:
+    - otpId
+    type: object
+  user_svc.Token:
+    properties:
+      active:
+        description: |-
+          Active tokens contain the most up-to-date information.
+          When a user's role changes—due to role assignment, organization
+          creation/assignment, etc.—all existing tokens are marked inactive.
+          Active tokens are reused during login, while inactive tokens
+          that have been recently refreshed (being used still) are kept for further refreshing
+          (unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, old tokens can be refreshed indefinitely.)
+
+          Active tokens contain the most up-to-date information.
+          When a user's role changes—due to role assignment, organization
+          creation/assignment, etc.—all existing tokens are marked inactive.
+          Active tokens are reused during login, while inactive tokens
+          that have been recently refreshed (see `lastRefreshedAt` field) and are still in use are retained for further refreshing.
+          (Unless `OB_TOKEN_AUTO_REFRESH_OFF` is set to true, in which case old tokens can be refreshed indefinitely.)
+        type: boolean
+      app:
+        $ref: '#/definitions/user_svc.App'
+      appId:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      device:
+        description: |-
+          The device the token is associated with.
+          This in combination with LastRefreshedAt can be used to
+          determine if the token is still in use, and lets us prune unused tokens.
+        type: string
+      expiresAt:
+        type: string
+      id:
+        type: string
+      internalId:
+        type: string
+      lastRefreshedAt:
+        description: |-
+          The last time the token was refreshed.
+          This is used to determine if the token is still in use.
+        type: string
+      token:
+        description: |-
+          Token is a signed JWT used to authenticate the user without querying the User Svc.
+          You can verify it using the public key at `/user-svc/public-key`.
+
+          The token is just a JSON object with fields like:
+          - "oui": the user ID (e.g., "usr_dC4K75Cbp6")
+          - "olu": the user slug (e.g., "test-user-slug-0")
+          - "oro": a list of roles, such as:
+            - "user-svc:user"
+            - "user-svc:org:{org_dC4K7NNDCG}:user"
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: string
+    required:
+    - appId
+    - createdAt
+    - device
+    - expiresAt
+    - id
+    - token
+    - updatedAt
+    - userId
+    type: object
+  user_svc.UpdateAppRequest:
+    properties:
+      id:
+        type: string
+      newHost:
+        type: string
+    required:
+    - id
+    - newHost
+    type: object
+  user_svc.UpdateAppResponse:
     type: object
   user_svc.User:
     properties:
@@ -3755,7 +3953,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.7.3
+  version: 0.9.12
 paths:
   /chat-svc/events:
     get:
@@ -4066,9 +4264,14 @@ paths:
         Configurations are used to control frontend behavior, A/B testing, feature flags, and other non-sensitive settings.
       operationId: listConfigs
       parameters:
+      - description: Bypass cache (use 'no-cache')
+        in: header
+        name: Cache-Control
+        type: string
       - description: List Configs Request
         in: body
         name: body
+        required: true
         schema:
           $ref: '#/definitions/config_svc.ListConfigsRequest'
       produces:
@@ -4087,6 +4290,46 @@ paths:
           schema:
             type: string
       summary: List Configs
+      tags:
+      - Config Svc
+  /config-svc/versions:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Returns the historical versions of a configuration for a given app.
+        Intended for retrieving the version history of a **single configuration ID**.
+        Supplying multiple IDs is supported but not recommended,
+        since results from different IDs will interleave in the same time-ordered list,
+        making chronological paging ambiguous.
+      operationId: listConfigVersions
+      parameters:
+      - description: Bypass cache (use 'no-cache')
+        in: header
+        name: Cache-Control
+        type: string
+      - description: List Configs Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/config_svc.ListVersionsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Current configuration
+          schema:
+            $ref: '#/definitions/config_svc.ListVersionsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: List Versions
       tags:
       - Config Svc
   /container-svc/container:
@@ -4696,113 +4939,6 @@ paths:
       summary: Upsert Objects
       tags:
       - Data Svc
-  /deploy-svc/deployment:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a deployment.
-      operationId: deleteDeployment
-      parameters:
-      - description: Delete Deploys Request
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/deploy_svc.DeleteDeploymentRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/deploy_svc.DeleteDeploymentResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/deploy_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/deploy_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/deploy_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Delete Deployment
-      tags:
-      - Deploy Svc
-    put:
-      consumes:
-      - application/json
-      description: Save a deployment.
-      operationId: saveDeployment
-      parameters:
-      - description: Save Deploys Request
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/deploy_svc.SaveDeploymentRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/deploy_svc.SaveDeploymentResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/deploy_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/deploy_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/deploy_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Save Deployment
-      tags:
-      - Deploy Svc
-  /deploy-svc/deployments:
-    post:
-      consumes:
-      - application/json
-      description: Retrieve a list of deployments.
-      operationId: listDeployments
-      parameters:
-      - description: List Deploys Request
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/deploy_svc.ListDeploymentsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/deploy_svc.ListDeploymentsResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/deploy_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/deploy_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/deploy_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: List Deployments
-      tags:
-      - Deploy Svc
   /email-svc/email:
     post:
       consumes:
@@ -5113,6 +5249,50 @@ paths:
       summary: Upload a File
       tags:
       - File Svc
+  /file-svc/upload/{fileId}:
+    delete:
+      consumes:
+      - application/json
+      description: |-
+        Deletes an uploaded file and its metadata by `fileId`.
+
+        Requires the `file-svc:upload:delete` permission.
+      operationId: deleteUpload
+      parameters:
+      - description: File ID
+        in: path
+        name: fileId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: File deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: invalid request
+          schema:
+            $ref: '#/definitions/file_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/file_svc.ErrorResponse'
+        "404":
+          description: File not found
+          schema:
+            $ref: '#/definitions/file_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/file_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete an Uploaded File
+      tags:
+      - File Svc
   /file-svc/uploads:
     post:
       consumes:
@@ -5209,6 +5389,65 @@ paths:
       summary: Subscribe to the Event Stream
       tags:
       - Firehose Svc
+  /image-svc/serve/download/{url}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves, caches, resizes, and serves an image referenced by its
+        original URL.
+      operationId: serveDownloadedImage
+      parameters:
+      - description: Original URL of the downloaded file (path-escaped)
+        in: path
+        name: url
+        required: true
+        type: string
+      - description: Optional width to resize the image to
+        in: query
+        name: width
+        type: integer
+      - description: Optional height to resize the image to
+        in: query
+        name: height
+        type: integer
+      - description: Optional quality for lossy output formats (default 85)
+        in: query
+        name: quality
+        type: integer
+      - description: 'Optional output format: webp, jpeg, png, gif, avif'
+        in: query
+        name: format
+        type: string
+      - description: 'Resize strategy: contain|cover (default contain)'
+        in: query
+        name: fit
+        type: string
+      - description: 'Crop anchor when fit=cover: center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right'
+        in: query
+        name: position
+        type: string
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: Image served successfully
+          schema:
+            type: file
+        "400":
+          description: Invalid URL
+          schema:
+            $ref: '#/definitions/image_svc.ErrorResponse'
+        "404":
+          description: File Not Found
+          schema:
+            $ref: '#/definitions/image_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/image_svc.ErrorResponse'
+      summary: Serve Downloaded Image
+      tags:
+      - Image Svc
   /image-svc/serve/upload/{fileId}:
     get:
       consumes:
@@ -5231,6 +5470,14 @@ paths:
         in: query
         name: height
         type: integer
+      - description: 'Resize strategy: contain|cover (default contain)'
+        in: query
+        name: fit
+        type: string
+      - description: 'Crop anchor when fit=cover: center|top|bottom|left|right|top-left|top-right|bottom-left|bottom-right'
+        in: query
+        name: position
+        type: string
       produces:
       - application/octet-stream
       responses:
@@ -5860,7 +6107,151 @@ paths:
       summary: Save Certs
       tags:
       - Proxy Svc
+  /proxy-svc/redirects:
+    delete:
+      consumes:
+      - application/json
+      description: Delete specific redirects by their IDs.
+      operationId: deleteRedirects
+      parameters:
+      - description: Delete Redirects Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/proxy_svc.DeleteRedirectsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Redirects deleted successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.DeleteRedirectsResponse'
+        "400":
+          description: Invalid JSON or missing IDs
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete Redirects
+      tags:
+      - Proxy Svc
+    post:
+      consumes:
+      - application/json
+      description: List redirects that the edge proxy applies before routing requests.
+      operationId: listRedirects
+      parameters:
+      - description: List Redirects Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/proxy_svc.ListRedirectsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Redirects listed successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.ListRedirectsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Redirects
+      tags:
+      - Proxy Svc
+    put:
+      consumes:
+      - application/json
+      description: Save redirects that the edge proxy will apply before routing requests.
+      operationId: saveRedirects
+      parameters:
+      - description: Save Redirects Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/proxy_svc.SaveRedirectsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Redirects saved successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.SaveRedirectsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Save Redirects
+      tags:
+      - Proxy Svc
   /proxy-svc/routes:
+    delete:
+      consumes:
+      - application/json
+      description: Delete specific routes by their IDs.
+      operationId: deleteRoutes
+      parameters:
+      - description: Delete Routes Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/proxy_svc.DeleteRoutesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Routes deleted successfully
+          schema:
+            $ref: '#/definitions/proxy_svc.DeleteRoutesResponse'
+        "400":
+          description: Invalid JSON or missing IDs
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/proxy_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete Routes
+      tags:
+      - Proxy Svc
     post:
       consumes:
       - application/json
@@ -5932,109 +6323,6 @@ paths:
       summary: Save Routes
       tags:
       - Proxy Svc
-  /registry-svc/definition:
-    put:
-      consumes:
-      - application/json
-      description: Registers a new definition, associating an definition address with
-        a slug acquired from the bearer token.
-      operationId: saveDefinition
-      parameters:
-      - description: Register Service Definition Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/registry_svc.SaveDefinitionRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/registry_svc.SaveDefinitionResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Register a Definition
-      tags:
-      - Registry Svc
-  /registry-svc/definition/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Deletes a registered definition by ID.
-      operationId: deleteDefinition
-      parameters:
-      - description: Definition ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Invalid ID
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Delete Definition
-      tags:
-      - Registry Svc
-  /registry-svc/definitions:
-    get:
-      consumes:
-      - application/json
-      description: Retrieves a list of all definitions or filters them by specific
-        criteria.
-      operationId: listDefinitions
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/registry_svc.ListDefinitionsResponse'
-        "400":
-          description: Invalid filters
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: List Definitions
-      tags:
-      - Registry Svc
   /registry-svc/echo:
     get:
       description: |-
@@ -6519,7 +6807,13 @@ paths:
     put:
       consumes:
       - application/json
-      description: Save secrets if authorized to do so
+      description: |-
+        Save secrets if authorized to do so.
+        Requires the `secret-svc:secret:save` permission.
+        Users can only save secrets prefixed with their user slug unless they also have the
+        `secret-svc:secret:save-unprefixed` permission, which allows them to save a secret without a slug prefix.
+        `secret-svc:secret:save:$secretId` (eg. `secret-svc:secret:save:sendgrid-api-key`) permission allows callers to save secrets otherwise they don't have access to.
+        This permission also supports tail-wildcards by splitting the ID with hyphens (e.g., `secret-svc:secret:save:otp-*` grants access to `otp-body-en` and `otp-subject-hu`).
       operationId: saveSecrets
       parameters:
       - description: Save Secret Request
@@ -6629,6 +6923,110 @@ paths:
       summary: Reset Password
       tags:
       - User Svc
+  /user-svc/app:
+    post:
+      consumes:
+      - application/json
+      description: Get an app by host, or create it if it does not exist.
+      operationId: readApp
+      parameters:
+      - description: Read App Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ReadAppRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: App retrieved or created successfully
+          schema:
+            $ref: '#/definitions/user_svc.ReadAppResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Read or Create App
+      tags:
+      - User Svc
+    put:
+      consumes:
+      - application/json
+      description: |-
+        Change the hostname of an existing app.
+        Requires the `user-svc:app:edit` permission.
+      operationId: updateApp
+      parameters:
+      - description: Update App Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.UpdateAppRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: App updated successfully
+          schema:
+            $ref: '#/definitions/user_svc.UpdateAppResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "404":
+          description: App Not Found
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update App Host
+      tags:
+      - User Svc
+  /user-svc/apps:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        List apps. Role, user ID or contact ID must be specified.
+
+        Requires the `user-svc:app:view` permission, which by default all users have.
+        Caller can only list apps of roles they own (unless they are an admin).
+      operationId: listApps
+      parameters:
+      - description: List Apps Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ListAppsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Apps listed successfully
+          schema:
+            $ref: '#/definitions/user_svc.ListAppsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Apps
+      tags:
+      - User Svc
   /user-svc/change-password:
     post:
       consumes:
@@ -6690,6 +7088,10 @@ paths:
           description: Enrolls listed successfully
           schema:
             $ref: '#/definitions/user_svc.ListEnrollsResponse'
+        "400":
+          description: Role, Contact ID or User ID is Required
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
@@ -6710,17 +7112,18 @@ paths:
         Enroll a list of users by contact or user Id to acquire a role.
         Works on future or current users.
 
-        Requires the `user-svc:enroll:edit` permission, which by default all users have.
         A user can only enroll an other user to a role if the user "owns" that role.
+        A user who owns a role can enroll others in that roll in any app.
+        The same request might contain enrolls for different apps.
 
         A user "owns" a role in the following cases:
         - A static role where the role ID is prefixed with the caller's slug.
         - Any dynamic or static role where the caller is an admin (has `*:admin` postfix of that role).
 
         Examples:
-        - A user with the slug "joe-doe" owns roles like "joe-doe:*" such as "joe-doe:any-custom-role".
-        - A user with any slug who has the role "my-service:admin" owns "my-service:*" roles such as "my-service:user".
-        - A user with any slug who has the role "user-svc:org:{%orgId}:admin" owns "user-svc:org:{%orgId}:*" such as "user-svc:org:{%orgId}:user".
+        - A user with the slug `joe-doe` owns roles like `joe-doe:*` such as `joe-doe:any-custom-role`.
+        - A user with any slug who has the role `my-service:admin` owns `my-service:*` roles such as `my-service:user`.
+        - A user with any slug who has the role `user-svc:org:{%orgId}:admin` owns `user-svc:org:{%orgId}:*` such as `user-svc:org:{%orgId}:user`.
       operationId: saveEnrolls
       parameters:
       - description: Save Enrolls Request
@@ -6788,6 +7191,42 @@ paths:
       summary: Login
       tags:
       - User Svc
+  /user-svc/memberships:
+    post:
+      consumes:
+      - application/json
+      description: Lists organization memberships and pending invites.
+      operationId: listMemberships
+      parameters:
+      - description: List Memberships Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.ListMembershipsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.ListMembershipsResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List Memberships
+      tags:
+      - User Svc
   /user-svc/organization:
     put:
       consumes:
@@ -6795,6 +7234,7 @@ paths:
       description: |-
         Allows a logged-in user to save an organization. The user initiating the request will be assigned the role of admin for that organization.
         The initiating user will receive a dynamic role in the format `user-svc:org:{organizationId}:admin`, where `{organizationId}` is a unique identifier for the saved organization.
+        The creator membership also receives the canonical per-user org role `user-svc:org:{organizationId}:{userId}` so org-specific permits can target the creator directly.
         Dynamic roles are generated based on specific user-resource associations (in this case the resource being the organization), offering more flexible permission management compared to static roles.
       operationId: saveOrganization
       parameters:
@@ -6826,6 +7266,88 @@ paths:
       security:
       - BearerAuth: []
       summary: Save an Organization
+      tags:
+      - User Svc
+  /user-svc/organization/{organizationId}/membership/accept:
+    post:
+      consumes:
+      - application/json
+      description: Accepts the caller user's pending invite for an organization.
+      operationId: acceptMembership
+      parameters:
+      - description: Organization ID
+        in: path
+        name: organizationId
+        required: true
+        type: string
+      - description: Accept Membership Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.AcceptMembershipRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.AcceptMembershipResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Accept Membership
+      tags:
+      - User Svc
+  /user-svc/organization/{organizationId}/membership/decline:
+    post:
+      consumes:
+      - application/json
+      description: Declines the caller user's pending invite for an organization.
+      operationId: declineMembership
+      parameters:
+      - description: Organization ID
+        in: path
+        name: organizationId
+        required: true
+        type: string
+      - description: Decline Membership Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.DeclineMembershipRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.DeclineMembershipResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Decline Membership
       tags:
       - User Svc
   /user-svc/organization/{organizationId}/user/{userId}:
@@ -6885,7 +7407,11 @@ paths:
     put:
       consumes:
       - application/json
-      description: Allows an organization admin to add a user to the organization.
+      description: |-
+        Creates or updates an organization membership invite.
+        Memberships automatically include a canonical per-user org role in the form `user-svc:org:{organizationId}:{userId}`.
+        Callers may add additional roles under the same organization prefix to model org-local groups or custom permission bundles.
+        Additional roles are still subject to role ownership validation via `OwnsRole`.
       operationId: saveMembership
       parameters:
       - description: Organization ID
@@ -6907,7 +7433,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: User added successfully
+          description: Membership saved successfully
           schema:
             $ref: '#/definitions/user_svc.SaveMembershipResponse'
         "400":
@@ -6935,18 +7461,82 @@ paths:
       summary: Save Membership
       tags:
       - User Svc
+  /user-svc/organization/activate:
+    post:
+      consumes:
+      - application/json
+      description: Sets the caller user's active organization and returns a fresh
+        token reflecting the new active organization.
+      operationId: activateOrganization
+      parameters:
+      - description: Activate Organization Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ActivateOrganizationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.ActivateOrganizationResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Activate Organization
+      tags:
+      - User Svc
+  /user-svc/organization/deactivate:
+    post:
+      description: Clears the caller user's active organization for the current device
+        and returns a fresh token without an active organization.
+      operationId: deactivateOrganization
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.DeactivateOrganizationResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Deactivate Organization
+      tags:
+      - User Svc
   /user-svc/organizations:
     post:
       consumes:
       - application/json
-      description: Requires the `user-svc:organization:view` permission, that only
-        admins have by default.
+      description: |-
+        Requires the `user-svc:organization:view` permission.
+        With `all=true`, platform admins see all organizations in the current app.
+        Otherwise users only see organizations they are members of.
       operationId: listOrganizations
       parameters:
       - description: List Organizations Request
         in: body
         name: body
-        required: true
         schema:
           $ref: '#/definitions/user_svc.ListOrganizationsRequest'
       produces:
@@ -6971,6 +7561,48 @@ paths:
       security:
       - BearerAuth: []
       summary: List Organizations
+      tags:
+      - User Svc
+  /user-svc/otp/send:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Generates and sends a one-time password (OTP) to the specified contact.
+
+        The OTP can be used for contact verification or login depending on purpose.
+      operationId: sendOtp
+      parameters:
+      - description: Send OTP Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.SendOtpRequest'
+      - description: Language preference for the email
+        in: header
+        name: Accept-Language
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OTP sent successfully
+          schema:
+            $ref: '#/definitions/user_svc.SendOtpResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "404":
+          description: Contact not found
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      summary: Send OTP
       tags:
       - User Svc
   /user-svc/permissions:
@@ -7052,6 +7684,7 @@ paths:
       description: |-
         Save permits.
         Permits give access to users with certain slugs and roles to permissions.
+        Non-admin callers may only save permissions they own, such as `their-slug:...` or organization-scoped namespaces they administer.
       operationId: savePermits
       parameters:
       - description: Save Permits Request
@@ -7177,10 +7810,6 @@ paths:
         Typically called by single-page applications during the initial page load.
         While some details (such as roles, slug, user ID, and active organization ID) can be extracted from the JWT,
         this endpoint returns additional data, including the full user object and associated organizations.
-
-        ReadSelf intentionally still works after token revocation until the token expires.
-        This is to ensure that the user is not notified of token revocation (though some information is
-        leaked by the count token functionality @todo).
       operationId: readSelf
       parameters:
       - description: Read Self Request
@@ -7274,6 +7903,10 @@ paths:
           description: Missing Permission
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
+        "422":
+          description: No Auth Header
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Has Permission
@@ -7309,6 +7942,10 @@ paths:
             $ref: '#/definitions/user_svc.ExchangeTokenResponse'
         "400":
           description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/user_svc.ErrorResponse'
         "404":

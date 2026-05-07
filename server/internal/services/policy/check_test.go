@@ -114,4 +114,23 @@ func TestRateLimiting(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, false, checkRsp.Allowed)
 	})
+
+	t.Run("upsert replaces existing instance", func(t *testing.T) {
+		rateLimitReq.Instance.Parameters.RateLimit.MaxRequests = openapi.PtrInt32(6)
+		_, _, err = policySvc.UpsertInstance(context.Background(), instanceId).
+			Body(rateLimitReq).
+			Execute()
+		require.NoError(t, err)
+
+		checkRsp, _, err := policySvc.Check(context.Background()).
+			Body(openapi.PolicySvcCheckRequest{
+				Endpoint: openapi.PtrString("/test-endpoint"),
+				Method:   openapi.PtrString("GET"),
+				Ip:       openapi.PtrString("127.0.0.1"),
+				UserId:   openapi.PtrString("user-1"),
+			}).
+			Execute()
+		require.NoError(t, err)
+		require.Equal(t, true, checkRsp.Allowed)
+	})
 }

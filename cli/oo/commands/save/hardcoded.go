@@ -37,6 +37,23 @@ var routeMeta = Meta{
 	},
 }
 
+var configMeta = Meta{
+	Transport: &Transport{
+		Endpoint:    "/config-svc/config",
+		Method:      "PUT",
+		ContentType: "application/json",
+	},
+}
+
+var policyInstanceMeta = Meta{
+	Transport: &Transport{
+		Endpoint:    "/policy-svc/instance/{id}",
+		Method:      "PUT",
+		Body:        "instance",
+		ContentType: "application/json",
+	},
+}
+
 var redirectMeta = Meta{
 	Transport: &Transport{
 		Endpoint:    "/proxy-svc/redirects",

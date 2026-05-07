@@ -2222,97 +2222,6 @@ definitions:
           $ref: '#/definitions/proxy_svc.Route'
         type: array
     type: object
-  registry_svc.APISpec:
-    properties:
-      metadata:
-        additionalProperties:
-          type: string
-        description: Additional metadata about the API (e.g., author, license, etc.)
-        type: object
-      protocolType:
-        description: Protocol type (e.g., OpenAPI, Swagger, etc.)
-        type: string
-      url:
-        description: URL to the OpenAPI file or other API definition
-        type: string
-      version:
-        description: Version of the API specification (e.g., 3.0.0)
-        type: string
-    type: object
-  registry_svc.Client:
-    properties:
-      language:
-        allOf:
-        - $ref: '#/definitions/registry_svc.Language'
-        description: Programming language.
-        example: JavaScript
-      url:
-        description: The URL of the client.
-        example: https://example.com/client.js
-        type: string
-    required:
-    - language
-    - url
-    type: object
-  registry_svc.Definition:
-    properties:
-      apiSpecs:
-        description: API Specs such as OpenAPI definitions etc.
-        items:
-          $ref: '#/definitions/registry_svc.APISpec'
-        type: array
-      clients:
-        description: Programming language clients such as on npm or GitHub.
-        items:
-          $ref: '#/definitions/registry_svc.Client'
-        type: array
-      envars:
-        description: |-
-          Envars is a map of Renvironment variables that a deployment (see Deploy Svc Deployment) of this definition will REQUIRE to run.
-          E.g., {"DB_URL": "mysql://user:password@host:port/db"}
-          These will be injected into the service instances (see Registry Svc Instance) at runtime.
-          The value of a key here is the default value. The actual value can be overridden at deployment time.
-        items:
-          $ref: '#/definitions/registry_svc.EnvVar'
-        type: array
-      id:
-        type: string
-      image:
-        allOf:
-        - $ref: '#/definitions/registry_svc.ImageSpec'
-        description: |-
-          Container specifications for Docker, K8s, etc.
-          Use this to deploy already built images.
-      ports:
-        description: |-
-          Ports have host ports and internal ports currently but they
-          really only should have internal ports as host ports should be assigned
-          by the system. Host ports might go away in the future.
-        items:
-          $ref: '#/definitions/registry_svc.PortMapping'
-        type: array
-      repository:
-        allOf:
-        - $ref: '#/definitions/registry_svc.RepositorySpec'
-        description: |-
-          Repository based definitions is an alternative to Image definitions.
-          Instead of deploying an already built and pushed image, a source code repository
-          url can be provided. The container will be built from the source.
-    required:
-    - id
-    type: object
-  registry_svc.EnvVar:
-    properties:
-      key:
-        description: Key is the environment variable name.
-        type: string
-      value:
-        description: Value is the environment variable value.
-        type: string
-    required:
-    - key
-    - value
-    type: object
   registry_svc.ErrorResponse:
     properties:
       error:
@@ -2351,21 +2260,6 @@ definitions:
         type: array
       temperature:
         type: number
-    type: object
-  registry_svc.ImageSpec:
-    properties:
-      internalPorts:
-        description: InternalPorts are the ports the container will listen on internally
-        items:
-          type: integer
-        type: array
-      name:
-        description: Name is the container image name/URL to use for the container
-        example: nginx:latest
-        type: string
-    required:
-    - internalPorts
-    - name
     type: object
   registry_svc.Instance:
     properties:
@@ -2470,55 +2364,6 @@ definitions:
     - InstanceStatusDegraded
     - InstanceStatusUnreachable
     - InstanceStatusError
-  registry_svc.Language:
-    enum:
-    - JavaScript
-    - Python
-    - Java
-    - C#
-    - C++
-    - Ruby
-    - Go
-    - Swift
-    - PHP
-    - TypeScript
-    - Kotlin
-    - Scala
-    - Perl
-    - Rust
-    - Haskell
-    - Clojure
-    - Elixir
-    - Objective-C
-    - F#
-    type: string
-    x-enum-varnames:
-    - JavaScript
-    - Python
-    - Java
-    - CSharp
-    - CPlusPlus
-    - Ruby
-    - Go
-    - Swift
-    - PHP
-    - TypeScript
-    - Kotlin
-    - Scala
-    - Perl
-    - Rust
-    - Haskell
-    - Clojure
-    - Elixir
-    - ObjectiveC
-    - FSharp
-  registry_svc.ListDefinitionsResponse:
-    properties:
-      definitions:
-        items:
-          $ref: '#/definitions/registry_svc.Definition'
-        type: array
-    type: object
   registry_svc.ListInstancesResponse:
     properties:
       instances:
@@ -2583,16 +2428,6 @@ definitions:
     required:
     - node
     type: object
-  registry_svc.PortMapping:
-    properties:
-      host:
-        type: integer
-      internal:
-        type: integer
-    required:
-    - host
-    - internal
-    type: object
   registry_svc.Process:
     properties:
       memoryUsage:
@@ -2641,35 +2476,6 @@ definitions:
     type: object
   registry_svc.RegisterInstanceResponse:
     type: object
-  registry_svc.RepositorySpec:
-    properties:
-      buildContext:
-        description: Context is the path to the image build context
-        example: path/to/subfolder
-        type: string
-      containerFile:
-        description: |-
-          ContainerFile is the path to the file that contains the container build instructions
-          Relative from the build context. By default, it is assumed to be a Dockerfile.
-        example: docker/Dockerfile
-        type: string
-      internalPorts:
-        description: Ports the container will listen on internally
-        items:
-          type: integer
-        type: array
-      url:
-        description: URL is the URL to the repository
-        example: https://github.com/1backend/1backend.git
-        type: string
-      version:
-        description: Version of the code to use
-        example: v1.0.0
-        type: string
-    required:
-    - internalPorts
-    - url
-    type: object
   registry_svc.ResourceUsage:
     properties:
       cpu:
@@ -2684,13 +2490,6 @@ definitions:
         allOf:
         - $ref: '#/definitions/registry_svc.Usage'
         description: Memory usage metrics.
-    type: object
-  registry_svc.SaveDefinitionRequest:
-    properties:
-      definition:
-        $ref: '#/definitions/registry_svc.Definition'
-    type: object
-  registry_svc.SaveDefinitionResponse:
     type: object
   registry_svc.Usage:
     properties:
@@ -6524,109 +6323,6 @@ paths:
       summary: Save Routes
       tags:
       - Proxy Svc
-  /registry-svc/definition:
-    put:
-      consumes:
-      - application/json
-      description: Registers a new definition, associating an definition address with
-        a slug acquired from the bearer token.
-      operationId: saveDefinition
-      parameters:
-      - description: Register Service Definition Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/registry_svc.SaveDefinitionRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/registry_svc.SaveDefinitionResponse'
-        "400":
-          description: Invalid JSON
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Register a Definition
-      tags:
-      - Registry Svc
-  /registry-svc/definition/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Deletes a registered definition by ID.
-      operationId: deleteDefinition
-      parameters:
-      - description: Definition ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Invalid ID
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: Delete Definition
-      tags:
-      - Registry Svc
-  /registry-svc/definitions:
-    get:
-      consumes:
-      - application/json
-      description: Retrieves a list of all definitions or filters them by specific
-        criteria.
-      operationId: listDefinitions
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/registry_svc.ListDefinitionsResponse'
-        "400":
-          description: Invalid filters
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/registry_svc.ErrorResponse'
-      security:
-      - BearerAuth: []
-      summary: List Definitions
-      tags:
-      - Registry Svc
   /registry-svc/echo:
     get:
       description: |-

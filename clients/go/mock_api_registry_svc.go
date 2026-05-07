@@ -39,35 +39,6 @@ func (m *MockRegistrySvcAPI) EXPECT() *MockRegistrySvcAPIMockRecorder {
 	return m.recorder
 }
 
-// DeleteDefinition mocks base method.
-func (m *MockRegistrySvcAPI) DeleteDefinition(ctx context.Context, id string) ApiDeleteDefinitionRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteDefinition", ctx, id)
-	ret0, _ := ret[0].(ApiDeleteDefinitionRequest)
-	return ret0
-}
-
-// DeleteDefinition indicates an expected call of DeleteDefinition.
-func (mr *MockRegistrySvcAPIMockRecorder) DeleteDefinition(ctx, id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDefinition", reflect.TypeOf((*MockRegistrySvcAPI)(nil).DeleteDefinition), ctx, id)
-}
-
-// DeleteDefinitionExecute mocks base method.
-func (m *MockRegistrySvcAPI) DeleteDefinitionExecute(r ApiDeleteDefinitionRequest) (*http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteDefinitionExecute", r)
-	ret0, _ := ret[0].(*http.Response)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// DeleteDefinitionExecute indicates an expected call of DeleteDefinitionExecute.
-func (mr *MockRegistrySvcAPIMockRecorder) DeleteDefinitionExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDefinitionExecute", reflect.TypeOf((*MockRegistrySvcAPI)(nil).DeleteDefinitionExecute), r)
-}
-
 // DeleteNode mocks base method.
 func (m *MockRegistrySvcAPI) DeleteNode(ctx context.Context, url string) ApiDeleteNodeRequest {
 	m.ctrl.T.Helper()
@@ -187,36 +158,6 @@ func (mr *MockRegistrySvcAPIMockRecorder) EchoPutExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EchoPutExecute", reflect.TypeOf((*MockRegistrySvcAPI)(nil).EchoPutExecute), r)
 }
 
-// ListDefinitions mocks base method.
-func (m *MockRegistrySvcAPI) ListDefinitions(ctx context.Context) ApiListDefinitionsRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListDefinitions", ctx)
-	ret0, _ := ret[0].(ApiListDefinitionsRequest)
-	return ret0
-}
-
-// ListDefinitions indicates an expected call of ListDefinitions.
-func (mr *MockRegistrySvcAPIMockRecorder) ListDefinitions(ctx any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListDefinitions", reflect.TypeOf((*MockRegistrySvcAPI)(nil).ListDefinitions), ctx)
-}
-
-// ListDefinitionsExecute mocks base method.
-func (m *MockRegistrySvcAPI) ListDefinitionsExecute(r ApiListDefinitionsRequest) (*RegistrySvcListDefinitionsResponse, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ListDefinitionsExecute", r)
-	ret0, _ := ret[0].(*RegistrySvcListDefinitionsResponse)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// ListDefinitionsExecute indicates an expected call of ListDefinitionsExecute.
-func (mr *MockRegistrySvcAPIMockRecorder) ListDefinitionsExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListDefinitionsExecute", reflect.TypeOf((*MockRegistrySvcAPI)(nil).ListDefinitionsExecute), r)
-}
-
 // ListInstances mocks base method.
 func (m *MockRegistrySvcAPI) ListInstances(ctx context.Context) ApiListInstancesRequest {
 	m.ctrl.T.Helper()
@@ -334,36 +275,6 @@ func (m *MockRegistrySvcAPI) RemoveInstanceExecute(r ApiRemoveInstanceRequest) (
 func (mr *MockRegistrySvcAPIMockRecorder) RemoveInstanceExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveInstanceExecute", reflect.TypeOf((*MockRegistrySvcAPI)(nil).RemoveInstanceExecute), r)
-}
-
-// SaveDefinition mocks base method.
-func (m *MockRegistrySvcAPI) SaveDefinition(ctx context.Context) ApiSaveDefinitionRequest {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveDefinition", ctx)
-	ret0, _ := ret[0].(ApiSaveDefinitionRequest)
-	return ret0
-}
-
-// SaveDefinition indicates an expected call of SaveDefinition.
-func (mr *MockRegistrySvcAPIMockRecorder) SaveDefinition(ctx any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveDefinition", reflect.TypeOf((*MockRegistrySvcAPI)(nil).SaveDefinition), ctx)
-}
-
-// SaveDefinitionExecute mocks base method.
-func (m *MockRegistrySvcAPI) SaveDefinitionExecute(r ApiSaveDefinitionRequest) (map[string]any, *http.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SaveDefinitionExecute", r)
-	ret0, _ := ret[0].(map[string]any)
-	ret1, _ := ret[1].(*http.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// SaveDefinitionExecute indicates an expected call of SaveDefinitionExecute.
-func (mr *MockRegistrySvcAPIMockRecorder) SaveDefinitionExecute(r any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveDefinitionExecute", reflect.TypeOf((*MockRegistrySvcAPI)(nil).SaveDefinitionExecute), r)
 }
 
 // SelfNode mocks base method.

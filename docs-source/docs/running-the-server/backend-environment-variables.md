@@ -26,22 +26,23 @@ Points 1Backend at a file or directory of startup manifests to apply after the b
 OB_BOOTSTRAP_FOLDER=/etc/1backend/bootstrap
 ```
 
-This is intended for infrastructure-as-code bootstrapping, such as preview environments that need service-to-service permits before the application stack starts serving traffic.
+This is intended for infrastructure-as-code bootstrapping, such as preview environments that need service-to-service permits, routes, configs, secrets, or policy instances before the application stack starts serving traffic.
 
-The loader applies supported non-secret manifests recursively. It understands folder-level entity defaults from `_meta.yaml` files and file-level `_meta` blocks.
+The loader applies supported manifests recursively. It understands folder-level entity defaults from `_meta.yaml` files and file-level `_meta` blocks.
 
-Folder names do not set `appHost`. App-scoped manifests must specify `appHost` explicitly. Use `appHost: "*"` for all apps.
+Folder names do not set `appHost`. App-scoped manifests must specify `appHost` explicitly. Use `appHost: "*"` for all apps. Apps referenced by `appHost` are created automatically when needed.
 
-Supported v1 entities:
+Supported entities:
 
 - `user-svc:permit`
 - `user-svc:enroll`
 - `proxy-svc:route`
 - `proxy-svc:redirect`
+- `config-svc:config`
+- `secret-svc:secret`
+- `policy-svc:instance`
 
-Other entities, including apps, configs, and secrets, are intentionally skipped by this v1 loader. Add those through their existing APIs or a later explicit bootstrap phase.
-
-Secrets are intentionally not loaded by this mechanism. Any manifest with `entity: "secret-svc:secret"` and any file under a `secrets/` directory is skipped. Use a separate secret-management path for real secret values.
+Secrets are loaded through Secret Svc. Plaintext values are encrypted before storage; encrypted values can be supplied directly with their checksum fields. Keep bootstrap folders protected and prefer encrypted secret manifests for production deployments.
 
 Example:
 
@@ -72,6 +73,37 @@ role: "site-svc:admin"
 id: "example.com/old-docs"
 target: "https://example.com/docs"
 statusCode: 308
+```
+
+```yaml
+# /etc/1backend/bootstrap/apps/tenant.example.com/configs/payment.yaml
+id: "paymentSvc"
+appHost: "tenant.example.com"
+data:
+  publicKey: "pk_test"
+```
+
+```yaml
+# /etc/1backend/bootstrap/apps/tenant.example.com/secrets/api-key.yaml
+id: "api-key"
+appHost: "tenant.example.com"
+value: "encrypted-secret"
+encrypted: true
+checksum: "12345678"
+checksumAlgorithm: "CRC32"
+```
+
+```yaml
+# /etc/1backend/bootstrap/policies/login-rate-limit.yaml
+id: "login-rate-limit"
+endpoint: "/user-svc/login"
+templateId: "rate-limit"
+parameters:
+  rateLimit:
+    maxRequests: 20
+    timeWindow: "1m"
+    entity: "ip"
+    scope: "endpoint"
 ```
 
 ## `OB_CONTACT_EMAIL`

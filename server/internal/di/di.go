@@ -37,6 +37,7 @@ import (
 	"github.com/1backend/1backend/server/internal/router"
 	chatservice "github.com/1backend/1backend/server/internal/services/chat"
 	configservice "github.com/1backend/1backend/server/internal/services/config"
+	configtypes "github.com/1backend/1backend/server/internal/services/config/types"
 	containerservice "github.com/1backend/1backend/server/internal/services/container"
 	dataservice "github.com/1backend/1backend/server/internal/services/data"
 	emailservice "github.com/1backend/1backend/server/internal/services/email"
@@ -45,10 +46,12 @@ import (
 	imageservice "github.com/1backend/1backend/server/internal/services/image"
 	modelservice "github.com/1backend/1backend/server/internal/services/model"
 	policyservice "github.com/1backend/1backend/server/internal/services/policy"
+	policytypes "github.com/1backend/1backend/server/internal/services/policy/types"
 	promptservice "github.com/1backend/1backend/server/internal/services/prompt"
 	proxyservice "github.com/1backend/1backend/server/internal/services/proxy"
 	registryservice "github.com/1backend/1backend/server/internal/services/registry"
 	secretservice "github.com/1backend/1backend/server/internal/services/secret"
+	secrettypes "github.com/1backend/1backend/server/internal/services/secret/types"
 	sourceservice "github.com/1backend/1backend/server/internal/services/source"
 	userservice "github.com/1backend/1backend/server/internal/services/user"
 	"github.com/1backend/1backend/server/internal/universe"
@@ -573,11 +576,35 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		}
 
 		if options.BootstrapPath != "" {
+			err = configService.LazyStart()
+			if err != nil {
+				return errors.Wrap(err, "config service start failed")
+			}
+
+			err = secretService.LazyStart()
+			if err != nil {
+				return errors.Wrap(err, "secret service start failed")
+			}
+
+			err = policyService.LazyStart()
+			if err != nil {
+				return errors.Wrap(err, "policy service start failed")
+			}
+
 			summary, err := bootstrap.Apply(context.Background(), options.BootstrapPath, bootstrap.Services{
 				SavePermits:   userService.BootstrapSavePermits,
 				SaveEnrolls:   userService.BootstrapSaveEnrolls,
 				SaveRoutes:    proxyService.BootstrapSaveRoutes,
 				SaveRedirects: proxyService.BootstrapSaveRedirects,
+				SaveConfigs: func(ctx context.Context, configs []configtypes.SaveConfigRequest) error {
+					return configService.BootstrapSaveConfigs(ctx, configs, userService.BootstrapAppID)
+				},
+				SaveSecrets: func(ctx context.Context, secrets []*secrettypes.SecretInput) error {
+					return secretService.BootstrapSaveSecrets(ctx, secrets, userService.BootstrapAppID)
+				},
+				SavePolicyInstances: func(ctx context.Context, instances []*policytypes.Instance) error {
+					return policyService.BootstrapSaveInstances(ctx, instances)
+				},
 			})
 			if err != nil {
 				return errors.Wrap(err, "bootstrap manifest apply failed")
@@ -588,7 +615,9 @@ func BigBang(options *universe.Options) (*Universe, error) {
 				slog.Int("enrolls", summary.AppliedEnrolls),
 				slog.Int("routes", summary.AppliedRoutes),
 				slog.Int("redirects", summary.AppliedRedirects),
-				slog.Int("skippedSecrets", summary.SkippedSecrets),
+				slog.Int("configs", summary.AppliedConfigs),
+				slog.Int("secrets", summary.AppliedSecrets),
+				slog.Int("policyInstances", summary.AppliedPolicyInstances),
 				slog.Int("skippedUnsupported", summary.SkippedUnsupported),
 				slog.Int("skippedFiles", summary.SkippedFiles),
 			)

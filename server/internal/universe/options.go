@@ -32,8 +32,7 @@ type Options struct {
 
 	// BootstrapPath points at a file or directory of startup manifests to apply
 	// after built-in services have started. It is configured via
-	// OB_BOOTSTRAP_FOLDER. Secret manifests are intentionally ignored by the
-	// bootstrap loader.
+	// OB_BOOTSTRAP_FOLDER.
 	BootstrapPath string
 
 	// eg. mysql, postgres

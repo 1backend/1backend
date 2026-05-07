@@ -10,34 +10,43 @@ import (
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 
+	config "github.com/1backend/1backend/server/internal/services/config/types"
+	policy "github.com/1backend/1backend/server/internal/services/policy/types"
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
+	secret "github.com/1backend/1backend/server/internal/services/secret/types"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 )
 
 const (
-	EntityPermit   = "user-svc:permit"
-	EntityEnroll   = "user-svc:enroll"
-	EntityRoute    = "proxy-svc:route"
-	EntityRedirect = "proxy-svc:redirect"
-	EntitySecret   = "secret-svc:secret"
+	EntityPermit         = "user-svc:permit"
+	EntityEnroll         = "user-svc:enroll"
+	EntityRoute          = "proxy-svc:route"
+	EntityRedirect       = "proxy-svc:redirect"
+	EntitySecret         = "secret-svc:secret"
+	EntityConfig         = "config-svc:config"
+	EntityPolicyInstance = "policy-svc:instance"
 )
 
 type Services struct {
-	SavePermits   func(context.Context, []user.PermitInput) error
-	SaveEnrolls   func(context.Context, []user.EnrollInput) error
-	SaveRoutes    func(context.Context, []proxy.RouteInput) error
-	SaveRedirects func(context.Context, []proxy.RedirectInput) error
+	SavePermits         func(context.Context, []user.PermitInput) error
+	SaveEnrolls         func(context.Context, []user.EnrollInput) error
+	SaveRoutes          func(context.Context, []proxy.RouteInput) error
+	SaveRedirects       func(context.Context, []proxy.RedirectInput) error
+	SaveConfigs         func(context.Context, []config.SaveConfigRequest) error
+	SaveSecrets         func(context.Context, []*secret.SecretInput) error
+	SavePolicyInstances func(context.Context, []*policy.Instance) error
 }
 
 type Summary struct {
-	AppliedPermits   int
-	AppliedEnrolls   int
-	AppliedRoutes    int
-	AppliedRedirects int
-
-	SkippedSecrets     int
-	SkippedUnsupported int
-	SkippedFiles       int
+	AppliedPermits         int
+	AppliedEnrolls         int
+	AppliedRoutes          int
+	AppliedRedirects       int
+	AppliedConfigs         int
+	AppliedSecrets         int
+	AppliedPolicyInstances int
+	SkippedUnsupported     int
+	SkippedFiles           int
 }
 
 type meta struct {
@@ -48,9 +57,9 @@ type entityWrapper struct {
 	Meta *meta `json:"_meta" yaml:"_meta"`
 }
 
-// Apply reads startup manifests from path and applies supported non-secret
-// entities. Folder-level defaults come from _meta.yaml files and file-level
-// defaults come from a top-level _meta key.
+// Apply reads startup manifests from path and applies supported entities.
+// Folder-level defaults come from _meta.yaml files and file-level defaults
+// come from a top-level _meta key.
 func Apply(ctx context.Context, path string, services Services) (*Summary, error) {
 	if strings.TrimSpace(path) == "" {
 		return &Summary{}, nil
@@ -122,11 +131,6 @@ func applyFile(
 	if entity == "" {
 		entity = inferEntityFromPath(path)
 	}
-	if isSecretEntity(entity) || isSecretPath(path) {
-		summary.SkippedSecrets++
-		return nil
-	}
-
 	doc = stripFileMeta(doc)
 
 	switch entity {
@@ -178,6 +182,42 @@ func applyFile(
 			return errors.Wrapf(err, "apply redirects from %s", path)
 		}
 		summary.AppliedRedirects += len(items)
+	case EntityConfig:
+		items, err := decodeEntities[config.SaveConfigRequest](doc)
+		if err != nil {
+			return errors.Wrapf(err, "decode configs from %s", path)
+		}
+		if services.SaveConfigs == nil {
+			return errors.Errorf("config bootstrap unsupported for %s", path)
+		}
+		if err := services.SaveConfigs(ctx, items); err != nil {
+			return errors.Wrapf(err, "apply configs from %s", path)
+		}
+		summary.AppliedConfigs += len(items)
+	case EntitySecret:
+		items, err := decodeEntities[*secret.SecretInput](doc)
+		if err != nil {
+			return errors.Wrapf(err, "decode secrets from %s", path)
+		}
+		if services.SaveSecrets == nil {
+			return errors.Errorf("secret bootstrap unsupported for %s", path)
+		}
+		if err := services.SaveSecrets(ctx, items); err != nil {
+			return errors.Wrapf(err, "apply secrets from %s", path)
+		}
+		summary.AppliedSecrets += len(items)
+	case EntityPolicyInstance:
+		items, err := decodeEntities[*policy.Instance](doc)
+		if err != nil {
+			return errors.Wrapf(err, "decode policy instances from %s", path)
+		}
+		if services.SavePolicyInstances == nil {
+			return errors.Errorf("policy instance bootstrap unsupported for %s", path)
+		}
+		if err := services.SavePolicyInstances(ctx, items); err != nil {
+			return errors.Wrapf(err, "apply policy instances from %s", path)
+		}
+		summary.AppliedPolicyInstances += len(items)
 	default:
 		summary.SkippedUnsupported++
 	}
@@ -357,6 +397,10 @@ func inferEntityFromPath(path string) string {
 		return EntityRedirect
 	case "secrets":
 		return EntitySecret
+	case "configs":
+		return EntityConfig
+	case "policies", "policy-instances":
+		return EntityPolicyInstance
 	default:
 		return ""
 	}
@@ -374,20 +418,11 @@ func inferEntityFromDir(path string) string {
 		return EntityRedirect
 	case "secrets":
 		return EntitySecret
+	case "configs":
+		return EntityConfig
+	case "policies", "policy-instances":
+		return EntityPolicyInstance
 	default:
 		return ""
 	}
-}
-
-func isSecretEntity(entity string) bool {
-	return entity == EntitySecret
-}
-
-func isSecretPath(path string) bool {
-	for _, part := range strings.Split(filepath.Clean(path), string(filepath.Separator)) {
-		if part == "secrets" {
-			return true
-		}
-	}
-	return false
 }
