@@ -141,6 +141,69 @@ OB_DB_CONNECTION_STRING="postgres://postgres:mysecretpassword@localhost:5432/myd
 
 Naturally, you should change the details of the connection string to reflect your environment.
 
+## `OB_DB_APPLICATION_NAME`
+
+Base label for PostgreSQL `application_name`.
+
+1Backend appends the pool role, for example `onebackend-prod:write`, `onebackend-prod:read`, `onebackend-prod:pubsub`, or `onebackend-prod:pubsub-listener`. This makes `pg_stat_activity` and connection-count dashboards show which 1Backend pool is consuming database connections.
+
+```sh
+OB_DB_APPLICATION_NAME="onebackend-prod"
+```
+
+If unset, 1Backend derives a label from `OTEL_SERVICE_NAME`, `OB_SERVICE_NAME`, `OB_NODE_ID`, `HOSTNAME`, or the executable name.
+
+## `OB_DB_CONN_MAX_IDLE_TIME`
+
+PostgreSQL connection idle lifetime for each `database/sql` pool. Uses Go duration syntax.
+
+```sh
+OB_DB_CONN_MAX_IDLE_TIME=5m
+```
+
+Defaults to `5m` for PostgreSQL.
+
+## `OB_DB_CONN_MAX_LIFETIME`
+
+Maximum lifetime for each PostgreSQL connection in a `database/sql` pool. Uses Go duration syntax.
+
+```sh
+OB_DB_CONN_MAX_LIFETIME=30m
+```
+
+Defaults to `30m` for PostgreSQL.
+
+## `OB_DB_MAX_IDLE_CONNS`
+
+Maximum idle PostgreSQL connections retained per `database/sql` pool.
+
+```sh
+OB_DB_MAX_IDLE_CONNS=4
+```
+
+Defaults to `4` for PostgreSQL.
+
+## `OB_DB_MAX_OPEN_CONNS`
+
+Maximum open PostgreSQL connections per `database/sql` pool.
+
+```sh
+OB_DB_MAX_OPEN_CONNS=16
+```
+
+Defaults to `16` for PostgreSQL.
+
+This limit is per Go `database/sql` pool, not per process. With the defaults, one 1Backend process can open approximately:
+
+- `16` write-pool connections
+- `16` pubsub-pool connections
+- `1` pubsub listener connection
+- plus `16` read-pool connections when `OB_DB_READ_CONNECTION_STRING` is set
+
+The PostgreSQL advisory-lock implementation also holds one checked-out writer connection while healthy, so datastore deployments must keep `OB_DB_MAX_OPEN_CONNS` at `2` or higher.
+
+For Kubernetes, use `/healthz` or `/livez` as the liveness probe and `/readyz` as the readiness probe. `/readyz` checks the primary/write database path and the distributed lock, and PostgreSQL readiness rejects read-only writer sessions so stale primary connections after a CNPG restart or failover are taken out of service. If you intentionally want Kubernetes to restart pods after a sustained database failure, point liveness at `/readyz` only with a conservative `failureThreshold` and `periodSeconds`; otherwise a short database incident can cause unnecessary restart churn.
+
 ## `OB_DB_PREFIX`
 
 When specified, all tables in the database will be prefixed by this strings. Mostly useful for testing.

@@ -15,6 +15,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/auth"
@@ -76,6 +77,8 @@ type Universe struct {
 
 	StarterFunc   func() error
 	ClientFactory client.ClientFactory
+
+	started atomic.Bool
 }
 
 func BigBang(options *universe.Options) (*Universe, error) {
@@ -158,6 +161,9 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	}
 	if options.ReadDbConnectionString == "" {
 		options.ReadDbConnectionString = os.Getenv("OB_DB_READ_CONNECTION_STRING")
+	}
+	if options.DbApplicationName == "" {
+		options.DbApplicationName = os.Getenv("OB_DB_APPLICATION_NAME")
 	}
 	if options.SecretEncryptionKey == "" {
 		options.SecretEncryptionKey = os.Getenv("OB_ENCRYPTION_KEY")
@@ -320,6 +326,8 @@ func BigBang(options *universe.Options) (*Universe, error) {
 			Db:                     options.Db,
 			DbConnectionString:     options.DbConnectionString,
 			ReadDbConnectionString: options.ReadDbConnectionString,
+			DbApplicationName:      options.DbApplicationName,
+			DbPool:                 options.DbPool,
 			Lock:                   options.Lock,
 		})
 		if err != nil {
@@ -332,11 +340,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 			if err != nil {
 				return nil, errors.Wrap(err, "failed to get db handle")
 			}
-			conn, err := dbHandle.(*sql.DB).Conn(context.Background())
-			if err != nil {
-				return nil, errors.Wrap(err, "failed to get db connection")
-			}
-			options.Lock = pglock.NewPGDistributedLock(conn)
+			options.Lock = pglock.NewPGDistributedLockFromDB(dbHandle.(*sql.DB))
 			infra.SetDataStoreFactoryLock(dc, options.Lock)
 		}
 	}
@@ -348,6 +352,8 @@ func BigBang(options *universe.Options) (*Universe, error) {
 			TablePrefix:        options.DbPrefix,
 			Db:                 options.Db,
 			DbConnectionString: options.DbConnectionString,
+			DbApplicationName:  options.DbApplicationName,
+			DbPool:             options.DbPool,
 		})
 		if err != nil {
 			return nil, err
@@ -538,16 +544,17 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create proxy service")
 	}
-	telemetry.RegisterMetricsRoute(router, os.Getenv("OB_OTEL_METRICS_PATH"))
-
-	proxyService.RegisterRoutes(router)
-
-	router.HandleFunc("/swagger/", httpSwagger.WrapHandler)
-
 	univ := &Universe{
 		Router:  router,
 		Options: *options,
 	}
+
+	telemetry.RegisterMetricsRoute(router, os.Getenv("OB_OTEL_METRICS_PATH"))
+	registerReadinessRoutes(router, univ, options)
+
+	proxyService.RegisterRoutes(router)
+
+	router.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 
 	univ.StarterFunc = func() error {
 		err = userService.Start()
@@ -680,6 +687,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 
 		}
 
+		univ.started.Store(true)
 		return nil
 	}
 

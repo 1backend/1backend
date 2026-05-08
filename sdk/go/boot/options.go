@@ -15,6 +15,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/endpoint"
+	"github.com/1backend/1backend/sdk/go/infra"
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/telemetry"
 	"github.com/pkg/errors"
@@ -44,6 +45,12 @@ type Options struct {
 
 	// ReadDbConnectionString is the optional read-replica database connection string.
 	ReadDbConnectionString string
+
+	// DbApplicationName is used as the base PostgreSQL application_name label.
+	DbApplicationName string
+
+	// DbPool controls database/sql pool sizing and connection lifetime.
+	DbPool infra.DbPoolConfig
 
 	// If set to true, expired tokens won't be autorefreshed by
 	// the server.
@@ -157,6 +164,10 @@ func (o *Options) loadEnvars() error {
 
 	if o.ReadDbConnectionString == "" {
 		o.ReadDbConnectionString = os.Getenv("OB_DB_READ_CONNECTION_STRING")
+	}
+
+	if o.DbApplicationName == "" {
+		o.DbApplicationName = os.Getenv("OB_DB_APPLICATION_NAME")
 	}
 
 	if o.ClientFactory == nil {

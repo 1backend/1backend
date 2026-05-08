@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/binary"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 // PGDistributedLock implements DistributedLock using PostgreSQL advisory locks
 type PGDistributedLock struct {
 	conn       *sql.Conn
+	connFunc   func(context.Context) (*sql.Conn, error)
 	heldKeys   map[string]bool
 	mutexes    map[string]*sync.Mutex
 	stateMutex sync.Mutex
@@ -25,6 +27,18 @@ type PGDistributedLock struct {
 func NewPGDistributedLock(conn *sql.Conn) *PGDistributedLock {
 	return &PGDistributedLock{
 		conn:     conn,
+		heldKeys: map[string]bool{},
+		mutexes:  map[string]*sync.Mutex{},
+	}
+}
+
+// NewPGDistributedLockFromDB creates a PostgreSQL advisory lock that can
+// reacquire its dedicated session if PostgreSQL restarts or the writer endpoint
+// moves. Advisory locks are bound to a server session, so the implementation
+// still uses one checked-out connection while healthy.
+func NewPGDistributedLockFromDB(db *sql.DB) *PGDistributedLock {
+	return &PGDistributedLock{
+		connFunc: db.Conn,
 		heldKeys: map[string]bool{},
 		mutexes:  map[string]*sync.Mutex{},
 	}
@@ -67,6 +81,75 @@ func (l *PGDistributedLock) acquireLocalMutex(ctx context.Context, key string) (
 	}
 }
 
+func (l *PGDistributedLock) ensureConnLocked(ctx context.Context) error {
+	if l.conn != nil {
+		return nil
+	}
+	if l.connFunc == nil {
+		return fmt.Errorf("postgres lock connection is not available")
+	}
+
+	conn, err := l.connFunc(ctx)
+	if err != nil {
+		return err
+	}
+	l.conn = conn
+	return nil
+}
+
+func (l *PGDistributedLock) reconnectLocked(ctx context.Context) error {
+	if l.connFunc == nil {
+		return fmt.Errorf("postgres lock connection cannot be refreshed")
+	}
+	if l.conn != nil {
+		_ = l.conn.Close()
+		l.conn = nil
+	}
+	return l.ensureConnLocked(ctx)
+}
+
+func recoverableConnErr(err error) bool {
+	if err == nil {
+		return false
+	}
+	msg := strings.ToLower(err.Error())
+	for _, fragment := range []string{
+		"bad connection",
+		"connection is already closed",
+		"connection refused",
+		"connection reset",
+		"broken pipe",
+		"server closed the connection",
+		"eof",
+	} {
+		if strings.Contains(msg, fragment) {
+			return true
+		}
+	}
+	return false
+}
+
+func (l *PGDistributedLock) queryLockLocked(ctx context.Context, query string, lockKey int64, out *bool) error {
+	if err := l.ensureConnLocked(ctx); err != nil {
+		return err
+	}
+
+	queryCtx := ctx
+	if l.connFunc == nil {
+		queryCtx = context.Background()
+	}
+
+	err := l.conn.QueryRowContext(queryCtx, query, lockKey).Scan(out)
+	if err == nil || !recoverableConnErr(err) {
+		return err
+	}
+
+	if reconnectErr := l.reconnectLocked(ctx); reconnectErr != nil {
+		return fmt.Errorf("%w; reconnect failed: %v", err, reconnectErr)
+	}
+	return l.conn.QueryRowContext(queryCtx, query, lockKey).Scan(out)
+}
+
 // Acquire tries to acquire the PostgreSQL advisory lock for the given key.
 func (l *PGDistributedLock) Acquire(ctx context.Context, key string) error {
 	localMutex, err := l.acquireLocalMutex(ctx, key)
@@ -89,7 +172,7 @@ func (l *PGDistributedLock) Acquire(ctx context.Context, key string) error {
 
 		var success bool
 		l.connMutex.Lock()
-		err = l.conn.QueryRowContext(context.Background(), query, lockKey).Scan(&success)
+		err = l.queryLockLocked(ctx, query, lockKey, &success)
 		l.connMutex.Unlock()
 		if err != nil {
 			localMutex.Unlock()
@@ -131,7 +214,7 @@ func (l *PGDistributedLock) TryAcquire(ctx context.Context, key string) (bool, e
 
 	var success bool
 	l.connMutex.Lock()
-	err := l.conn.QueryRowContext(context.Background(), query, lockKey).Scan(&success)
+	err := l.queryLockLocked(ctx, query, lockKey, &success)
 	l.connMutex.Unlock()
 	if err != nil {
 		localMutex.Unlock()
@@ -166,13 +249,23 @@ func (l *PGDistributedLock) Release(ctx context.Context, key string) error {
 
 	var unlocked bool
 	l.connMutex.Lock()
-	err := l.conn.QueryRowContext(context.Background(), query, lockKey).Scan(&unlocked)
+	err := l.queryLockLocked(context.Background(), query, lockKey, &unlocked)
 	l.connMutex.Unlock()
 	if err != nil {
+		if recoverableConnErr(err) {
+			l.stateMutex.Lock()
+			delete(l.heldKeys, key)
+			l.stateMutex.Unlock()
+			localMutex.Unlock()
+		}
 		return fmt.Errorf("failed to release lock for key '%s': %w", key, err)
 	}
 	if !unlocked {
-		return fmt.Errorf("lock not held by postgres session for key '%s'", key)
+		l.stateMutex.Lock()
+		delete(l.heldKeys, key)
+		l.stateMutex.Unlock()
+		localMutex.Unlock()
+		return nil
 	}
 
 	l.stateMutex.Lock()

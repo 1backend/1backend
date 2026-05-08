@@ -153,6 +153,9 @@ func (service *BasicService) registerRoutes() {
 	appl := service.Options.Middlewares
 
 	service.Router = mux.NewRouter()
+	boot.RegisterHealthRoutes(service.Router, boot.HealthRoutesOptions{
+		DataStoreFactory: service.dataStoreFactory,
+	})
 
 	service.Router.HandleFunc("/basic-svc/pet", appl(func(w http.ResponseWriter, r *http.Request) {
 		service.SavePet(w, r)

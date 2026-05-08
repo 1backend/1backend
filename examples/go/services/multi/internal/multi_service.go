@@ -115,6 +115,9 @@ func (service *MultiService) registerRoutes() {
 	appl := service.Options.Middlewares
 
 	service.Router = mux.NewRouter()
+	boot.RegisterHealthRoutes(service.Router, boot.HealthRoutesOptions{
+		DataStoreFactory: service.dataStoreFactory,
+	})
 
 	service.Router.HandleFunc("/multi-svc/pets/count", appl(func(w http.ResponseWriter, r *http.Request) {
 		service.CountPets(w, r)

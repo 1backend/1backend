@@ -49,6 +49,9 @@ func NewPubSubFactory(options DataStoreConfig) (PubSubFactory, error) {
 	if options.DbConnectionString == "" {
 		options.DbConnectionString = os.Getenv("OB_DB_CONNECTION_STRING")
 	}
+	if err := options.loadDbConnectionRuntimeOptionsFromEnv(); err != nil {
+		return nil, err
+	}
 	if options.DbConnectionString == "" {
 		options.DbConnectionString = "postgres://postgres:mysecretpassword@localhost:5432/mydatabase?sslmode=disable"
 	}
@@ -79,12 +82,13 @@ func (pf *PubSubFactoryPostgresImpl) Create(name string) (pubsub.PubSub, error) 
 	defer pf.mu.Unlock()
 
 	if pf.db == nil {
-		db, err := sql.Open(pf.options.Db, pf.options.DbConnectionString)
+		db, err := pf.options.openSQLDB("pubsub", pf.options.DbConnectionString)
 		if err != nil {
 			return nil, err
 		}
 		pf.db = db
 	}
 
-	return pgpubsub.NewPGPubSub(pf.options.DbConnectionString, pf.db, "")
+	listenerConnectionString := pf.options.connectionStringForRole("pubsub-listener", pf.options.DbConnectionString)
+	return pgpubsub.NewPGPubSub(listenerConnectionString, pf.db, "")
 }

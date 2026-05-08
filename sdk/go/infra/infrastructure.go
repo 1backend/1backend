@@ -25,6 +25,10 @@ type InfrastructureOptions struct {
 
 	ReadDbConnectionString string
 
+	DbApplicationName string
+
+	DbPool DbPoolConfig
+
 	HomeDir string
 }
 
@@ -71,6 +75,8 @@ func NewInfrastructure(options InfrastructureOptions) (*Infrastructure, error) {
 		Db:                     options.Db,
 		DbConnectionString:     options.DbConnectionString,
 		ReadDbConnectionString: options.ReadDbConnectionString,
+		DbApplicationName:      options.DbApplicationName,
+		DbPool:                 options.DbPool,
 	}
 
 	dataStoreFactory, err := NewDataStoreFactory(dopts)

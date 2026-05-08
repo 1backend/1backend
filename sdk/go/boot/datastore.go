@@ -13,11 +13,18 @@ import "github.com/1backend/1backend/sdk/go/infra"
 // the usual OB_DB / OB_DB_CONNECTION_STRING / OB_DB_READ_CONNECTION_STRING
 // environment variables.
 func (o *Options) DataStoreConfig() infra.DataStoreConfig {
+	applicationName := o.DbApplicationName
+	if applicationName == "" {
+		applicationName = o.ServiceName
+	}
+
 	return infra.DataStoreConfig{
 		Test:                   o.Test,
 		Db:                     o.Db,
 		DbConnectionString:     o.DbConnectionString,
 		ReadDbConnectionString: o.ReadDbConnectionString,
+		DbApplicationName:      applicationName,
+		DbPool:                 o.DbPool,
 	}
 }
 

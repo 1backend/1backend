@@ -45,6 +45,12 @@ type Options struct {
 	// Optional read-replica connection string.
 	ReadDbConnectionString string
 
+	// Base PostgreSQL application_name label.
+	DbApplicationName string
+
+	// Database/sql pool sizing and connection lifetime.
+	DbPool infra.DbPoolConfig
+
 	// Crucial for distributed features.
 	// Please see the documentation for the envar OB_NODE_ID
 	NodeId string

@@ -8,7 +8,6 @@
 package infra
 
 import (
-	"context"
 	"database/sql"
 	"os"
 	"path"
@@ -27,10 +26,9 @@ import (
 type DataStoreFactoryPostgresImpl struct {
 	mutex sync.Mutex
 
-	options  DataStoreConfig
-	db       *sql.DB
-	readDB   *sql.DB
-	lockConn *sql.Conn
+	options DataStoreConfig
+	db      *sql.DB
+	readDB  *sql.DB
 }
 
 type DataStoreFactoryLocalImpl struct {
@@ -54,6 +52,8 @@ type DataStoreConfig struct {
 	Db                     string
 	DbConnectionString     string
 	ReadDbConnectionString string
+	DbApplicationName      string
+	DbPool                 DbPoolConfig
 	TablePrefix            string
 	Lock                   lock.DistributedLock
 }
@@ -86,6 +86,13 @@ func NewDataStoreFactory(options DataStoreConfig) (DataStoreFactory, error) {
 
 	if options.ReadDbConnectionString == "" {
 		options.ReadDbConnectionString = os.Getenv("OB_DB_READ_CONNECTION_STRING")
+	}
+
+	if err := options.loadDbConnectionRuntimeOptionsFromEnv(); err != nil {
+		return nil, err
+	}
+	if err := options.validateDatastoreDbPoolConfig(); err != nil {
+		return nil, err
 	}
 
 	// Default used for tests
@@ -152,12 +159,7 @@ func (df *DataStoreFactoryPostgresImpl) initAutoIndexLockLocked() error {
 		return nil
 	}
 
-	conn, err := df.db.Conn(context.Background())
-	if err != nil {
-		return errors.Wrap(err, "error creating automatic index lock connection")
-	}
-	df.lockConn = conn
-	df.options.Lock = pglock.NewPGDistributedLock(conn)
+	df.options.Lock = pglock.NewPGDistributedLockFromDB(df.db)
 	return nil
 }
 
@@ -166,7 +168,7 @@ func (df *DataStoreFactoryPostgresImpl) ensureDBLocked() error {
 		return nil
 	}
 
-	db, err := sql.Open(df.options.Db, df.options.DbConnectionString)
+	db, err := df.options.openSQLDB("write", df.options.DbConnectionString)
 	if err != nil {
 		return errors.Wrap(err, "error opening sql db")
 	}
@@ -182,7 +184,7 @@ func (df *DataStoreFactoryPostgresImpl) readDBLocked() (*sql.DB, error) {
 		return df.readDB, nil
 	}
 
-	db, err := sql.Open(df.options.Db, df.options.ReadDbConnectionString)
+	db, err := df.options.openSQLDB("read", df.options.ReadDbConnectionString)
 	if err != nil {
 		return nil, errors.Wrap(err, "error opening read sql db")
 	}
@@ -237,10 +239,6 @@ func (df *DataStoreFactoryPostgresImpl) SetLock(distributedLock lock.Distributed
 	df.mutex.Lock()
 	defer df.mutex.Unlock()
 
-	if df.lockConn != nil {
-		_ = df.lockConn.Close()
-		df.lockConn = nil
-	}
 	df.options.Lock = distributedLock
 }
 
