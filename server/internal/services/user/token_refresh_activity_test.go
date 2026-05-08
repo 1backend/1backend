@@ -148,6 +148,76 @@ func TestTokenRefreshActivityFlushLimitBoundsPublishWork(t *testing.T) {
 	require.Equal(t, int64(5), unpublishedTokenRefreshActivityCount(t, s))
 }
 
+func TestTokenRefreshActivitySeparatesSameUserDeviceHourByAppID(t *testing.T) {
+	t.Parallel()
+
+	s, ps := newRefreshActivityTestService(t)
+	ctx := context.Background()
+	refreshedAt := time.Now().UTC().Add(-2 * time.Hour).Truncate(time.Hour).Add(5 * time.Minute)
+
+	tokenA := &user.Token{
+		AppId:  "app-a",
+		App:    &user.App{Id: "app-a", Host: "a.example.com"},
+		UserId: "usr-shared",
+		Device: "desktop",
+	}
+	tokenB := &user.Token{
+		AppId:  "app-b",
+		App:    &user.App{Id: "app-b", Host: "b.example.com"},
+		UserId: "usr-shared",
+		Device: "desktop",
+	}
+
+	require.NoError(t, s.recordTokenRefreshActivity(tokenA, refreshedAt))
+	require.NoError(t, s.recordTokenRefreshActivity(tokenB, refreshedAt.Add(time.Minute)))
+
+	activities := tokenRefreshActivities(t, s)
+	require.Len(t, activities, 2)
+	activityByApp := map[string]*user.TokenRefreshActivity{}
+	for _, activity := range activities {
+		activityByApp[activity.AppId] = activity
+	}
+	require.Equal(t, "a.example.com", activityByApp["app-a"].AppHost)
+	require.Equal(t, "b.example.com", activityByApp["app-b"].AppHost)
+	require.NotEqual(t, activityByApp["app-a"].Id, activityByApp["app-b"].Id)
+
+	published, err := s.publishDueTokenRefreshActivities(ctx, time.Now(), 100)
+	require.NoError(t, err)
+	require.Equal(t, 2, published)
+
+	eventsByApp := map[string]tokenRefreshActivityEvent{}
+	for _, message := range ps.messages() {
+		event := tokenRefreshActivityEvent{}
+		require.NoError(t, json.Unmarshal(message.Payload, &event))
+		eventsByApp[event.AppId] = event
+	}
+	require.Equal(t, "a.example.com", eventsByApp["app-a"].AppHost)
+	require.Equal(t, "b.example.com", eventsByApp["app-b"].AppHost)
+}
+
+func TestTokenRefreshActivitySameAppIDHostRenameUpdatesCurrentBucketHost(t *testing.T) {
+	t.Parallel()
+
+	s, _ := newRefreshActivityTestService(t)
+	refreshedAt := time.Now().UTC().Add(-2 * time.Hour).Truncate(time.Hour).Add(5 * time.Minute)
+
+	token := &user.Token{
+		AppId:  "app-renamed",
+		App:    &user.App{Id: "app-renamed", Host: "old.example.com"},
+		UserId: "usr-renamed",
+		Device: "desktop",
+	}
+	require.NoError(t, s.recordTokenRefreshActivity(token, refreshedAt))
+
+	token.App.Host = "new.example.com"
+	require.NoError(t, s.recordTokenRefreshActivity(token, refreshedAt.Add(time.Minute)))
+
+	activities := tokenRefreshActivities(t, s)
+	require.Len(t, activities, 1)
+	require.Equal(t, int64(2), activities[0].RefreshCount)
+	require.Equal(t, "new.example.com", activities[0].AppHost)
+}
+
 func newRefreshActivityTestService(t *testing.T) (*UserService, *recordingPubSub) {
 	t.Helper()
 
