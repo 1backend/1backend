@@ -40,6 +40,12 @@ import (
 
 const (
 	authStateExpiration = 10 * time.Minute
+	authProvidersSecret = "auth-providers"
+
+	// Individual secret names are useful for simple CLI/bootstrap setup:
+	// auth-provider-google-client-id, auth-provider-google-client-secret, etc.
+	authProviderSecretPrefix = "auth-provider-"
+
 	googleOIDCIssuer    = "https://accounts.google.com"
 	slackOIDCIssuer     = "https://slack.com"
 	linkedInOIDCIssuer  = "https://www.linkedin.com"
@@ -116,6 +122,74 @@ var builtinContactAuthProviders = map[string]contactAuthProvider{
 	},
 }
 
+type contactAuthSecretField struct {
+	suffix string
+	apply  func(*universe.ContactAuthProviderConfig, string)
+}
+
+var contactAuthSecretFields = []contactAuthSecretField{
+	{
+		suffix: "-client-secret",
+		apply: func(config *universe.ContactAuthProviderConfig, value string) {
+			config.ClientSecret = value
+		},
+	},
+	{
+		suffix: "-client-id",
+		apply: func(config *universe.ContactAuthProviderConfig, value string) {
+			config.ClientID = value
+		},
+	},
+	{
+		suffix: "-issuer-url",
+		apply: func(config *universe.ContactAuthProviderConfig, value string) {
+			config.IssuerURL = value
+		},
+	},
+	{
+		suffix: "-graph-version",
+		apply: func(config *universe.ContactAuthProviderConfig, value string) {
+			config.GraphVersion = value
+		},
+	},
+	{
+		suffix: "-auth-url",
+		apply: func(config *universe.ContactAuthProviderConfig, value string) {
+			config.AuthURL = value
+		},
+	},
+	{
+		suffix: "-token-url",
+		apply: func(config *universe.ContactAuthProviderConfig, value string) {
+			config.TokenURL = value
+		},
+	},
+	{
+		suffix: "-api-url",
+		apply: func(config *universe.ContactAuthProviderConfig, value string) {
+			config.APIURL = value
+		},
+	},
+	{
+		suffix: "-scopes",
+		apply: func(config *universe.ContactAuthProviderConfig, value string) {
+			config.Scopes = parseContactAuthScopes(value)
+		},
+	},
+	{
+		suffix: "-kind",
+		apply: func(config *universe.ContactAuthProviderConfig, value string) {
+			config.Kind = value
+		},
+	},
+	{
+		suffix: "-name",
+		apply: func(config *universe.ContactAuthProviderConfig, value string) {
+			config.Name = value
+		},
+	},
+}
+
 type contactAuthProvider struct {
 	id           string
 	name         string
@@ -135,12 +209,26 @@ type contactAuthProvider struct {
 // @Description Lists configured external login providers that can be used as verified contact proof.
 // @Tags User Svc
 // @Produce json
+// @Param appHost query string true "1backend app host"
 // @Success 200 {object} user.ListContactAuthProvidersResponse "Configured providers"
 // @Router /user-svc/auth/providers [get]
 // @Router /user-svc/oidc/providers [get]
 func (s *UserService) ListContactAuthProviders(w http.ResponseWriter, r *http.Request) {
+	appHost := r.URL.Query().Get("appHost")
+	if appHost == "" {
+		endpoint.WriteString(w, http.StatusBadRequest, "appHost missing")
+		return
+	}
+
+	providers, err := s.configuredContactAuthProviderInfos(r.Context(), appHost)
+	if err != nil {
+		logger.Error("Failed to list contact auth providers", slog.Any("error", err))
+		endpoint.InternalServerError(w)
+		return
+	}
+
 	endpoint.WriteJSON(w, http.StatusOK, user.ListContactAuthProvidersResponse{
-		Providers: s.configuredContactAuthProviderInfos(),
+		Providers: providers,
 	})
 }
 
@@ -180,7 +268,7 @@ func (s *UserService) ContactAuthLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	claims, err := s.verifyContactAuthToken(r.Context(), providerID, rawToken)
+	claims, err := s.verifyContactAuthToken(r.Context(), req.AppHost, providerID, rawToken)
 	if err != nil {
 		logger.Error(
 			"Contact auth token verification failed",
@@ -229,12 +317,6 @@ func (s *UserService) ContactAuthLogin(w http.ResponseWriter, r *http.Request) {
 // @Router /user-svc/auth/{provider}/start [get]
 func (s *UserService) StartContactAuth(w http.ResponseWriter, r *http.Request) {
 	providerID := mux.Vars(r)["provider"]
-	provider, err := s.contactAuthProvider(providerID)
-	if err != nil {
-		endpoint.WriteString(w, http.StatusBadRequest, err.Error())
-		return
-	}
-
 	appHost := r.URL.Query().Get("appHost")
 	if appHost == "" {
 		endpoint.WriteString(w, http.StatusBadRequest, "appHost missing")
@@ -242,6 +324,12 @@ func (s *UserService) StartContactAuth(w http.ResponseWriter, r *http.Request) {
 	}
 	returnTo := r.URL.Query().Get("returnTo")
 	if err := validateContactAuthReturnTo(appHost, returnTo); err != nil {
+		endpoint.WriteString(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	provider, err := s.contactAuthProvider(r.Context(), appHost, providerID)
+	if err != nil {
 		endpoint.WriteString(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -325,7 +413,7 @@ func (s *UserService) ContactAuthCallback(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	provider, err := s.contactAuthProvider(providerID)
+	provider, err := s.contactAuthProvider(r.Context(), authState.AppHost, providerID)
 	if err != nil {
 		endpoint.WriteString(w, http.StatusBadRequest, err.Error())
 		return
@@ -375,6 +463,7 @@ func (s *UserService) ContactAuthCallback(w http.ResponseWriter, r *http.Request
 
 func (s *UserService) verifyContactAuthToken(
 	ctx context.Context,
+	appHost string,
 	providerID string,
 	rawToken string,
 ) (*universe.ContactAuthClaims, error) {
@@ -390,7 +479,7 @@ func (s *UserService) verifyContactAuthToken(
 		return validateContactAuthClaims(providerID, claims)
 	}
 
-	provider, err := s.contactAuthProvider(providerID)
+	provider, err := s.contactAuthProvider(ctx, appHost, providerID)
 	if err != nil {
 		return nil, err
 	}
@@ -409,7 +498,11 @@ func (s *UserService) verifyContactAuthToken(
 	}
 }
 
-func (s *UserService) contactAuthProvider(providerID string) (*contactAuthProvider, error) {
+func (s *UserService) contactAuthProvider(
+	ctx context.Context,
+	appHost string,
+	providerID string,
+) (*contactAuthProvider, error) {
 	id := strings.ToLower(strings.TrimSpace(providerID))
 	if id == "" {
 		return nil, errors.New("provider missing")
@@ -418,7 +511,12 @@ func (s *UserService) contactAuthProvider(providerID string) (*contactAuthProvid
 		return nil, errors.New("Apple relay providers are not allowed")
 	}
 
-	configured, ok := s.options.ContactAuthProviders[id]
+	configs, err := s.contactAuthProviderConfigs(ctx, appHost)
+	if err != nil {
+		return nil, err
+	}
+
+	configured, ok := configs[id]
 	if !ok {
 		return nil, fmt.Errorf("auth provider %q is not configured", providerID)
 	}
@@ -463,23 +561,210 @@ func (s *UserService) contactAuthProvider(providerID string) (*contactAuthProvid
 	}
 }
 
-func (s *UserService) configuredContactAuthProviderInfos() []user.ContactAuthProviderInfo {
-	providerIDs := make([]string, 0, len(s.options.ContactAuthProviders))
-	for providerID := range s.options.ContactAuthProviders {
+func (s *UserService) configuredContactAuthProviderInfos(
+	ctx context.Context,
+	appHost string,
+) ([]user.ContactAuthProviderInfo, error) {
+	configs, err := s.contactAuthProviderConfigs(ctx, appHost)
+	if err != nil {
+		return nil, err
+	}
+
+	providerIDs := make([]string, 0, len(configs))
+	for providerID := range configs {
 		providerIDs = append(providerIDs, providerID)
 	}
 	sort.Strings(providerIDs)
 
 	providers := []user.ContactAuthProviderInfo{}
 	for _, providerID := range providerIDs {
-		provider, err := s.contactAuthProvider(providerID)
+		provider, err := s.contactAuthProvider(ctx, appHost, providerID)
 		if err != nil || provider.clientSecret == "" {
 			continue
 		}
 		providers = append(providers, contactAuthProviderInfo(provider))
 	}
 
-	return providers
+	return providers, nil
+}
+
+func (s *UserService) contactAuthProviderConfigs(
+	ctx context.Context,
+	appHost string,
+) (map[string]universe.ContactAuthProviderConfig, error) {
+	secretMap, err := s.contactAuthSecretMap(ctx, appHost)
+	if err != nil {
+		return nil, err
+	}
+
+	providers := map[string]universe.ContactAuthProviderConfig{}
+	if raw := strings.TrimSpace(secretMap[authProvidersSecret]); raw != "" {
+		if err := mergeContactAuthProvidersJSON(providers, raw); err != nil {
+			return nil, errors.Wrapf(err, "failed to parse %s secret", authProvidersSecret)
+		}
+	}
+	mergeIndividualContactAuthProviderSecrets(providers, secretMap)
+
+	return providers, nil
+}
+
+func (s *UserService) contactAuthSecretMap(
+	ctx context.Context,
+	appHost string,
+) (map[string]string, error) {
+	backup, err := s.fetchSecretMap(ctx, s.token, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if appHost == "" || appHost == sdk.DefaultAppHost {
+		return backup, nil
+	}
+
+	app, err := s.getOrCreateApp(appHost)
+	if err != nil {
+		return nil, err
+	}
+
+	exchangedToken, err := s.options.TokenExchanger.ExchangeToken(
+		ctx,
+		s.token,
+		endpoint.ExchangeOptions{AppId: app.Id},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	primary, err := s.fetchSecretMap(ctx, exchangedToken, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	for key, value := range primary {
+		backup[key] = value
+	}
+	return backup, nil
+}
+
+func mergeContactAuthProvidersJSON(
+	providers map[string]universe.ContactAuthProviderConfig,
+	raw string,
+) error {
+	byID := map[string]universe.ContactAuthProviderConfig{}
+	if err := json.Unmarshal([]byte(raw), &byID); err == nil {
+		for providerID, provider := range byID {
+			mergeContactAuthProvider(providers, providerID, provider)
+		}
+		return nil
+	}
+
+	list := []universe.ContactAuthProviderConfig{}
+	if err := json.Unmarshal([]byte(raw), &list); err != nil {
+		return err
+	}
+	for _, provider := range list {
+		mergeContactAuthProvider(providers, provider.Id, provider)
+	}
+	return nil
+}
+
+func mergeIndividualContactAuthProviderSecrets(
+	providers map[string]universe.ContactAuthProviderConfig,
+	secrets map[string]string,
+) {
+	for secretID, value := range secrets {
+		if !strings.HasPrefix(secretID, authProviderSecretPrefix) {
+			continue
+		}
+
+		remainder := strings.TrimPrefix(secretID, authProviderSecretPrefix)
+		for _, field := range contactAuthSecretFields {
+			if !strings.HasSuffix(remainder, field.suffix) {
+				continue
+			}
+
+			providerID := strings.TrimSuffix(remainder, field.suffix)
+			if providerID == "" {
+				continue
+			}
+
+			provider := universe.ContactAuthProviderConfig{Id: providerID}
+			field.apply(&provider, value)
+			mergeContactAuthProvider(providers, providerID, provider)
+			break
+		}
+	}
+}
+
+func mergeContactAuthProvider(
+	providers map[string]universe.ContactAuthProviderConfig,
+	providerID string,
+	provider universe.ContactAuthProviderConfig,
+) {
+	id := strings.ToLower(strings.TrimSpace(firstNonEmpty(provider.Id, providerID)))
+	if id == "" {
+		return
+	}
+	provider.Id = id
+	provider.Kind = strings.ToLower(strings.TrimSpace(provider.Kind))
+
+	existing := providers[id]
+	existing.Id = id
+	if provider.Name != "" {
+		existing.Name = provider.Name
+	}
+	if provider.Kind != "" {
+		existing.Kind = provider.Kind
+	}
+	if provider.IssuerURL != "" {
+		existing.IssuerURL = provider.IssuerURL
+	}
+	if provider.ClientID != "" {
+		existing.ClientID = provider.ClientID
+	}
+	if provider.ClientSecret != "" {
+		existing.ClientSecret = provider.ClientSecret
+	}
+	if len(provider.Scopes) > 0 {
+		existing.Scopes = provider.Scopes
+	}
+	if provider.GraphVersion != "" {
+		existing.GraphVersion = provider.GraphVersion
+	}
+	if provider.AuthURL != "" {
+		existing.AuthURL = provider.AuthURL
+	}
+	if provider.TokenURL != "" {
+		existing.TokenURL = provider.TokenURL
+	}
+	if provider.APIURL != "" {
+		existing.APIURL = provider.APIURL
+	}
+	providers[id] = existing
+}
+
+func parseContactAuthScopes(value string) []string {
+	value = strings.TrimSpace(value)
+	if value == "" {
+		return nil
+	}
+
+	var scopes []string
+	if err := json.Unmarshal([]byte(value), &scopes); err == nil {
+		return scopes
+	}
+
+	parts := strings.FieldsFunc(value, func(r rune) bool {
+		return r == ',' || r == ' ' || r == '\t' || r == '\n' || r == '\r'
+	})
+	scopes = scopes[:0]
+	for _, part := range parts {
+		part = strings.TrimSpace(part)
+		if part != "" {
+			scopes = append(scopes, part)
+		}
+	}
+	return scopes
 }
 
 func applyContactAuthProviderConfig(

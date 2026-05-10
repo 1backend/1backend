@@ -15,6 +15,11 @@ does not make that the primary rule. For Google and other OIDC providers,
 1backend uses OIDC to verify that the provider asserts `email_verified=true`
 for an email contact, then logs in by that contact.
 
+Provider credentials are app-host scoped, not process-global. Users are global
+in 1backend, but OAuth/OIDC client ids, secrets, redirect branding, and consent
+screens belong to the host that starts the login. Store those provider configs
+in the Secret Svc for the app host and grant `user-svc` read access.
+
 Providers that do not prove a real contact must not be enabled for contact
 login. Relay or noreply addresses are explicitly out of scope because they are
 not the user's real email contact in this model.

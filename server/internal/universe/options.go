@@ -94,11 +94,6 @@ type Options struct {
 	// See `OB_REQUIRE_VERIFIED_CONTACT` environment variable documentation.
 	VerifyContacts bool
 
-	// External contact-auth providers keyed by provider id, such as "google",
-	// "github", or "okta". Built-in provider defaults fill in kind, issuer,
-	// endpoints, and scopes; custom OIDC providers must provide issuerUrl.
-	ContactAuthProviders map[string]ContactAuthProviderConfig
-
 	// Test hook for provider-token verification.
 	ContactAuthVerifier ContactAuthVerifier
 

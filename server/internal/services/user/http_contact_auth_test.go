@@ -16,6 +16,7 @@ import (
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/client"
+	sdktest "github.com/1backend/1backend/sdk/go/test"
 	"github.com/1backend/1backend/server/internal/di"
 	usertypes "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/1backend/1backend/server/internal/universe"
@@ -227,11 +228,6 @@ func TestContactAuthStartRejectsCrossHostReturnTo(t *testing.T) {
 	options := &universe.Options{
 		Test: true,
 		Url:  server.URL,
-		ContactAuthProviders: map[string]universe.ContactAuthProviderConfig{
-			"google": {
-				ClientID: "google-client-id",
-			},
-		},
 	}
 	u, err := di.BigBang(options)
 	require.NoError(t, err)
@@ -264,7 +260,14 @@ func TestListContactAuthProviders(t *testing.T) {
 	options := &universe.Options{
 		Test: true,
 		Url:  server.URL,
-		ContactAuthProviders: map[string]universe.ContactAuthProviderConfig{
+	}
+	u, err := di.BigBang(options)
+	require.NoError(t, err)
+	hs.UpdateHandler(u.Router)
+	require.NoError(t, u.StarterFunc())
+
+	saveContactAuthProvidersSecret(t, options.ClientFactory, sdk.DefaultTestAppHost,
+		map[string]universe.ContactAuthProviderConfig{
 			"google": {
 				ClientID:     "google-client-id",
 				ClientSecret: "google-client-secret",
@@ -303,14 +306,12 @@ func TestListContactAuthProviders(t *testing.T) {
 				ClientID:     "apple-client-id",
 				ClientSecret: "apple-client-secret",
 			},
-		},
-	}
-	u, err := di.BigBang(options)
-	require.NoError(t, err)
-	hs.UpdateHandler(u.Router)
-	require.NoError(t, u.StarterFunc())
+		})
 
-	resp, err := http.Get(server.URL + "/user-svc/auth/providers")
+	resp, err := http.Get(
+		server.URL + "/user-svc/auth/providers?appHost=" +
+			url.QueryEscape(sdk.DefaultTestAppHost),
+	)
 	require.NoError(t, err)
 	defer resp.Body.Close()
 	require.Equal(t, http.StatusOK, resp.StatusCode)
@@ -338,6 +339,148 @@ func TestListContactAuthProviders(t *testing.T) {
 	require.NotContains(t, providers, "apple")
 	require.Equal(t, "/user-svc/auth/google/start", providers["google"].StartUrl)
 	require.Equal(t, "/user-svc/auth/github/login", providers["github"].LoginUrl)
+}
+
+func TestListContactAuthProvidersIsHostScoped(t *testing.T) {
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	options := &universe.Options{
+		Test: true,
+		Url:  server.URL,
+	}
+	u, err := di.BigBang(options)
+	require.NoError(t, err)
+	hs.UpdateHandler(u.Router)
+	require.NoError(t, u.StarterFunc())
+
+	saveContactAuthProvidersSecret(t, options.ClientFactory, "a.example.com",
+		map[string]universe.ContactAuthProviderConfig{
+			"google": {
+				Name:         "Google A",
+				ClientID:     "google-a-client-id",
+				ClientSecret: "google-a-client-secret",
+			},
+		})
+	saveContactAuthProvidersSecret(t, options.ClientFactory, "b.example.com",
+		map[string]universe.ContactAuthProviderConfig{
+			"google": {
+				Name:         "Google B",
+				ClientID:     "google-b-client-id",
+				ClientSecret: "google-b-client-secret",
+			},
+		})
+
+	aProviders := listContactAuthProviders(t, server.URL, "a.example.com")
+	bProviders := listContactAuthProviders(t, server.URL, "b.example.com")
+
+	require.Equal(t, "Google A", aProviders["google"].Name)
+	require.Equal(t, "Google B", bProviders["google"].Name)
+}
+
+func TestListContactAuthProvidersFromIndividualSecrets(t *testing.T) {
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	options := &universe.Options{
+		Test: true,
+		Url:  server.URL,
+	}
+	u, err := di.BigBang(options)
+	require.NoError(t, err)
+	hs.UpdateHandler(u.Router)
+	require.NoError(t, u.StarterFunc())
+
+	saveContactAuthSecrets(t, options.ClientFactory, "individual.example.com", map[string]string{
+		"auth-provider-google-client-id":     "google-client-id",
+		"auth-provider-google-client-secret": "google-client-secret",
+	})
+
+	providers := listContactAuthProviders(t, server.URL, "individual.example.com")
+	require.Contains(t, providers, "google")
+	require.Equal(t, "oidc", providers["google"].Kind)
+}
+
+func saveContactAuthProvidersSecret(
+	t *testing.T,
+	clientFactory client.ClientFactory,
+	appHost string,
+	providers map[string]universe.ContactAuthProviderConfig,
+) {
+	t.Helper()
+
+	adminClient, _, err := sdktest.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	value, err := json.Marshal(providers)
+	require.NoError(t, err)
+
+	_, _, err = adminClient.SecretSvcAPI.SaveSecrets(context.Background()).
+		Body(openapi.SecretSvcSaveSecretsRequest{
+			Secrets: []openapi.SecretSvcSecretInput{
+				{
+					AppHost: openapi.PtrString(appHost),
+					Id:      "auth-providers",
+					Value:   openapi.PtrString(string(value)),
+					Readers: []string{"user-svc"},
+				},
+			},
+		}).
+		Execute()
+	require.NoError(t, err)
+}
+
+func saveContactAuthSecrets(
+	t *testing.T,
+	clientFactory client.ClientFactory,
+	appHost string,
+	secrets map[string]string,
+) {
+	t.Helper()
+
+	adminClient, _, err := sdktest.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	inputs := []openapi.SecretSvcSecretInput{}
+	for id, value := range secrets {
+		inputs = append(inputs, openapi.SecretSvcSecretInput{
+			AppHost: openapi.PtrString(appHost),
+			Id:      id,
+			Value:   openapi.PtrString(value),
+			Readers: []string{"user-svc"},
+		})
+	}
+
+	_, _, err = adminClient.SecretSvcAPI.SaveSecrets(context.Background()).
+		Body(openapi.SecretSvcSaveSecretsRequest{Secrets: inputs}).
+		Execute()
+	require.NoError(t, err)
+}
+
+func listContactAuthProviders(
+	t *testing.T,
+	baseURL string,
+	appHost string,
+) map[string]usertypes.ContactAuthProviderInfo {
+	t.Helper()
+
+	resp, err := http.Get(
+		baseURL + "/user-svc/auth/providers?appHost=" + url.QueryEscape(appHost),
+	)
+	require.NoError(t, err)
+	defer resp.Body.Close()
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+
+	body := usertypes.ListContactAuthProvidersResponse{}
+	require.NoError(t, json.NewDecoder(resp.Body).Decode(&body))
+
+	providers := map[string]usertypes.ContactAuthProviderInfo{}
+	for _, provider := range body.Providers {
+		providers[provider.Id] = provider
+	}
+	return providers
 }
 
 func postContactAuthLogin(
