@@ -8,6 +8,13 @@ has an additional local requirement such as TOTP. Provider-specific user ids
 are implementation details for the provider, not the identity model of
 1backend.
 
+Contact-proof flows make registration and login deliberately symmetric. When
+OTP, OIDC, or another contact-proof method is enabled, `register` may be called
+multiple times and `login` may be called before an explicit registration step;
+both should succeed once ownership of the contact id is proven. These flows
+should usually generate slugs automatically so users are not forced to think
+about slug choice or collisions during sign-in.
+
 OIDC differs from this in a useful but important way: OIDC providers expose a
 stable `sub` claim for the provider account, and OIDC client libraries usually
 encourage applications to bind local users to that provider subject. 1backend
