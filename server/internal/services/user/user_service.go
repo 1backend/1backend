@@ -55,6 +55,7 @@ type UserService struct {
 	enrollStore        datastore.DataStore
 	appStore           datastore.DataStore
 	otpStore           datastore.DataStore
+	authStateStore     datastore.DataStore
 
 	privateKey   *rsa.PrivateKey
 	publicKeyPem string
@@ -181,6 +182,14 @@ func NewUserService(
 		return nil, err
 	}
 
+	authStateStore, err := options.DataStoreFactory.Create(
+		"userSvcAuthStates",
+		&usertypes.AuthState{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	tokenReplacementCache, err := ristretto.NewCache(&ristretto.Config{
 		NumCounters: 1e5,     // number of keys to track frequency (10x max items)
 		MaxCost:     1 << 20, // max cost in bytes (~1 MiB)
@@ -206,6 +215,7 @@ func NewUserService(
 		enrollStore:           enrollsStore,
 		appStore:              appStore,
 		otpStore:              otpStore,
+		authStateStore:        authStateStore,
 		tokenReplacementCache: tokenReplacementCache,
 	}
 
@@ -233,6 +243,36 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 
 	router.HandleFunc("/user-svc/login", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.Login(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/auth/providers", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ListContactAuthProviders(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/user-svc/oidc/providers", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ListContactAuthProviders(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/user-svc/auth/{provider}/start", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.StartContactAuth(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/user-svc/auth/{provider}/callback", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ContactAuthCallback(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/user-svc/auth/{provider}/login", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ContactAuthLogin(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/oidc/{provider}/login", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ContactAuthLogin(w, r)
 	})).
 		Methods("OPTIONS", "POST")
 

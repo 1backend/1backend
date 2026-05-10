@@ -1,6 +1,7 @@
 package universe
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -93,6 +94,14 @@ type Options struct {
 	// See `OB_REQUIRE_VERIFIED_CONTACT` environment variable documentation.
 	VerifyContacts bool
 
+	// External contact-auth providers keyed by provider id, such as "google",
+	// "github", or "okta". Built-in provider defaults fill in kind, issuer,
+	// endpoints, and scopes; custom OIDC providers must provide issuerUrl.
+	ContactAuthProviders map[string]ContactAuthProviderConfig
+
+	// Test hook for provider-token verification.
+	ContactAuthVerifier ContactAuthVerifier
+
 	// Test mode if true will cause the localstore to
 	// save data into random temporary folders.
 	Test bool
@@ -136,4 +145,34 @@ type Options struct {
 	TokenExchanger    endpoint.TokenExchanger
 	TokenRefresher    endpoint.TokenRefresher
 	Middlewares       func(http.HandlerFunc) http.HandlerFunc
+}
+
+type ContactAuthProviderConfig struct {
+	Id           string   `json:"id,omitempty"`
+	Name         string   `json:"name,omitempty"`
+	Kind         string   `json:"kind,omitempty"`
+	IssuerURL    string   `json:"issuerUrl,omitempty"`
+	ClientID     string   `json:"clientId,omitempty"`
+	ClientSecret string   `json:"clientSecret,omitempty"`
+	Scopes       []string `json:"scopes,omitempty"`
+	GraphVersion string   `json:"graphVersion,omitempty"`
+	AuthURL      string   `json:"authUrl,omitempty"`
+	TokenURL     string   `json:"tokenUrl,omitempty"`
+	APIURL       string   `json:"apiUrl,omitempty"`
+}
+
+type ContactAuthClaims struct {
+	Provider      string
+	Email         string
+	EmailVerified bool
+	Name          string
+	Nonce         string
+}
+
+type ContactAuthVerifier interface {
+	VerifyContactAuthToken(
+		ctx context.Context,
+		provider string,
+		token string,
+	) (*ContactAuthClaims, error)
 }
