@@ -25,7 +25,7 @@ func (s *SQLStore) initAutoIndexes(instance any) error {
 		}
 	}
 
-	if s.driverName != DriverPostGRES {
+	if !s.autoIndexesOn || s.driverName != DriverPostGRES {
 		return nil
 	}
 
@@ -75,7 +75,7 @@ func detectedIndexMethod(indexDef string) string {
 }
 
 func (s *SQLStore) observePlan(plan indexplanner.QueryPlan) {
-	if s.autoIndexes == nil {
+	if s.autoIndexes == nil || !s.autoIndexesOn {
 		return
 	}
 

@@ -52,6 +52,10 @@ type Options struct {
 	// Database/sql pool sizing and connection lifetime.
 	DbPool infra.DbPoolConfig
 
+	// AutoIndexes enables query-observed automatic index creation for supported
+	// datastore backends. It is off by default.
+	AutoIndexes bool
+
 	// Crucial for distributed features.
 	// Please see the documentation for the envar OB_NODE_ID
 	NodeId string

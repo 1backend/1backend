@@ -252,7 +252,7 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 		Methods("OPTIONS", "GET")
 
 	router.HandleFunc("/user-svc/oidc/providers", appl(func(w http.ResponseWriter, r *http.Request) {
-		us.ListContactAuthProviders(w, r)
+		us.ListOIDCContactAuthProviders(w, r)
 	})).
 		Methods("OPTIONS", "GET")
 

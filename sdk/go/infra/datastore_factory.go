@@ -56,6 +56,7 @@ type DataStoreConfig struct {
 	DbPool                 DbPoolConfig
 	TablePrefix            string
 	Lock                   lock.DistributedLock
+	AutoIndexes            bool
 }
 
 func NewDataStoreFactory(options DataStoreConfig) (DataStoreFactory, error) {
@@ -86,6 +87,9 @@ func NewDataStoreFactory(options DataStoreConfig) (DataStoreFactory, error) {
 
 	if options.ReadDbConnectionString == "" {
 		options.ReadDbConnectionString = os.Getenv("OB_DB_READ_CONNECTION_STRING")
+	}
+	if !options.AutoIndexes && os.Getenv("OB_AUTO_INDEXES") == "true" {
+		options.AutoIndexes = true
 	}
 
 	if err := options.loadDbConnectionRuntimeOptionsFromEnv(); err != nil {
@@ -131,6 +135,7 @@ func (df *DataStoreFactoryPostgresImpl) Create(tableName string, instance any) (
 	if df.options.Lock != nil {
 		opts = append(opts, sqlstore.WithAutoIndexLock(df.options.Lock))
 	}
+	opts = append(opts, sqlstore.WithAutoIndexes(df.options.AutoIndexes))
 	if readDB != df.db {
 		opts = append(opts, sqlstore.WithReadDB(readDB))
 	}

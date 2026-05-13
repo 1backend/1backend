@@ -13,6 +13,7 @@ export * from './chatSvcSaveThreadRequest';
 export * from './chatSvcSaveThreadResponse';
 export * from './chatSvcThread';
 export * from './configSvcConfig';
+export * from './configSvcConfigPatchOperation';
 export * from './configSvcListConfigsRequest';
 export * from './configSvcListConfigsResponse';
 export * from './configSvcListConfigsScope';
@@ -178,6 +179,9 @@ export * from './userSvcActivateOrganizationResponse';
 export * from './userSvcApp';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
+export * from './userSvcContactAuthLoginRequest';
+export * from './userSvcContactAuthLoginResponse';
+export * from './userSvcContactAuthProviderInfo';
 export * from './userSvcContactInput';
 export * from './userSvcCreateUserRequest';
 export * from './userSvcDeactivateOrganizationResponse';
@@ -191,6 +195,7 @@ export * from './userSvcGetPublicKeyResponse';
 export * from './userSvcHasPermissionResponse';
 export * from './userSvcListAppsRequest';
 export * from './userSvcListAppsResponse';
+export * from './userSvcListContactAuthProvidersResponse';
 export * from './userSvcListEnrollsRequest';
 export * from './userSvcListEnrollsResponse';
 export * from './userSvcListMembershipsRequest';
@@ -264,6 +269,7 @@ import { ChatSvcSaveThreadRequest } from './chatSvcSaveThreadRequest';
 import { ChatSvcSaveThreadResponse } from './chatSvcSaveThreadResponse';
 import { ChatSvcThread } from './chatSvcThread';
 import { ConfigSvcConfig } from './configSvcConfig';
+import { ConfigSvcConfigPatchOperation } from './configSvcConfigPatchOperation';
 import { ConfigSvcListConfigsRequest } from './configSvcListConfigsRequest';
 import { ConfigSvcListConfigsResponse } from './configSvcListConfigsResponse';
 import { ConfigSvcListConfigsScope } from './configSvcListConfigsScope';
@@ -429,6 +435,9 @@ import { UserSvcActivateOrganizationResponse } from './userSvcActivateOrganizati
 import { UserSvcApp } from './userSvcApp';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
+import { UserSvcContactAuthLoginRequest } from './userSvcContactAuthLoginRequest';
+import { UserSvcContactAuthLoginResponse } from './userSvcContactAuthLoginResponse';
+import { UserSvcContactAuthProviderInfo } from './userSvcContactAuthProviderInfo';
 import { UserSvcContactInput } from './userSvcContactInput';
 import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
 import { UserSvcDeactivateOrganizationResponse } from './userSvcDeactivateOrganizationResponse';
@@ -442,6 +451,7 @@ import { UserSvcGetPublicKeyResponse } from './userSvcGetPublicKeyResponse';
 import { UserSvcHasPermissionResponse } from './userSvcHasPermissionResponse';
 import { UserSvcListAppsRequest } from './userSvcListAppsRequest';
 import { UserSvcListAppsResponse } from './userSvcListAppsResponse';
+import { UserSvcListContactAuthProvidersResponse } from './userSvcListContactAuthProvidersResponse';
 import { UserSvcListEnrollsRequest } from './userSvcListEnrollsRequest';
 import { UserSvcListEnrollsResponse } from './userSvcListEnrollsResponse';
 import { UserSvcListMembershipsRequest } from './userSvcListMembershipsRequest';
@@ -532,6 +542,7 @@ let typeMap: {[index: string]: any} = {
     "ChatSvcSaveThreadResponse": ChatSvcSaveThreadResponse,
     "ChatSvcThread": ChatSvcThread,
     "ConfigSvcConfig": ConfigSvcConfig,
+    "ConfigSvcConfigPatchOperation": ConfigSvcConfigPatchOperation,
     "ConfigSvcListConfigsRequest": ConfigSvcListConfigsRequest,
     "ConfigSvcListConfigsResponse": ConfigSvcListConfigsResponse,
     "ConfigSvcListVersionsRequest": ConfigSvcListVersionsRequest,
@@ -686,6 +697,9 @@ let typeMap: {[index: string]: any} = {
     "UserSvcApp": UserSvcApp,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,
+    "UserSvcContactAuthLoginRequest": UserSvcContactAuthLoginRequest,
+    "UserSvcContactAuthLoginResponse": UserSvcContactAuthLoginResponse,
+    "UserSvcContactAuthProviderInfo": UserSvcContactAuthProviderInfo,
     "UserSvcContactInput": UserSvcContactInput,
     "UserSvcCreateUserRequest": UserSvcCreateUserRequest,
     "UserSvcDeactivateOrganizationResponse": UserSvcDeactivateOrganizationResponse,
@@ -699,6 +713,7 @@ let typeMap: {[index: string]: any} = {
     "UserSvcHasPermissionResponse": UserSvcHasPermissionResponse,
     "UserSvcListAppsRequest": UserSvcListAppsRequest,
     "UserSvcListAppsResponse": UserSvcListAppsResponse,
+    "UserSvcListContactAuthProvidersResponse": UserSvcListContactAuthProvidersResponse,
     "UserSvcListEnrollsRequest": UserSvcListEnrollsRequest,
     "UserSvcListEnrollsResponse": UserSvcListEnrollsResponse,
     "UserSvcListMembershipsRequest": UserSvcListMembershipsRequest,

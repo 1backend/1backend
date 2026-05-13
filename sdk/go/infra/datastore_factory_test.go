@@ -33,6 +33,7 @@ func TestDataStoreFactoryPostgresEnablesAutoIndexing(t *testing.T) {
 		Db:                 "postgres",
 		DbConnectionString: conn,
 		TablePrefix:        tablePrefix,
+		AutoIndexes:        true,
 	})
 	require.NoError(t, err)
 
@@ -75,6 +76,56 @@ func TestDataStoreFactoryPostgresEnablesAutoIndexing(t *testing.T) {
 		require.NoError(t, err)
 		return count == 1
 	}, 10*time.Second, 100*time.Millisecond)
+}
+
+func TestDataStoreFactoryPostgresAutoIndexingDefaultsOff(t *testing.T) {
+	conn := testutil.StartPostgres(t)
+	tablePrefix := "factory_no_autoidx_" + strconv.FormatInt(time.Now().UnixNano(), 10) + "_"
+	tableName := tablePrefix + "objects"
+
+	factory, err := NewDataStoreFactory(DataStoreConfig{
+		Db:                 "postgres",
+		DbConnectionString: conn,
+		TablePrefix:        tablePrefix,
+	})
+	require.NoError(t, err)
+
+	postgresFactory := factory.(*DataStoreFactoryPostgresImpl)
+	t.Cleanup(func() {
+		if postgresFactory.readDB != nil {
+			_ = postgresFactory.readDB.Close()
+		}
+		if postgresFactory.db != nil {
+			_ = postgresFactory.db.Close()
+		}
+	})
+
+	store, err := factory.Create("objects", autoIndexFactoryObject{})
+	require.NoError(t, err)
+
+	require.NoError(t, store.Create(autoIndexFactoryObject{
+		Id:   "row-1",
+		Name: "Alice",
+	}))
+
+	filter := datastore.Equals(datastore.Field("Name"), "Alice")
+	for range 3 {
+		_, err := store.Query(filter).Find()
+		require.NoError(t, err)
+	}
+
+	handle, err := factory.Handle()
+	require.NoError(t, err)
+	db := handle.(*sql.DB)
+
+	var count int
+	err = db.QueryRow(
+		"SELECT count(*) FROM pg_indexes WHERE schemaname = ANY(current_schemas(false)) AND tablename = $1 AND indexname LIKE $2",
+		tableName,
+		fmt.Sprintf("%s_autoidx_%%", tableName),
+	).Scan(&count)
+	require.NoError(t, err)
+	require.Zero(t, count)
 }
 
 func TestNewDataStoreFactoryLoadsReadConnectionStringFromEnv(t *testing.T) {

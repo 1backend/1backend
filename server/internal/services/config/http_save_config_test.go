@@ -166,6 +166,86 @@ func TestConfigService(t *testing.T) {
 		})
 	})
 
+	t.Run("patch remove deletes values before merge", func(t *testing.T) {
+		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Data: map[string]any{
+					"contactAuth": map[string]any{
+						"github": map[string]any{
+							"clientId":     "github-id",
+							"clientSecret": "github-secret",
+						},
+						"google": map[string]any{
+							"clientId": "old-google-id",
+						},
+					},
+				},
+			}).
+			Execute()
+		require.NoError(t, err)
+
+		_, _, err = client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Patch: []openapi.ConfigSvcConfigPatchOperation{
+					{Op: "remove", Path: "/contactAuth/github/clientSecret"},
+					{Op: "remove", Path: "/contactAuth/missing"},
+				},
+				Data: map[string]any{
+					"contactAuth": map[string]any{
+						"google": map[string]any{
+							"clientId": "new-google-id",
+						},
+					},
+				},
+			}).
+			Execute()
+		require.NoError(t, err)
+
+		rsp, _, err := client1.ConfigSvcAPI.ListConfigs(ctx).
+			Body(openapi.ConfigSvcListConfigsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Ids:     []string{"testUserSlug0"},
+			}).
+			Execute()
+		require.NoError(t, err)
+
+		config := rsp.Configs["testUserSlug0"]
+		require.NotNil(t, config)
+		contactAuth := config.Data["contactAuth"].(map[string]any)
+		github := contactAuth["github"].(map[string]any)
+		google := contactAuth["google"].(map[string]any)
+
+		require.Equal(t, "github-id", github["clientId"], rsp)
+		require.Nil(t, github["clientSecret"], rsp)
+		require.Equal(t, "new-google-id", google["clientId"], rsp)
+
+		versionsRsp, _, err := client1.ConfigSvcAPI.ListConfigVersions(ctx).
+			Body(openapi.ConfigSvcListVersionsRequest{
+				AppHost: sdk.DefaultTestAppHost,
+				Ids:     []string{"testUserSlug0"},
+				Limit:   openapi.PtrInt32(1),
+			}).
+			Execute()
+		require.NoError(t, err)
+		require.Len(t, versionsRsp.Versions, 1)
+
+		versionContactAuth := versionsRsp.Versions[0].Data["contactAuth"].(map[string]any)
+		versionGithub := versionContactAuth["github"].(map[string]any)
+		require.Nil(t, versionGithub["clientSecret"], versionsRsp)
+	})
+
+	t.Run("invalid patch returns error", func(t *testing.T) {
+		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
+			Body(openapi.ConfigSvcSaveConfigRequest{
+				Patch: []openapi.ConfigSvcConfigPatchOperation{
+					{Op: "replace", Path: "/field1"},
+				},
+			}).
+			Execute()
+
+		require.Error(t, err)
+	})
+
 	t.Run("admins can save any slug config", func(t *testing.T) {
 		// Admin saves are taken at face value and the slug
 		// will not be used at top level.

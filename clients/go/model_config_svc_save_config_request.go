@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.12
+API version: 0.9.13
 Contact: sales@singulatron.com
 */
 
@@ -28,6 +28,8 @@ type ConfigSvcSaveConfigRequest struct {
 	DataJson *string `json:"dataJson,omitempty"`
 	// Id is the slug of the owner to save the config for. Only user with the `config-svc:config:edit-on-behalf` can specify this. For everyone else, it is automatically set to the slug of the caller user.
 	Id *string `json:"id,omitempty"`
+	// Patch contains RFC 6902 JSON Patch-inspired operations to apply before Data is deep-merged. Currently only {\"op\":\"remove\",\"path\":\"/a/b\"} is supported. Paths use JSON Pointer syntax, so \"/\" separates object keys, \"~1\" escapes \"/\" inside a key, and \"~0\" escapes \"~\".
+	Patch []ConfigSvcConfigPatchOperation `json:"patch,omitempty"`
 }
 
 // NewConfigSvcSaveConfigRequest instantiates a new ConfigSvcSaveConfigRequest object
@@ -207,6 +209,38 @@ func (o *ConfigSvcSaveConfigRequest) SetId(v string) {
 	o.Id = &v
 }
 
+// GetPatch returns the Patch field value if set, zero value otherwise.
+func (o *ConfigSvcSaveConfigRequest) GetPatch() []ConfigSvcConfigPatchOperation {
+	if o == nil || IsNil(o.Patch) {
+		var ret []ConfigSvcConfigPatchOperation
+		return ret
+	}
+	return o.Patch
+}
+
+// GetPatchOk returns a tuple with the Patch field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ConfigSvcSaveConfigRequest) GetPatchOk() ([]ConfigSvcConfigPatchOperation, bool) {
+	if o == nil || IsNil(o.Patch) {
+		return nil, false
+	}
+	return o.Patch, true
+}
+
+// HasPatch returns a boolean if a field has been set.
+func (o *ConfigSvcSaveConfigRequest) HasPatch() bool {
+	if o != nil && !IsNil(o.Patch) {
+		return true
+	}
+
+	return false
+}
+
+// SetPatch gets a reference to the given []ConfigSvcConfigPatchOperation and assigns it to the Patch field.
+func (o *ConfigSvcSaveConfigRequest) SetPatch(v []ConfigSvcConfigPatchOperation) {
+	o.Patch = v
+}
+
 func (o ConfigSvcSaveConfigRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -231,6 +265,9 @@ func (o ConfigSvcSaveConfigRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Id) {
 		toSerialize["id"] = o.Id
+	}
+	if !IsNil(o.Patch) {
+		toSerialize["patch"] = o.Patch
 	}
 	return toSerialize, nil
 }

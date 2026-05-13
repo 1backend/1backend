@@ -100,9 +100,20 @@ type SaveConfigRequest struct {
 
 	DataJSON string                 `json:"dataJson,omitempty"`
 	Data     map[string]interface{} `json:"data,omitempty"`
+
+	// Patch contains RFC 6902 JSON Patch-inspired operations to apply before
+	// Data is deep-merged. Currently only {"op":"remove","path":"/a/b"} is
+	// supported. Paths use JSON Pointer syntax, so "/" separates object keys,
+	// "~1" escapes "/" inside a key, and "~0" escapes "~".
+	Patch []ConfigPatchOperation `json:"patch,omitempty"`
 }
 
 type SaveConfigResponse struct {
+}
+
+type ConfigPatchOperation struct {
+	Op   string `json:"op"`
+	Path string `json:"path"`
 }
 
 //

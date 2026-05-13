@@ -48,6 +48,10 @@ var (
 // @Description - Fields present only in the incoming config are added.
 // @Description - Fields present only in the existing config are preserved.
 // @Description - Top-level and nested merges follow the same rules.
+// @Description
+// @Description The request can also include a small RFC 6902 JSON Patch-inspired `patch` array.
+// @Description Currently only `remove` operations are supported, and they are applied before the data deep merge.
+// @Description Example: `{"patch":[{"op":"remove","path":"/contactAuth/github/clientSecret"}]}`.
 // @Tags Config Svc
 // @Accept json
 // @Produce json
@@ -140,6 +144,9 @@ func (cs *ConfigService) SaveConfig(
 	case errors.Is(err, idMustBeProvidedErr):
 		endpoint.WriteString(w, http.StatusBadRequest, err.Error())
 		return
+	case errors.Is(err, errInvalidConfigPatch):
+		endpoint.WriteString(w, http.StatusBadRequest, err.Error())
+		return
 	case err != nil:
 		logger.Error("Failed to save config",
 			slog.Any("error", err),
@@ -212,6 +219,10 @@ func (cs *ConfigService) saveConfig(
 		if err != nil {
 			return errors.Wrap(err, "failed to unmarshal existing config data")
 		}
+	}
+
+	if err := applyConfigPatch(entry.Data, newConfig.Patch); err != nil {
+		return err
 	}
 
 	entry.Data = DeepMerge(entry.Data, newConfig.Data)

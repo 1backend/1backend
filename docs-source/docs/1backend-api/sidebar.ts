@@ -600,6 +600,30 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend-api/contact-auth-callback",
+          label: "Contact Auth Callback",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/contact-auth-login",
+          label: "Contact Auth Login",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/contact-auth-start",
+          label: "Start Contact Auth",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-contact-auth-providers",
+          label: "List Contact Auth Providers",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
           id: "1backend-api/change-password",
           label: "Change Password",
           className: "api-method post",
@@ -627,6 +651,12 @@ const sidebar: SidebarsConfig = {
           id: "1backend-api/list-memberships",
           label: "List Memberships",
           className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-oidc-contact-auth-providers",
+          label: "List OIDC Contact Auth Providers",
+          className: "api-method get",
         },
         {
           type: "doc",

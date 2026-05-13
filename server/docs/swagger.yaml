@@ -192,6 +192,13 @@ definitions:
     - id
     - updatedAt
     type: object
+  config_svc.ConfigPatchOperation:
+    properties:
+      op:
+        type: string
+      path:
+        type: string
+    type: object
   config_svc.ListConfigsRequest:
     properties:
       appHost:
@@ -328,6 +335,15 @@ definitions:
           Only user with the `config-svc:config:edit-on-behalf` can specify this.
           For everyone else, it is automatically set to the slug of the caller user.
         type: string
+      patch:
+        description: |-
+          Patch contains RFC 6902 JSON Patch-inspired operations to apply before
+          Data is deep-merged. Currently only {"op":"remove","path":"/a/b"} is
+          supported. Paths use JSON Pointer syntax, so "/" separates object keys,
+          "~1" escapes "/" inside a key, and "~0" escapes "~".
+        items:
+          $ref: '#/definitions/config_svc.ConfigPatchOperation'
+        type: array
     type: object
   config_svc.SaveConfigResponse:
     type: object
@@ -2978,6 +2994,58 @@ definitions:
     - updatedAt
     - userId
     type: object
+  user_svc.ContactAuthLoginRequest:
+    properties:
+      accessToken:
+        description: AccessToken is accepted as an alias for Token for OAuth2 providers.
+        type: string
+      appHost:
+        example: shoes.com
+        type: string
+      device:
+        type: string
+      idToken:
+        description: IDToken is accepted as an alias for Token for OIDC client integrations.
+        type: string
+      slug:
+        description: |-
+          Optional slug used only when the verified contact has no 1backend user yet.
+          If omitted, 1backend derives one from the contact id.
+        type: string
+      token:
+        description: |-
+          Token is the provider token. For OIDC providers this is an ID token.
+          For Facebook this is a user access token.
+        type: string
+    required:
+    - appHost
+    type: object
+  user_svc.ContactAuthLoginResponse:
+    properties:
+      token:
+        $ref: '#/definitions/user_svc.Token'
+    type: object
+  user_svc.ContactAuthProviderInfo:
+    properties:
+      id:
+        type: string
+      kind:
+        type: string
+      loginUrl:
+        type: string
+      name:
+        type: string
+      scopes:
+        items:
+          type: string
+        type: array
+      startUrl:
+        type: string
+    required:
+    - id
+    - kind
+    - name
+    type: object
   user_svc.ContactInput:
     properties:
       id:
@@ -3187,6 +3255,13 @@ definitions:
         type: array
     required:
     - apps
+    type: object
+  user_svc.ListContactAuthProvidersResponse:
+    properties:
+      providers:
+        items:
+          $ref: '#/definitions/user_svc.ContactAuthProviderInfo'
+        type: array
     type: object
   user_svc.ListEnrollsRequest:
     properties:
@@ -3953,7 +4028,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.12
+  version: 0.9.13
 paths:
   /chat-svc/events:
     get:
@@ -4221,6 +4296,10 @@ paths:
         - Fields present only in the incoming config are added.
         - Fields present only in the existing config are preserved.
         - Top-level and nested merges follow the same rules.
+
+        The request can also include a small RFC 6902 JSON Patch-inspired `patch` array.
+        Currently only `remove` operations are supported, and they are applied before the data deep merge.
+        Example: `{"patch":[{"op":"remove","path":"/contactAuth/github/clientSecret"}]}`.
       operationId: saveConfig
       parameters:
       - description: Save Config Request
@@ -7027,6 +7106,140 @@ paths:
       summary: List Apps
       tags:
       - User Svc
+  /user-svc/auth/{provider}/callback:
+    get:
+      description: Handles a provider authorization-code callback and returns or redirects
+        with a normal 1backend token.
+      operationId: contactAuthCallback
+      parameters:
+      - description: Provider ID, such as google or facebook
+        in: path
+        name: provider
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            $ref: '#/definitions/user_svc.ContactAuthLoginResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      summary: Contact Auth Callback
+      tags:
+      - User Svc
+  /user-svc/auth/{provider}/login:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Verifies a configured external provider token as proof of contact ownership and returns a normal 1backend token.
+        OIDC providers must assert a real verified email contact. Relay and noreply addresses are rejected.
+      operationId: contactAuthLogin
+      parameters:
+      - description: Provider ID, such as google or facebook
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: Contact Auth Login Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ContactAuthLoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            $ref: '#/definitions/user_svc.ContactAuthLoginResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      summary: Contact Auth Login
+      tags:
+      - User Svc
+  /user-svc/auth/{provider}/start:
+    get:
+      description: Redirects to a configured contact-auth provider. OIDC providers
+        use authorization code flow; OAuth2 providers use their provider-specific
+        verified email APIs.
+      operationId: contactAuthStart
+      parameters:
+      - description: Provider ID, such as google or facebook
+        in: path
+        name: provider
+        required: true
+        type: string
+      - description: 1backend app host
+        in: query
+        name: appHost
+        required: true
+        type: string
+      - description: Device
+        in: query
+        name: device
+        type: string
+      - description: Slug used only when creating a new user
+        in: query
+        name: slug
+        type: string
+      - description: URL to redirect to after login. Token is returned in the URL
+          fragment.
+        in: query
+        name: returnTo
+        type: string
+      responses:
+        "302":
+          description: Redirect to provider
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      summary: Start Contact Auth
+      tags:
+      - User Svc
+  /user-svc/auth/providers:
+    get:
+      description: Lists configured external login providers that can be used as verified
+        contact proof.
+      operationId: listContactAuthProviders
+      parameters:
+      - description: 1backend app host
+        in: query
+        name: appHost
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Configured providers
+          schema:
+            $ref: '#/definitions/user_svc.ListContactAuthProvidersResponse'
+      summary: List Contact Auth Providers
+      tags:
+      - User Svc
   /user-svc/change-password:
     post:
       consumes:
@@ -7225,6 +7438,28 @@ paths:
       security:
       - BearerAuth: []
       summary: List Memberships
+      tags:
+      - User Svc
+  /user-svc/oidc/providers:
+    get:
+      description: |-
+        Lists configured external login providers that can be used as verified contact proof.
+        This endpoint is kept as a compatibility alias for /user-svc/auth/providers.
+      operationId: listOIDCContactAuthProviders
+      parameters:
+      - description: 1backend app host
+        in: query
+        name: appHost
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Configured providers
+          schema:
+            $ref: '#/definitions/user_svc.ListContactAuthProvidersResponse'
+      summary: List OIDC Contact Auth Providers
       tags:
       - User Svc
   /user-svc/organization:

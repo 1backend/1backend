@@ -1,0 +1,71 @@
+---
+id: contact-auth-start
+title: "Start Contact Auth"
+description: "Redirects to a configured contact-auth provider. OIDC providers use authorization code flow; OAuth2 providers use their provider-specific verified email APIs."
+sidebar_label: "Start Contact Auth"
+hide_title: true
+hide_table_of_contents: true
+api: eJzNVk1v4zYQ/SsDntqFIjnrAkXVS7ObYms0QII4OWVzoKmRxIYiuUPKrtfwfy9GH7aTTYxs2kN9kSkOOW/ezJvRRhQYFGkftbMiF9dYaEIVA0QHEpSzpa5awoL/RqniiWxjDZ7cUhdIKVzOzj/ulgHagMAWjvRXyXeCcgVCadzqV7g8a2P9/ol1rFHT7t1J8Kh0qRUskXSpsQBspDZwdjULqUiE80jdxbNC5GIAxffOo6QoEuElyQYjUhD53eZJeFeDG5idJxBaVYMMUDlXGQRHUEqFC+ceRCI0m3sZa5EIKxvk1XBYJILwS6sJC5FHajERQdXYSJFvRFx7tg2RtK3Edps8hXC6kOoBbQHSe6hdiKOzLy3Seu9Nev9Hv/svnJ3jUit8wUMxbn7HhXPTVpy2Apw1a1jVaEERyqhtBRIsrniXXvAYTFt9n7/b6wuuRBrKsqvKMiKBcZW2Kdy4B7SgAxDGliwWoC2XFPDBkmTVoI3pC3D6MzfuKKR7TkDwzgYMvD+dvOfH87JhfLsy2Sbip8nkW+OZXUqjC+C8YpdhLmO0kU3fZe/4scfjiUs+6t47Ejl6lrnxjVv8hSqKLf8SEWXFOhC3AQnmSyXuE9FgrB2rp8JeMLEWucg4bydhqTLWb7YZw9hmYVBWQFqOsmrJ8JnMOCUNV3F+ejqd/iyYroCqJR3Xc46hh/0BJSGxTL+l42btET4PJp8FlM4Yt8ICFmuQELxUCNIWELtUS9WLAUpyTZ/pITS44JIAtIV3+iDpNcpetEPWzw7bk9jxJr3+E9cdk9qWjnEO3aXjnZsQ8y0Nht+CtlVrZCRnU+Wag7uvZjBvvXcdYT1JdYw+z7JR93wg49p4zMLZ7MTKqJcIjVbkmGutMIA3MpaOGg7HaIU2IOMZ/X26uoDlNJ088hbyLFutVmll29RRlQ3nQiYrb06m6SStY2MYQ0RqwmU5773twYaVrCqkVLusM8mYJx0Nm5x+6AMRieBy6OFP0l/S0ylf6V2IjbQHILvODB97MqErgifRb/YK+P9PoKFeIv4dM2+kthx1R/5m0NKdGLUkEiH7ePOD6dEL6j4RXfvP78Rms5ABb8lst/y6b1Pd9NJBLgy3/lKagEdo++F6mBI/wnMT5lnQD7h+NGiW0rRsJbo+/GrXuyFzxMlu1rzRx+vnzhEQw/h5I4T/bBQdQXgwkfYo73lBmmG+vShe/+XzLLyxSdr1IbQR9n7k3W+TseEy1H77TCn0hwXGQ257OIk+/X4jttt/AHG9nsA=
+sidebar_class_name: "get api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Start Contact Auth"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/user-svc/auth/{provider}/start"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Redirects to a configured contact-auth provider. OIDC providers use authorization code flow; OAuth2 providers use their provider-specific verified email APIs.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"Provider ID, such as google or facebook","in":"path","name":"provider","required":true,"schema":{"type":"string"}},{"description":"1backend app host","in":"query","name":"appHost","required":true,"schema":{"type":"string"}},{"description":"Device","in":"query","name":"device","schema":{"type":"string"}},{"description":"Slug used only when creating a new user","in":"query","name":"slug","schema":{"type":"string"}},{"description":"URL to redirect to after login. Token is returned in the URL fragment.","in":"query","name":"returnTo","schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"302":{"description":"Redirect to provider"},"400":{"description":"Invalid request","content":{"*/*":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

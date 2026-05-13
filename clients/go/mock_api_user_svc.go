@@ -129,6 +129,95 @@ func (mr *MockUserSvcAPIMockRecorder) ChangePasswordExecute(r any) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangePasswordExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ChangePasswordExecute), r)
 }
 
+// ContactAuthCallback mocks base method.
+func (m *MockUserSvcAPI) ContactAuthCallback(ctx context.Context, provider string) ApiContactAuthCallbackRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ContactAuthCallback", ctx, provider)
+	ret0, _ := ret[0].(ApiContactAuthCallbackRequest)
+	return ret0
+}
+
+// ContactAuthCallback indicates an expected call of ContactAuthCallback.
+func (mr *MockUserSvcAPIMockRecorder) ContactAuthCallback(ctx, provider any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContactAuthCallback", reflect.TypeOf((*MockUserSvcAPI)(nil).ContactAuthCallback), ctx, provider)
+}
+
+// ContactAuthCallbackExecute mocks base method.
+func (m *MockUserSvcAPI) ContactAuthCallbackExecute(r ApiContactAuthCallbackRequest) (*UserSvcContactAuthLoginResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ContactAuthCallbackExecute", r)
+	ret0, _ := ret[0].(*UserSvcContactAuthLoginResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ContactAuthCallbackExecute indicates an expected call of ContactAuthCallbackExecute.
+func (mr *MockUserSvcAPIMockRecorder) ContactAuthCallbackExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContactAuthCallbackExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ContactAuthCallbackExecute), r)
+}
+
+// ContactAuthLogin mocks base method.
+func (m *MockUserSvcAPI) ContactAuthLogin(ctx context.Context, provider string) ApiContactAuthLoginRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ContactAuthLogin", ctx, provider)
+	ret0, _ := ret[0].(ApiContactAuthLoginRequest)
+	return ret0
+}
+
+// ContactAuthLogin indicates an expected call of ContactAuthLogin.
+func (mr *MockUserSvcAPIMockRecorder) ContactAuthLogin(ctx, provider any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContactAuthLogin", reflect.TypeOf((*MockUserSvcAPI)(nil).ContactAuthLogin), ctx, provider)
+}
+
+// ContactAuthLoginExecute mocks base method.
+func (m *MockUserSvcAPI) ContactAuthLoginExecute(r ApiContactAuthLoginRequest) (*UserSvcContactAuthLoginResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ContactAuthLoginExecute", r)
+	ret0, _ := ret[0].(*UserSvcContactAuthLoginResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ContactAuthLoginExecute indicates an expected call of ContactAuthLoginExecute.
+func (mr *MockUserSvcAPIMockRecorder) ContactAuthLoginExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContactAuthLoginExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ContactAuthLoginExecute), r)
+}
+
+// ContactAuthStart mocks base method.
+func (m *MockUserSvcAPI) ContactAuthStart(ctx context.Context, provider string) ApiContactAuthStartRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ContactAuthStart", ctx, provider)
+	ret0, _ := ret[0].(ApiContactAuthStartRequest)
+	return ret0
+}
+
+// ContactAuthStart indicates an expected call of ContactAuthStart.
+func (mr *MockUserSvcAPIMockRecorder) ContactAuthStart(ctx, provider any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContactAuthStart", reflect.TypeOf((*MockUserSvcAPI)(nil).ContactAuthStart), ctx, provider)
+}
+
+// ContactAuthStartExecute mocks base method.
+func (m *MockUserSvcAPI) ContactAuthStartExecute(r ApiContactAuthStartRequest) (*http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ContactAuthStartExecute", r)
+	ret0, _ := ret[0].(*http.Response)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ContactAuthStartExecute indicates an expected call of ContactAuthStartExecute.
+func (mr *MockUserSvcAPIMockRecorder) ContactAuthStartExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContactAuthStartExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ContactAuthStartExecute), r)
+}
+
 // CreateUser mocks base method.
 func (m *MockUserSvcAPI) CreateUser(ctx context.Context) ApiCreateUserRequest {
 	m.ctrl.T.Helper()
@@ -429,6 +518,36 @@ func (mr *MockUserSvcAPIMockRecorder) ListAppsExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAppsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListAppsExecute), r)
 }
 
+// ListContactAuthProviders mocks base method.
+func (m *MockUserSvcAPI) ListContactAuthProviders(ctx context.Context) ApiListContactAuthProvidersRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListContactAuthProviders", ctx)
+	ret0, _ := ret[0].(ApiListContactAuthProvidersRequest)
+	return ret0
+}
+
+// ListContactAuthProviders indicates an expected call of ListContactAuthProviders.
+func (mr *MockUserSvcAPIMockRecorder) ListContactAuthProviders(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContactAuthProviders", reflect.TypeOf((*MockUserSvcAPI)(nil).ListContactAuthProviders), ctx)
+}
+
+// ListContactAuthProvidersExecute mocks base method.
+func (m *MockUserSvcAPI) ListContactAuthProvidersExecute(r ApiListContactAuthProvidersRequest) (*UserSvcListContactAuthProvidersResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListContactAuthProvidersExecute", r)
+	ret0, _ := ret[0].(*UserSvcListContactAuthProvidersResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListContactAuthProvidersExecute indicates an expected call of ListContactAuthProvidersExecute.
+func (mr *MockUserSvcAPIMockRecorder) ListContactAuthProvidersExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListContactAuthProvidersExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListContactAuthProvidersExecute), r)
+}
+
 // ListEnrolls mocks base method.
 func (m *MockUserSvcAPI) ListEnrolls(ctx context.Context) ApiListEnrollsRequest {
 	m.ctrl.T.Helper()
@@ -487,6 +606,36 @@ func (m *MockUserSvcAPI) ListMembershipsExecute(r ApiListMembershipsRequest) (*U
 func (mr *MockUserSvcAPIMockRecorder) ListMembershipsExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMembershipsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListMembershipsExecute), r)
+}
+
+// ListOIDCContactAuthProviders mocks base method.
+func (m *MockUserSvcAPI) ListOIDCContactAuthProviders(ctx context.Context) ApiListOIDCContactAuthProvidersRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListOIDCContactAuthProviders", ctx)
+	ret0, _ := ret[0].(ApiListOIDCContactAuthProvidersRequest)
+	return ret0
+}
+
+// ListOIDCContactAuthProviders indicates an expected call of ListOIDCContactAuthProviders.
+func (mr *MockUserSvcAPIMockRecorder) ListOIDCContactAuthProviders(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOIDCContactAuthProviders", reflect.TypeOf((*MockUserSvcAPI)(nil).ListOIDCContactAuthProviders), ctx)
+}
+
+// ListOIDCContactAuthProvidersExecute mocks base method.
+func (m *MockUserSvcAPI) ListOIDCContactAuthProvidersExecute(r ApiListOIDCContactAuthProvidersRequest) (*UserSvcListContactAuthProvidersResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListOIDCContactAuthProvidersExecute", r)
+	ret0, _ := ret[0].(*UserSvcListContactAuthProvidersResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListOIDCContactAuthProvidersExecute indicates an expected call of ListOIDCContactAuthProvidersExecute.
+func (mr *MockUserSvcAPIMockRecorder) ListOIDCContactAuthProvidersExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOIDCContactAuthProvidersExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListOIDCContactAuthProvidersExecute), r)
 }
 
 // ListOrganizations mocks base method.

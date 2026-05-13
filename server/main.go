@@ -10,6 +10,7 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -27,7 +28,7 @@ import (
 )
 
 // @title           1Backend
-// @version         0.9.12
+// @version         0.9.13
 // @description     AI-native microservices platform.
 // @termsOfService  http://swagger.io/terms/
 
@@ -49,10 +50,13 @@ import (
 // @externalDocs.description  1Backend API
 // @externalDocs.url          https://1backend.com/docs/category/1backend-api
 func main() {
+	autoIndexes := flag.Bool("auto-indexes", false, "enable query-observed automatic datastore index creation")
+	flag.Parse()
+
 	logger.Info("Starting...")
 
 	telemetryShutdown, metricsPath, err := telemetry.Setup(context.Background(), telemetry.Config{
-		ServiceVersion: "0.9.12",
+		ServiceVersion: "0.9.13",
 	})
 	if err != nil {
 		logger.Error("Cannot initialize telemetry", slog.Any("error", err))
@@ -69,7 +73,9 @@ func main() {
 		logger.Info("OpenTelemetry metrics endpoint enabled", slog.String("path", metricsPath))
 	}
 
-	universe, err := di.BigBang(&universe.Options{})
+	universe, err := di.BigBang(&universe.Options{
+		AutoIndexes: *autoIndexes,
+	})
 	if err != nil {
 		logger.Error("Cannot start node", slog.Any("error", err))
 		os.Exit(1)

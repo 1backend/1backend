@@ -1,0 +1,71 @@
+---
+id: list-contact-auth-providers
+title: "List Contact Auth Providers"
+description: "Lists configured external login providers that can be used as verified contact proof."
+sidebar_label: "List Contact Auth Providers"
+hide_title: true
+hide_table_of_contents: true
+api: eJy1VMGO2zYQ/RViTi2glez6UFSnboIiXXSBLrrZk7OHMTWWmKVIhhzJcQ39ezGSHcu1kVt0sSy+mXnz+GYOUFHS0QQ23kEJjyZxUtq7ram7SJWir0zRoVXW18apEH1vKopJcYOsNDq1IdUlqhQm1VM0W0OVJGDULHC/zSEDHyii1HiooARrEr+fIPcdN0+npJBBwIgtsfwp14f/sVtuUL+RqxSGoBqfGDIwcvClo7iHDBy2BCVgCH9Op5G+dCZSBSXHjjJIuqEWoTwA74NAE0fjahiGVwGn4F2iJOe/LBbyc0ng/VmYMCMt7ZJjwWMI1uix1eJzkqDDrGiIIgSbqcQ5RXkAw9Sma4ypbpDN4M242wfjNb1Ee/NwkufGQdI+0CWNK8zxA8aI+zGGMfLtSsNc+LX0cGR8pPD6LZvffCbN1+mHK4Q8GTDWYgx4SRTVc68lVUvceLFVTTw6iBsooegSxbvU6wI7bor5dSWK/clgnTQARWG9RiuWKpfL1epXED8k0l00vH+W+5vkeUcYKYppr83xcR9IfTpCPoHaemv9jiq12StUKaAmha5S7N/IKdSTQGobfau4IXXqST2Oo0auCt44zk8mbwgrimeXCwsfzb+j2eCsYDB/0SShcVsvPI/jKK/UopGOE1pKvyfj6s4iR+9y7dtZ7qcH9dyF4KNIOonUMIeyKE5DKAGF3NylCvcPdw7Z9KRao6MXrY2mpIJF3vrYSjvWaHJptOKp3oenR9Wv8sVFtVQWxW63y2vX5T7WxTEuFVgHe7fKF3nDrR3dQ7FNf2+fp2pnsmmHdU0xN74YIYXoZNgKZPluagQyEDtM9Bf5b/lyJSmDT9yim5GU5aiOe0uJ+mq+uS5kOJx3wg/bqcf7ZvrKRbBonLDupoGchmANpyGADGQMZDy+UX7NYNyh5RoOhw0meol2GOTztE7H/WsSbqyM8RZtou90+dM/x4n/Wd1a0zfJvtH+Ylv3aDtBjdPXYzRSG8r165Cd3C+kprB7rSnMo65W7zBfDh/++AjD8B+sx2Px
+sidebar_class_name: "get api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List Contact Auth Providers"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/user-svc/auth/providers"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Lists configured external login providers that can be used as verified contact proof.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={[{"description":"1backend app host","in":"query","name":"appHost","required":true,"schema":{"type":"string"}}]}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={undefined}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Configured providers","content":{"application/json":{"schema":{"properties":{"providers":{"items":{"properties":{"id":{"type":"string"},"kind":{"type":"string"},"loginUrl":{"type":"string"},"name":{"type":"string"},"scopes":{"items":{"type":"string"},"type":"array"},"startUrl":{"type":"string"}},"required":["id","kind","name"],"type":"object"},"type":"array"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

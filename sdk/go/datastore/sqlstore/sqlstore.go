@@ -64,6 +64,7 @@ type SQLStore struct {
 	fieldTypes       map[string]reflect.Type
 	idFieldName      string
 	autoIndexes      *indexplanner.Tracker
+	autoIndexesOn    bool
 	autoIndexMu      *sync.Mutex
 	autoIndexLock    lock.DistributedLock
 	pgTrgmOnce       sync.Once
@@ -73,13 +74,22 @@ type SQLStore struct {
 type SQLStoreOption func(*sqlStoreOptions)
 
 type sqlStoreOptions struct {
-	autoIndexLock lock.DistributedLock
-	readDB        *sql.DB
+	autoIndexLock  lock.DistributedLock
+	autoIndexes    bool
+	autoIndexesSet bool
+	readDB         *sql.DB
 }
 
 func WithAutoIndexLock(autoIndexLock lock.DistributedLock) SQLStoreOption {
 	return func(opts *sqlStoreOptions) {
 		opts.autoIndexLock = autoIndexLock
+	}
+}
+
+func WithAutoIndexes(enabled bool) SQLStoreOption {
+	return func(opts *sqlStoreOptions) {
+		opts.autoIndexes = enabled
+		opts.autoIndexesSet = true
 	}
 }
 
@@ -121,11 +131,12 @@ func NewSQLStore(instance any, driverName string, db *sql.DB, tableName string, 
 		db:               storeDB,
 		readDB:           readStoreDB,
 		fieldTypes:       map[string]reflect.Type{},
+		autoIndexesOn:    options.autoIndexesSet && options.autoIndexes,
 		autoIndexMu:      &sync.Mutex{},
 		autoIndexLock:    options.autoIndexLock,
 		autoIndexes: indexplanner.NewTracker(indexplanner.TrackerOptions{
 			Backend:   driverName,
-			Supported: driverName == DriverPostGRES,
+			Supported: driverName == DriverPostGRES && options.autoIndexesSet && options.autoIndexes,
 		}),
 	}
 	sstore.db.SetDebug(debug)

@@ -212,8 +212,24 @@ type contactAuthProvider struct {
 // @Param appHost query string true "1backend app host"
 // @Success 200 {object} user.ListContactAuthProvidersResponse "Configured providers"
 // @Router /user-svc/auth/providers [get]
-// @Router /user-svc/oidc/providers [get]
 func (s *UserService) ListContactAuthProviders(w http.ResponseWriter, r *http.Request) {
+	s.listContactAuthProviders(w, r)
+}
+
+// @ID listOIDCContactAuthProviders
+// @Summary List OIDC Contact Auth Providers
+// @Description Lists configured external login providers that can be used as verified contact proof.
+// @Description This endpoint is kept as a compatibility alias for /user-svc/auth/providers.
+// @Tags User Svc
+// @Produce json
+// @Param appHost query string true "1backend app host"
+// @Success 200 {object} user.ListContactAuthProvidersResponse "Configured providers"
+// @Router /user-svc/oidc/providers [get]
+func (s *UserService) ListOIDCContactAuthProviders(w http.ResponseWriter, r *http.Request) {
+	s.listContactAuthProviders(w, r)
+}
+
+func (s *UserService) listContactAuthProviders(w http.ResponseWriter, r *http.Request) {
 	appHost := r.URL.Query().Get("appHost")
 	if appHost == "" {
 		endpoint.WriteString(w, http.StatusBadRequest, "appHost missing")

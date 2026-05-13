@@ -133,6 +133,35 @@ func TestSQLStoreAutoIndexesManualAndObserved(t *testing.T) {
 	require.Equal(t, 1, autoIndexCount(t, db, "auto_idx_manual"))
 }
 
+func TestSQLStoreAutoIndexesDisabledByDefault(t *testing.T) {
+	conn := postgresConnString(t)
+	if conn == "" {
+		return
+	}
+	db, err := sql.Open("postgres", conn)
+	require.NoError(t, err)
+	defer db.Close()
+
+	store, err := NewSQLStore(datastore.TestObject{}, DriverPostGRES, db, "auto_idx_disabled", false)
+	require.NoError(t, err)
+	defer store.Close()
+
+	require.NoError(t, store.Create(datastore.TestObject{Name: "Alice", Value: 10}))
+	require.True(t, hasIndexNamed(t, db, "auto_idx_disabled", "auto_idx_disabled_value_idx"))
+
+	filter := datastore.Equals(datastore.Field("Name"), "Alice")
+	for range 3 {
+		_, err := store.Query(filter).Find()
+		require.NoError(t, err)
+	}
+
+	stats := store.AutoIndexStats()
+	require.False(t, stats.Supported)
+	require.Empty(t, stats.Shapes)
+	require.Empty(t, autoEntries(stats))
+	require.Zero(t, autoIndexCount(t, db, "auto_idx_disabled"))
+}
+
 func TestSQLStoreAutoIndexesPathArrayAndTrigram(t *testing.T) {
 	t.Run("path expression", func(t *testing.T) {
 		store, db := newPostgresStore(t, datastore.TestObject{}, "auto_idx_path")
@@ -362,7 +391,7 @@ func TestSQLStoreAutoIndexesRediscoverAfterRestart(t *testing.T) {
 	db, err := sql.Open("postgres", conn)
 	require.NoError(t, err)
 
-	store, err := NewSQLStore(datastore.TestObject{}, DriverPostGRES, db, "auto_idx_restart", false, WithAutoIndexLock(postgresAutoIndexLock(t)))
+	store, err := NewSQLStore(datastore.TestObject{}, DriverPostGRES, db, "auto_idx_restart", false, WithAutoIndexes(true), WithAutoIndexLock(postgresAutoIndexLock(t)))
 	require.NoError(t, err)
 
 	require.NoError(t, store.Create(datastore.TestObject{Name: "Alice"}))
@@ -380,7 +409,7 @@ func TestSQLStoreAutoIndexesRediscoverAfterRestart(t *testing.T) {
 	require.NoError(t, err)
 	defer db.Close()
 
-	store, err = NewSQLStore(datastore.TestObject{}, DriverPostGRES, db, "auto_idx_restart", false, WithAutoIndexLock(postgresAutoIndexLock(t)))
+	store, err = NewSQLStore(datastore.TestObject{}, DriverPostGRES, db, "auto_idx_restart", false, WithAutoIndexes(true), WithAutoIndexLock(postgresAutoIndexLock(t)))
 	require.NoError(t, err)
 	defer store.Close()
 
@@ -438,7 +467,7 @@ func newPostgresStore(t *testing.T, instance any, tableName string) (*SQLStore, 
 	db, err := sql.Open("postgres", conn)
 	require.NoError(t, err)
 
-	store, err := NewSQLStore(instance, DriverPostGRES, db, tableName, false, WithAutoIndexLock(postgresAutoIndexLock(t)))
+	store, err := NewSQLStore(instance, DriverPostGRES, db, tableName, false, WithAutoIndexes(true), WithAutoIndexLock(postgresAutoIndexLock(t)))
 	require.NoError(t, err)
 	return store, db
 }
@@ -446,7 +475,7 @@ func newPostgresStore(t *testing.T, instance any, tableName string) (*SQLStore, 
 func newPostgresStoreOnDB(t *testing.T, db *sql.DB, instance any, tableName string) *SQLStore {
 	t.Helper()
 
-	store, err := NewSQLStore(instance, DriverPostGRES, db, tableName, false, WithAutoIndexLock(postgresAutoIndexLock(t)))
+	store, err := NewSQLStore(instance, DriverPostGRES, db, tableName, false, WithAutoIndexes(true), WithAutoIndexLock(postgresAutoIndexLock(t)))
 	require.NoError(t, err)
 	return store
 }

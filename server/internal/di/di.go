@@ -165,6 +165,9 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	if options.DbApplicationName == "" {
 		options.DbApplicationName = os.Getenv("OB_DB_APPLICATION_NAME")
 	}
+	if !options.AutoIndexes && os.Getenv("OB_AUTO_INDEXES") == "true" {
+		options.AutoIndexes = true
+	}
 	if options.SecretEncryptionKey == "" {
 		options.SecretEncryptionKey = os.Getenv("OB_ENCRYPTION_KEY")
 		if options.SecretEncryptionKey == "" {
@@ -328,6 +331,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 			ReadDbConnectionString: options.ReadDbConnectionString,
 			DbApplicationName:      options.DbApplicationName,
 			DbPool:                 options.DbPool,
+			AutoIndexes:            options.AutoIndexes,
 			Lock:                   options.Lock,
 		})
 		if err != nil {

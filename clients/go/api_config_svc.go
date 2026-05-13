@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.12
+API version: 0.9.13
 Contact: sales@singulatron.com
 */
 
@@ -78,6 +78,10 @@ The save performs a deep merge, that is:
 - Fields present only in the incoming config are added.
 - Fields present only in the existing config are preserved.
 - Top-level and nested merges follow the same rules.
+
+The request can also include a small RFC 6902 JSON Patch-inspired `patch` array.
+Currently only `remove` operations are supported, and they are applied before the data deep merge.
+Example: `{"patch":[{"op":"remove","path":"/contactAuth/github/clientSecret"}]}`.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiSaveConfigRequest
@@ -420,6 +424,10 @@ The save performs a deep merge, that is:
 - Fields present only in the incoming config are added.
 - Fields present only in the existing config are preserved.
 - Top-level and nested merges follow the same rules.
+
+The request can also include a small RFC 6902 JSON Patch-inspired `patch` array.
+Currently only `remove` operations are supported, and they are applied before the data deep merge.
+Example: `{"patch":[{"op":"remove","path":"/contactAuth/github/clientSecret"}]}`.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiSaveConfigRequest

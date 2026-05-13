@@ -35,6 +35,7 @@ docs/ChatSvcSaveThreadResponse.md
 docs/ChatSvcThread.md
 docs/ConfigSvcAPI.md
 docs/ConfigSvcConfig.md
+docs/ConfigSvcConfigPatchOperation.md
 docs/ConfigSvcListConfigsRequest.md
 docs/ConfigSvcListConfigsResponse.md
 docs/ConfigSvcListConfigsScope.md
@@ -214,6 +215,9 @@ docs/UserSvcActivateOrganizationResponse.md
 docs/UserSvcApp.md
 docs/UserSvcChangePasswordRequest.md
 docs/UserSvcContact.md
+docs/UserSvcContactAuthLoginRequest.md
+docs/UserSvcContactAuthLoginResponse.md
+docs/UserSvcContactAuthProviderInfo.md
 docs/UserSvcContactInput.md
 docs/UserSvcCreateUserRequest.md
 docs/UserSvcDeactivateOrganizationResponse.md
@@ -227,6 +231,7 @@ docs/UserSvcGetPublicKeyResponse.md
 docs/UserSvcHasPermissionResponse.md
 docs/UserSvcListAppsRequest.md
 docs/UserSvcListAppsResponse.md
+docs/UserSvcListContactAuthProvidersResponse.md
 docs/UserSvcListEnrollsRequest.md
 docs/UserSvcListEnrollsResponse.md
 docs/UserSvcListMembershipsRequest.md
@@ -289,6 +294,7 @@ model_chat_svc_save_thread_request.go
 model_chat_svc_save_thread_response.go
 model_chat_svc_thread.go
 model_config_svc_config.go
+model_config_svc_config_patch_operation.go
 model_config_svc_list_configs_request.go
 model_config_svc_list_configs_response.go
 model_config_svc_list_configs_scope.go
@@ -454,6 +460,9 @@ model_user_svc_activate_organization_response.go
 model_user_svc_app.go
 model_user_svc_change_password_request.go
 model_user_svc_contact.go
+model_user_svc_contact_auth_login_request.go
+model_user_svc_contact_auth_login_response.go
+model_user_svc_contact_auth_provider_info.go
 model_user_svc_contact_input.go
 model_user_svc_create_user_request.go
 model_user_svc_deactivate_organization_response.go
@@ -467,6 +476,7 @@ model_user_svc_get_public_key_response.go
 model_user_svc_has_permission_response.go
 model_user_svc_list_apps_request.go
 model_user_svc_list_apps_response.go
+model_user_svc_list_contact_auth_providers_response.go
 model_user_svc_list_enrolls_request.go
 model_user_svc_list_enrolls_response.go
 model_user_svc_list_memberships_request.go

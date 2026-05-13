@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.12
+API version: 0.9.13
 Contact: sales@singulatron.com
 */
 
@@ -65,6 +65,51 @@ type UserSvcAPI interface {
 	// ChangePasswordExecute executes the request
 	//  @return map[string]interface{}
 	ChangePasswordExecute(r ApiChangePasswordRequest) (map[string]interface{}, *http.Response, error)
+
+	/*
+	ContactAuthCallback Contact Auth Callback
+
+	Handles a provider authorization-code callback and returns or redirects with a normal 1backend token.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param provider Provider ID, such as google or facebook
+	@return ApiContactAuthCallbackRequest
+	*/
+	ContactAuthCallback(ctx context.Context, provider string) ApiContactAuthCallbackRequest
+
+	// ContactAuthCallbackExecute executes the request
+	//  @return UserSvcContactAuthLoginResponse
+	ContactAuthCallbackExecute(r ApiContactAuthCallbackRequest) (*UserSvcContactAuthLoginResponse, *http.Response, error)
+
+	/*
+	ContactAuthLogin Contact Auth Login
+
+	Verifies a configured external provider token as proof of contact ownership and returns a normal 1backend token.
+OIDC providers must assert a real verified email contact. Relay and noreply addresses are rejected.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param provider Provider ID, such as google or facebook
+	@return ApiContactAuthLoginRequest
+	*/
+	ContactAuthLogin(ctx context.Context, provider string) ApiContactAuthLoginRequest
+
+	// ContactAuthLoginExecute executes the request
+	//  @return UserSvcContactAuthLoginResponse
+	ContactAuthLoginExecute(r ApiContactAuthLoginRequest) (*UserSvcContactAuthLoginResponse, *http.Response, error)
+
+	/*
+	ContactAuthStart Start Contact Auth
+
+	Redirects to a configured contact-auth provider. OIDC providers use authorization code flow; OAuth2 providers use their provider-specific verified email APIs.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param provider Provider ID, such as google or facebook
+	@return ApiContactAuthStartRequest
+	*/
+	ContactAuthStart(ctx context.Context, provider string) ApiContactAuthStartRequest
+
+	// ContactAuthStartExecute executes the request
+	ContactAuthStartExecute(r ApiContactAuthStartRequest) (*http.Response, error)
 
 	/*
 	CreateUser Create a New User
@@ -235,6 +280,20 @@ Caller can only list apps of roles they own (unless they are an admin).
 	ListAppsExecute(r ApiListAppsRequest) (*UserSvcListAppsResponse, *http.Response, error)
 
 	/*
+	ListContactAuthProviders List Contact Auth Providers
+
+	Lists configured external login providers that can be used as verified contact proof.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiListContactAuthProvidersRequest
+	*/
+	ListContactAuthProviders(ctx context.Context) ApiListContactAuthProvidersRequest
+
+	// ListContactAuthProvidersExecute executes the request
+	//  @return UserSvcListContactAuthProvidersResponse
+	ListContactAuthProvidersExecute(r ApiListContactAuthProvidersRequest) (*UserSvcListContactAuthProvidersResponse, *http.Response, error)
+
+	/*
 	ListEnrolls List Enrolls
 
 	List enrolls. Role, user ID or contact ID must be specified.
@@ -264,6 +323,21 @@ Caller can only list enrolls of roles they own (unless they are an admin).
 	// ListMembershipsExecute executes the request
 	//  @return UserSvcListMembershipsResponse
 	ListMembershipsExecute(r ApiListMembershipsRequest) (*UserSvcListMembershipsResponse, *http.Response, error)
+
+	/*
+	ListOIDCContactAuthProviders List OIDC Contact Auth Providers
+
+	Lists configured external login providers that can be used as verified contact proof.
+This endpoint is kept as a compatibility alias for /user-svc/auth/providers.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiListOIDCContactAuthProvidersRequest
+	*/
+	ListOIDCContactAuthProviders(ctx context.Context) ApiListOIDCContactAuthProvidersRequest
+
+	// ListOIDCContactAuthProvidersExecute executes the request
+	//  @return UserSvcListContactAuthProvidersResponse
+	ListOIDCContactAuthProvidersExecute(r ApiListOIDCContactAuthProvidersRequest) (*UserSvcListContactAuthProvidersResponse, *http.Response, error)
 
 	/*
 	ListOrganizations List Organizations
@@ -1051,6 +1125,432 @@ func (a *UserSvcAPIService) ChangePasswordExecute(r ApiChangePasswordRequest) (m
 	}
 
 	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiContactAuthCallbackRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+	provider string
+}
+
+func (r ApiContactAuthCallbackRequest) Execute() (*UserSvcContactAuthLoginResponse, *http.Response, error) {
+	return r.ApiService.ContactAuthCallbackExecute(r)
+}
+
+/*
+ContactAuthCallback Contact Auth Callback
+
+Handles a provider authorization-code callback and returns or redirects with a normal 1backend token.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param provider Provider ID, such as google or facebook
+ @return ApiContactAuthCallbackRequest
+*/
+func (a *UserSvcAPIService) ContactAuthCallback(ctx context.Context, provider string) ApiContactAuthCallbackRequest {
+	return ApiContactAuthCallbackRequest{
+		ApiService: a,
+		ctx: ctx,
+		provider: provider,
+	}
+}
+
+// Execute executes the request
+//  @return UserSvcContactAuthLoginResponse
+func (a *UserSvcAPIService) ContactAuthCallbackExecute(r ApiContactAuthCallbackRequest) (*UserSvcContactAuthLoginResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *UserSvcContactAuthLoginResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.ContactAuthCallback")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/auth/{provider}/callback"
+	localVarPath = strings.Replace(localVarPath, "{"+"provider"+"}", url.PathEscape(parameterValueToString(r.provider, "provider")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"*/*"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiContactAuthLoginRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+	provider string
+	body *UserSvcContactAuthLoginRequest
+}
+
+// Contact Auth Login Request
+func (r ApiContactAuthLoginRequest) Body(body UserSvcContactAuthLoginRequest) ApiContactAuthLoginRequest {
+	r.body = &body
+	return r
+}
+
+func (r ApiContactAuthLoginRequest) Execute() (*UserSvcContactAuthLoginResponse, *http.Response, error) {
+	return r.ApiService.ContactAuthLoginExecute(r)
+}
+
+/*
+ContactAuthLogin Contact Auth Login
+
+Verifies a configured external provider token as proof of contact ownership and returns a normal 1backend token.
+OIDC providers must assert a real verified email contact. Relay and noreply addresses are rejected.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param provider Provider ID, such as google or facebook
+ @return ApiContactAuthLoginRequest
+*/
+func (a *UserSvcAPIService) ContactAuthLogin(ctx context.Context, provider string) ApiContactAuthLoginRequest {
+	return ApiContactAuthLoginRequest{
+		ApiService: a,
+		ctx: ctx,
+		provider: provider,
+	}
+}
+
+// Execute executes the request
+//  @return UserSvcContactAuthLoginResponse
+func (a *UserSvcAPIService) ContactAuthLoginExecute(r ApiContactAuthLoginRequest) (*UserSvcContactAuthLoginResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodPost
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *UserSvcContactAuthLoginResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.ContactAuthLogin")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/auth/{provider}/login"
+	localVarPath = strings.Replace(localVarPath, "{"+"provider"+"}", url.PathEscape(parameterValueToString(r.provider, "provider")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.body == nil {
+		return localVarReturnValue, nil, reportError("body is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.body
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 500 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiContactAuthStartRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+	provider string
+	appHost *string
+	device *string
+	slug *string
+	returnTo *string
+}
+
+// 1backend app host
+func (r ApiContactAuthStartRequest) AppHost(appHost string) ApiContactAuthStartRequest {
+	r.appHost = &appHost
+	return r
+}
+
+// Device
+func (r ApiContactAuthStartRequest) Device(device string) ApiContactAuthStartRequest {
+	r.device = &device
+	return r
+}
+
+// Slug used only when creating a new user
+func (r ApiContactAuthStartRequest) Slug(slug string) ApiContactAuthStartRequest {
+	r.slug = &slug
+	return r
+}
+
+// URL to redirect to after login. Token is returned in the URL fragment.
+func (r ApiContactAuthStartRequest) ReturnTo(returnTo string) ApiContactAuthStartRequest {
+	r.returnTo = &returnTo
+	return r
+}
+
+func (r ApiContactAuthStartRequest) Execute() (*http.Response, error) {
+	return r.ApiService.ContactAuthStartExecute(r)
+}
+
+/*
+ContactAuthStart Start Contact Auth
+
+Redirects to a configured contact-auth provider. OIDC providers use authorization code flow; OAuth2 providers use their provider-specific verified email APIs.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @param provider Provider ID, such as google or facebook
+ @return ApiContactAuthStartRequest
+*/
+func (a *UserSvcAPIService) ContactAuthStart(ctx context.Context, provider string) ApiContactAuthStartRequest {
+	return ApiContactAuthStartRequest{
+		ApiService: a,
+		ctx: ctx,
+		provider: provider,
+	}
+}
+
+// Execute executes the request
+func (a *UserSvcAPIService) ContactAuthStartExecute(r ApiContactAuthStartRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.ContactAuthStart")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/auth/{provider}/start"
+	localVarPath = strings.Replace(localVarPath, "{"+"provider"+"}", url.PathEscape(parameterValueToString(r.provider, "provider")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.appHost == nil {
+		return nil, reportError("appHost is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "appHost", r.appHost, "", "")
+	if r.device != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "device", r.device, "", "")
+	}
+	if r.slug != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "slug", r.slug, "", "")
+	}
+	if r.returnTo != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "returnTo", r.returnTo, "", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"*/*"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
 }
 
 type ApiCreateUserRequest struct {
@@ -2559,6 +3059,116 @@ func (a *UserSvcAPIService) ListAppsExecute(r ApiListAppsRequest) (*UserSvcListA
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiListContactAuthProvidersRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+	appHost *string
+}
+
+// 1backend app host
+func (r ApiListContactAuthProvidersRequest) AppHost(appHost string) ApiListContactAuthProvidersRequest {
+	r.appHost = &appHost
+	return r
+}
+
+func (r ApiListContactAuthProvidersRequest) Execute() (*UserSvcListContactAuthProvidersResponse, *http.Response, error) {
+	return r.ApiService.ListContactAuthProvidersExecute(r)
+}
+
+/*
+ListContactAuthProviders List Contact Auth Providers
+
+Lists configured external login providers that can be used as verified contact proof.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListContactAuthProvidersRequest
+*/
+func (a *UserSvcAPIService) ListContactAuthProviders(ctx context.Context) ApiListContactAuthProvidersRequest {
+	return ApiListContactAuthProvidersRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return UserSvcListContactAuthProvidersResponse
+func (a *UserSvcAPIService) ListContactAuthProvidersExecute(r ApiListContactAuthProvidersRequest) (*UserSvcListContactAuthProvidersResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *UserSvcListContactAuthProvidersResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.ListContactAuthProviders")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/auth/providers"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.appHost == nil {
+		return localVarReturnValue, nil, reportError("appHost is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "appHost", r.appHost, "", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiListEnrollsRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
@@ -2857,6 +3467,117 @@ func (a *UserSvcAPIService) ListMembershipsExecute(r ApiListMembershipsRequest) 
 			}
 					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 					newErr.model = v
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiListOIDCContactAuthProvidersRequest struct {
+	ctx context.Context
+	ApiService UserSvcAPI
+	appHost *string
+}
+
+// 1backend app host
+func (r ApiListOIDCContactAuthProvidersRequest) AppHost(appHost string) ApiListOIDCContactAuthProvidersRequest {
+	r.appHost = &appHost
+	return r
+}
+
+func (r ApiListOIDCContactAuthProvidersRequest) Execute() (*UserSvcListContactAuthProvidersResponse, *http.Response, error) {
+	return r.ApiService.ListOIDCContactAuthProvidersExecute(r)
+}
+
+/*
+ListOIDCContactAuthProviders List OIDC Contact Auth Providers
+
+Lists configured external login providers that can be used as verified contact proof.
+This endpoint is kept as a compatibility alias for /user-svc/auth/providers.
+
+ @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ @return ApiListOIDCContactAuthProvidersRequest
+*/
+func (a *UserSvcAPIService) ListOIDCContactAuthProviders(ctx context.Context) ApiListOIDCContactAuthProvidersRequest {
+	return ApiListOIDCContactAuthProvidersRequest{
+		ApiService: a,
+		ctx: ctx,
+	}
+}
+
+// Execute executes the request
+//  @return UserSvcListContactAuthProvidersResponse
+func (a *UserSvcAPIService) ListOIDCContactAuthProvidersExecute(r ApiListOIDCContactAuthProvidersRequest) (*UserSvcListContactAuthProvidersResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod   = http.MethodGet
+		localVarPostBody     interface{}
+		formFiles            []formFile
+		localVarReturnValue  *UserSvcListContactAuthProvidersResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "UserSvcAPIService.ListOIDCContactAuthProviders")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/user-svc/oidc/providers"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.appHost == nil {
+		return localVarReturnValue, nil, reportError("appHost is required and must be specified")
+	}
+
+	parameterAddToHeaderOrQuery(localVarQueryParams, "appHost", r.appHost, "", "")
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
 		}
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
