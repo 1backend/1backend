@@ -250,6 +250,15 @@ func (fs *FileService) serveRemoteDownload(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
+	if download, ok, err := fs.promoteDownloadFromStorage(r.Context(), downloadReplicas); err != nil {
+		logger.Warn("Failed to promote remote download from storage",
+			slog.Any("error", err),
+		)
+	} else if ok {
+		fs.serveLocalDownload([]*file.InternalDownload{download}, w, r)
+		return
+	}
+
 	downloads, err := fs.pickRemoteDownloads(r.Context(), downloadReplicas)
 	if err != nil {
 		logger.Error("Failed to pick remote download", slog.Any("error", err))
@@ -315,6 +324,64 @@ func (fs *FileService) serveRemoteDownload(
 		endpoint.InternalServerError(w)
 		return
 	}
+}
+
+func (fs *FileService) promoteDownloadFromStorage(
+	ctx context.Context,
+	downloadReplicas []*file.InternalDownload,
+) (*file.InternalDownload, bool, error) {
+	if fs.downloadStorage == nil {
+		return nil, false, nil
+	}
+
+	if fs.nodeId == "" {
+		err := fs.getNodeId(ctx)
+		if err != nil {
+			return nil, false, errors.Wrap(err, "cannot get node id")
+		}
+	}
+
+	for _, download := range downloadReplicas {
+		if download.Status != file.DownloadStatusCompleted {
+			continue
+		}
+
+		localPath := filepath.Join(fs.downloadFolder, EncodeURLtoFileName(download.URL))
+		storageFilePath := DownloadStorageFilePath(download.URL)
+		restored, size, err := fs.restoreDownloadFromStorage(
+			ctx,
+			storageFilePath,
+			localPath,
+		)
+		if err != nil {
+			return nil, false, err
+		}
+		if !restored {
+			continue
+		}
+
+		download.NodeId = fs.nodeId
+		download.FilePath = localPath
+		download.Status = file.DownloadStatusCompleted
+		download.TotalSize = size
+		download.DownloadedSize = size
+		download.RetryCount = nil
+		download.NextRetryAt = nil
+		download.LastError = nil
+
+		if err := fs.downloadStore.Upsert(download); err != nil {
+			return nil, false, errors.Wrap(err, "failed to update promoted download record")
+		}
+
+		logger.Info("Promoted remote download from storage",
+			slog.String("url", download.URL),
+			slog.String("nodeId", fs.nodeId),
+		)
+
+		return download, true, nil
+	}
+
+	return nil, false, nil
 }
 
 func toDownloads(downloadIs []datastore.Row) []*file.InternalDownload {

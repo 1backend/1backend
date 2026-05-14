@@ -138,15 +138,9 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		defer rsp.Close()
 	}
 
-	if targetContentType != "" {
-		w.Header().Set("Content-Type", targetContentType)
-	}
-
-	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-
 	// Check RAM
 	if data, ok := cs.imageDataCache.Get(hash); ok {
-		w.Write(data)
+		writeCachedImage(w, targetContentType, data)
 		return
 	}
 
@@ -157,7 +151,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			cs.imageDataCache.Add(hash, data)
 		}
 
-		w.Write(data)
+		writeCachedImage(w, targetContentType, data)
 		return
 	}
 
@@ -262,7 +256,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	}
 
 	res := val.(*imgResult)
-	w.Write(res.Data)
+	writeCachedImage(w, res.ContentType, res.Data)
 }
 
 func (cs *ImageService) getCachePath(hash string) string {

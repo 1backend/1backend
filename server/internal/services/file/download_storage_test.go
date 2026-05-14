@@ -253,6 +253,60 @@ func TestServeLocalDownloadRedownloadsWhenLocalAndStorageMissing(t *testing.T) {
 	require.Equal(t, []byte(""), storage.data[storageKey], "expected redownloaded object persisted to storage")
 }
 
+func TestServeRemoteDownloadPromotesStoredDownloadToCurrentNode(t *testing.T) {
+	tmp := t.TempDir()
+	dsPath := filepath.Join(tmp, "downloads.json")
+	downloadStore, err := localstore.NewLocalStore(&filetypes.InternalDownload{}, dsPath)
+	require.NoError(t, err)
+	defer downloadStore.Close()
+
+	url := "https://example.com/assets/stale.txt"
+	stalePath := filepath.Join("/old-node/downloads", EncodeURLtoFileName(url))
+	storage := newMemoryStorageProvider()
+	storage.data[DownloadStorageFilePath(url)] = []byte("from-storage")
+
+	download := &filetypes.InternalDownload{
+		Id:             "dl_stale",
+		URL:            url,
+		NodeId:         "stale-node",
+		FilePath:       stalePath,
+		Status:         filetypes.DownloadStatusCompleted,
+		TotalSize:      0,
+		DownloadedSize: int64(len("from-storage")),
+	}
+	require.NoError(t, downloadStore.Upsert(download))
+
+	fs := &FileService{
+		nodeId:          "current-node",
+		downloadStore:   downloadStore,
+		downloadStorage: storage,
+		downloadFolder:  filepath.Join(tmp, "downloads"),
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/file-svc/serve/download/ignored", nil)
+	w := httptest.NewRecorder()
+	fs.serveRemoteDownload([]*filetypes.InternalDownload{download}, w, req)
+
+	resp := w.Result()
+	defer resp.Body.Close()
+	require.Equal(t, http.StatusOK, resp.StatusCode)
+
+	body, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	require.Equal(t, "from-storage", string(body))
+
+	localPath := filepath.Join(fs.downloadFolder, EncodeURLtoFileName(url))
+	require.FileExists(t, localPath)
+
+	updated, exists := fs.getDownload(url)
+	require.True(t, exists)
+	require.Equal(t, "current-node", updated.NodeId)
+	require.Equal(t, localPath, updated.FilePath)
+	require.Equal(t, filetypes.DownloadStatusCompleted, updated.Status)
+	require.Equal(t, int64(len("from-storage")), updated.TotalSize)
+	require.Equal(t, int64(len("from-storage")), updated.DownloadedSize)
+}
+
 func TestRestoreDownloadFromStorageReturnsFalseWhenObjectMissing(t *testing.T) {
 	tmp := t.TempDir()
 	localFile := filepath.Join(tmp, "downloads", "missing.bin")

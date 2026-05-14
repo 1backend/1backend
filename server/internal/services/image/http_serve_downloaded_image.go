@@ -92,14 +92,9 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 	)
 	hash := sha1Hex(cacheKeyData)
 
-	if targetContentType != "" {
-		w.Header().Set("Content-Type", targetContentType)
-	}
-	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-
 	// RAM cache
 	if data, ok := cs.imageDataCache.Get(hash); ok {
-		_, _ = w.Write(data)
+		writeCachedImage(w, targetContentType, data)
 		return
 	}
 
@@ -109,7 +104,7 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 		if len(data) < memCacheLimit {
 			cs.imageDataCache.Add(hash, data)
 		}
-		_, _ = w.Write(data)
+		writeCachedImage(w, targetContentType, data)
 		return
 	}
 
@@ -159,7 +154,15 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 	}
 
 	res := val.(*imgResult)
-	_, _ = w.Write(res.Data)
+	writeCachedImage(w, res.ContentType, res.Data)
+}
+
+func writeCachedImage(w http.ResponseWriter, contentType string, data []byte) {
+	if contentType != "" {
+		w.Header().Set("Content-Type", contentType)
+	}
+	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+	_, _ = w.Write(data)
 }
 
 func buildTargetContentType(requestedFormat string) string {
