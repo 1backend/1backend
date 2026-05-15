@@ -136,6 +136,10 @@ func TestProxyService_FrontendRedirect(t *testing.T) {
 				Id:     "old.localhost/old",
 				Target: "https://new.localhost/new",
 			},
+			{
+				Id:     "old.localhost/self",
+				Target: "http://old.localhost/self",
+			},
 		},
 	})
 	require.Equal(t, http.StatusOK, statusCode, string(body))
@@ -173,7 +177,24 @@ func TestProxyService_FrontendRedirect(t *testing.T) {
 		require.Equal(t, "https://new.localhost/new/docs?q=1", resp.Header.Get("Location"))
 	})
 
-	require.Equal(t, int32(0), backendHits.Load())
+	t.Run("self redirect falls through to route", func(t *testing.T) {
+		req, err := http.NewRequest(http.MethodGet, edgeProxyUrl+"/self/docs?q=1", nil)
+		require.NoError(t, err)
+		req.Host = "old.localhost"
+
+		resp, err := proxyClient.Do(req)
+		require.NoError(t, err)
+		defer resp.Body.Close()
+
+		body, err := io.ReadAll(resp.Body)
+		require.NoError(t, err)
+
+		require.Equal(t, http.StatusOK, resp.StatusCode)
+		require.Equal(t, "", resp.Header.Get("Location"))
+		require.Equal(t, "backend", string(body))
+	})
+
+	require.Equal(t, int32(1), backendHits.Load())
 }
 
 func proxyJSON(t *testing.T, method, url, token string, payload any) (int, http.Header, []byte) {

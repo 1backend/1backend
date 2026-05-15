@@ -187,8 +187,8 @@ func TestConfigService(t *testing.T) {
 		_, _, err = client1.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
 				Patch: []openapi.ConfigSvcConfigPatchOperation{
-					{Op: "remove", Path: "/contactAuth/github/clientSecret"},
-					{Op: "remove", Path: "/contactAuth/missing"},
+					{Op: openapi.PtrString("remove"), Path: openapi.PtrString("/contactAuth/github/clientSecret")},
+					{Op: openapi.PtrString("remove"), Path: openapi.PtrString("/contactAuth/missing")},
 				},
 				Data: map[string]any{
 					"contactAuth": map[string]any{
@@ -238,7 +238,7 @@ func TestConfigService(t *testing.T) {
 		_, _, err := client1.ConfigSvcAPI.SaveConfig(ctx).
 			Body(openapi.ConfigSvcSaveConfigRequest{
 				Patch: []openapi.ConfigSvcConfigPatchOperation{
-					{Op: "replace", Path: "/field1"},
+					{Op: openapi.PtrString("replace"), Path: openapi.PtrString("/field1")},
 				},
 			}).
 			Execute()

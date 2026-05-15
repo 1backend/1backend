@@ -45,6 +45,40 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if redirect, matchedPathPrefix, found, err := cs.findRedirect(r.Host, r.URL.EscapedPath()); err != nil {
+		logger.Error("Error finding redirect",
+			slog.String("host", r.Host),
+			slog.String("path", r.URL.EscapedPath()),
+			slog.Any("error", err),
+		)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	} else if found {
+		statusCode, err := normalizeRedirectStatusCode(redirect.StatusCode)
+		if err != nil {
+			logger.Error("Invalid redirect status code",
+				slog.String("host", r.Host),
+				slog.String("path", r.URL.EscapedPath()),
+				slog.Int("statusCode", redirect.StatusCode),
+				slog.Any("error", err),
+			)
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		location := buildRedirectLocation(redirect.Target, matchedPathPrefix, r.URL.EscapedPath(), r.URL.RawQuery)
+		if isSelfRedirect(r, location) {
+			logger.Warn("Skipping self redirect",
+				slog.String("host", r.Host),
+				slog.String("path", r.URL.EscapedPath()),
+				slog.String("location", location),
+			)
+		} else {
+			w.Header().Set("Location", location)
+			w.WriteHeader(statusCode)
+			return
+		}
+	}
+
 	targetString, err := cs.findRouteTarget(r.Host, r.URL.EscapedPath(), r.URL.RawQuery)
 	if err != nil {
 		if herr, ok := err.(*sdk.HTTPError); ok {
@@ -127,12 +161,68 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 }
 
 func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, error) {
+	snapshot, err := cs.cachedRouteSnapshot()
+	if err != nil {
+		return "", sdk.NewHTTPError(
+			http.StatusInternalServerError,
+			fmt.Sprintf("failed to query routes: %v", err),
+		)
+	}
 
-	candidates := make([]string, 0, strings.Count(path, "/")+1)
+	// Pick longest match (candidates is already longest to shortest).
+	var route *proxy.Route
+	for _, candidate := range routeCandidates(host, path) {
+		key := candidate.key
+		if r, ok := snapshot.route(key); ok {
+			route = r
+			break
+		}
+	}
+
+	if route == nil {
+		return "", sdk.NewHTTPError(
+			http.StatusNotFound,
+			fmt.Sprintf("route not found for host %q and path %q", host, path),
+		)
+	}
+
+	target := strings.TrimSuffix(route.Target, "/") + path
+	if rawQuery != "" {
+		target += "?" + rawQuery
+	}
+
+	return target, nil
+}
+
+func (cs *ProxyService) findRedirect(host, path string) (*proxy.Redirect, string, bool, error) {
+	snapshot, err := cs.cachedRedirectSnapshot()
+	if err != nil {
+		return nil, "", false, err
+	}
+
+	for _, candidate := range routeCandidates(host, path) {
+		redirect, ok := snapshot.redirect(candidate.key)
+		if ok {
+			return redirect, candidate.pathPrefix, true, nil
+		}
+	}
+	return nil, "", false, nil
+}
+
+type routeCandidate struct {
+	key        string
+	pathPrefix string
+}
+
+func routeCandidates(host, path string) []routeCandidate {
+	candidates := make([]routeCandidate, 0, strings.Count(path, "/")+1)
 
 	p := path
 	for {
-		candidates = append(candidates, host+p)
+		candidates = append(candidates, routeCandidate{
+			key:        host + p,
+			pathPrefix: p,
+		})
 
 		if len(p) == 0 {
 			break
@@ -154,36 +244,116 @@ func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, er
 		}
 	}
 
-	snapshot, err := cs.cachedRouteSnapshot()
-	if err != nil {
-		return "", sdk.NewHTTPError(
-			http.StatusInternalServerError,
-			fmt.Sprintf("failed to query routes: %v", err),
-		)
-	}
+	return candidates
+}
 
-	// Pick longest match (candidates is already longest to shortest).
-	var route *proxy.Route
-	for _, key := range candidates {
-		if r, ok := snapshot.route(key); ok {
-			route = r
-			break
+func buildRedirectLocation(target, matchedPathPrefix, requestPath, rawQuery string) string {
+	base, targetQuery, fragment := splitLocation(target)
+	suffix := strings.TrimPrefix(requestPath, matchedPathPrefix)
+
+	if suffix != "" {
+		switch {
+		case strings.HasSuffix(base, "/") && strings.HasPrefix(suffix, "/"):
+			base = strings.TrimRight(base, "/") + suffix
+		case !strings.HasSuffix(base, "/") && !strings.HasPrefix(suffix, "/"):
+			base += "/" + suffix
+		default:
+			base += suffix
 		}
 	}
 
-	if route == nil {
-		return "", sdk.NewHTTPError(
-			http.StatusNotFound,
-			fmt.Sprintf("route not found for host %q and path %q", host, path),
-		)
-	}
-
-	target := strings.TrimSuffix(route.Target, "/") + path
+	query := targetQuery
 	if rawQuery != "" {
-		target += "?" + rawQuery
+		if query != "" {
+			query += "&" + rawQuery
+		} else {
+			query = rawQuery
+		}
+	}
+	if query != "" {
+		base += "?" + query
+	}
+	if fragment != "" {
+		base += "#" + fragment
+	}
+	return base
+}
+
+func splitLocation(location string) (base string, query string, fragment string) {
+	base = location
+	if idx := strings.IndexByte(base, '#'); idx >= 0 {
+		fragment = base[idx+1:]
+		base = base[:idx]
+	}
+	if idx := strings.IndexByte(base, '?'); idx >= 0 {
+		query = base[idx+1:]
+		base = base[:idx]
+	}
+	return base, query, fragment
+}
+
+func isSelfRedirect(r *http.Request, location string) bool {
+	requestURL, err := requestURLForRedirectComparison(r)
+	if err != nil {
+		return false
 	}
 
-	return target, nil
+	redirectURL, err := url.Parse(location)
+	if err != nil {
+		return false
+	}
+	redirectURL = requestURL.ResolveReference(redirectURL)
+
+	return strings.EqualFold(redirectURL.Scheme, requestURL.Scheme) &&
+		equivalentRedirectHost(redirectURL, requestURL) &&
+		redirectURL.EscapedPath() == requestURL.EscapedPath() &&
+		redirectURL.RawQuery == requestURL.RawQuery
+}
+
+func equivalentRedirectHost(a, b *url.URL) bool {
+	return strings.EqualFold(a.Hostname(), b.Hostname()) &&
+		normalizedURLPort(a.Scheme, a.Port()) == normalizedURLPort(b.Scheme, b.Port())
+}
+
+func normalizedURLPort(scheme, port string) string {
+	if port != "" {
+		return port
+	}
+	switch strings.ToLower(scheme) {
+	case "http":
+		return "80"
+	case "https":
+		return "443"
+	default:
+		return ""
+	}
+}
+
+func requestURLForRedirectComparison(r *http.Request) (*url.URL, error) {
+	path := r.URL.EscapedPath()
+	if path == "" {
+		path = "/"
+	}
+
+	rawURL := effectiveRequestScheme(r) + "://" + r.Host + path
+	if r.URL.RawQuery != "" {
+		rawURL += "?" + r.URL.RawQuery
+	}
+
+	return url.Parse(rawURL)
+}
+
+func effectiveRequestScheme(r *http.Request) string {
+	if proto := r.Header.Get("X-Forwarded-Proto"); proto != "" {
+		proto = strings.TrimSpace(strings.Split(proto, ",")[0])
+		if proto != "" {
+			return proto
+		}
+	}
+	if r.TLS != nil {
+		return "https"
+	}
+	return "http"
 }
 
 func isMetricsEndpoint(path string) bool {
