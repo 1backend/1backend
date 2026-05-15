@@ -17,6 +17,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	openapi "github.com/1backend/1backend/clients/go"
 	sdk "github.com/1backend/1backend/sdk/go"
@@ -24,6 +25,8 @@ import (
 	"github.com/1backend/1backend/sdk/go/logger"
 	types "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 )
 
 /*
@@ -172,7 +175,7 @@ func (dm *FileService) download(
 	return nil
 }
 
-func (dm *FileService) downloadFile(d *types.InternalDownload) error {
+func (dm *FileService) downloadFile(d *types.InternalDownload) (retErr error) {
 	storageFilePath := DownloadStorageFilePath(d.URL)
 
 	if d.Status == types.DownloadStatusCompleted {
@@ -182,6 +185,22 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 		// this should never happen as Do sets this to inProgress
 		return fmt.Errorf("cannot download file with status paused")
 	}
+
+	start := time.Now()
+	resumed := d.DownloadedSize > 0
+	ctx, span := startFileSpan(context.Background(), "file.download.fetch",
+		attribute.Bool("file.download.resumed", resumed),
+	)
+	defer func() {
+		result := "success"
+		if retErr != nil {
+			result = "error"
+			span.RecordError(retErr)
+			span.SetStatus(codes.Error, retErr.Error())
+		}
+		recordFileDownloadFetch(ctx, result, resumed, time.Since(start))
+		span.End()
+	}()
 
 	out, err := os.OpenFile(
 		d.FilePath+".part",
@@ -239,7 +258,11 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 				ev := types.EventDownloadStatusChange{}
 				token, err := dm.getToken()
 				if err != nil {
-					return errors.Wrap(err, "cannot get token")
+					logger.Warn("Error getting token for download event",
+						slog.String("event", ev.Name()),
+						slog.String("error", err.Error()),
+					)
+					continue
 				}
 
 				_, err = dm.options.ClientFactory.Client(client.WithToken(token)).
@@ -288,6 +311,9 @@ func (dm *FileService) downloadFile(d *types.InternalDownload) error {
 					slog.String("url", d.URL),
 					slog.String("error", err.Error()),
 				)
+				recordFileDownloadRecovery(context.Background(), "storage_persist", "error")
+			} else {
+				recordFileDownloadRecovery(context.Background(), "storage_persist", "success")
 			}
 		}
 	} else {

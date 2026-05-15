@@ -24,11 +24,14 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/chai2010/webp"
 	"github.com/gen2brain/avif"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"golang.org/x/image/bmp"
 	"golang.org/x/image/tiff"
 
@@ -76,6 +79,14 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 	if r.URL.Query().Get("fit") == "" {
 		params.Fit = fitContain
 	}
+	ctx, span := startImageSpan(r.Context(), "image.serve_downloaded",
+		attribute.Int("image.width", params.Width),
+		attribute.Int("image.height", params.Height),
+		attribute.String("image.fit", params.Fit),
+		attribute.String("image.format", params.RequestedFormat),
+	)
+	defer span.End()
+	r = r.WithContext(ctx)
 
 	originalContentType, _ := cs.metaCache.Get("download:" + rawURL)
 
@@ -94,6 +105,7 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 
 	// RAM cache
 	if data, ok := cs.imageDataCache.Get(hash); ok {
+		recordImageServe(r.Context(), "download", "ram", "success", int64(len(data)), params)
 		writeCachedImage(w, targetContentType, data)
 		return
 	}
@@ -104,11 +116,15 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 		if len(data) < memCacheLimit {
 			cs.imageDataCache.Add(hash, data)
 		}
+		recordImageServe(r.Context(), "download", "disk", "success", int64(len(data)), params)
 		writeCachedImage(w, targetContentType, data)
 		return
 	}
 
+	didTransform := false
+	transformCache := "cold_miss"
 	val, err, _ := cs.sf.Do(hash, func() (interface{}, error) {
+		transformStart := time.Now()
 		logger.Info("Reading image from file service download",
 			slog.String("hash", hash),
 			slog.String("url", rawURL),
@@ -124,6 +140,7 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 			originalContentType = hrsp.Header.Get("Content-Type")
 			cs.metaCache.Add("download:"+rawURL, originalContentType)
 		}
+		transformCache = imageCacheLabelFromStorageSource(hrsp.Header.Get(imageStorageSourceHeader))
 
 		result, err := cs.processImage(
 			rsp,
@@ -137,8 +154,11 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 			cachePath,
 		)
 		if err != nil {
+			recordImageTransform(r.Context(), "download", "error", time.Since(transformStart))
 			return nil, err
 		}
+		recordImageTransform(r.Context(), "download", "success", time.Since(transformStart))
+		didTransform = true
 
 		return result, nil
 	})
@@ -149,11 +169,19 @@ func (cs *ImageService) ServeDownloadedImage(w http.ResponseWriter, r *http.Requ
 			status = http.StatusNotFound
 		}
 		logger.Error("Error download file", slog.Any("error", err))
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "transform")
+		recordImageServe(r.Context(), "download", "cold_miss", "error", -1, params)
 		endpoint.WriteErr(w, status, err)
 		return
 	}
 
 	res := val.(*imgResult)
+	cache := "coalesced"
+	if didTransform {
+		cache = transformCache
+	}
+	recordImageServe(r.Context(), "download", cache, "success", int64(len(res.Data)), params)
 	writeCachedImage(w, res.ContentType, res.Data)
 }
 
@@ -270,10 +298,12 @@ func (cs *ImageService) openDownloadedFile(
 
 	file, rsp, err := api.ServeDownload(ctx, rawURL).Execute()
 	if err == nil {
+		recordImageFileOpen(ctx, "download", "success")
 		return file, rsp, nil
 	}
 
 	if rsp != nil && rsp.StatusCode == http.StatusNotFound {
+		recordImageFileOpen(ctx, "download", "not_found_retry")
 		file, rsp, err = api.ServeDownload(ctx, rawURL).Execute()
 		if err != nil {
 			logger.Error(
@@ -281,10 +311,13 @@ func (cs *ImageService) openDownloadedFile(
 				slog.Any("error", err),
 				slog.Any("url", rawURL),
 			)
+			recordImageFileOpen(ctx, "download", "retry_error")
 			return nil, nil, errors.Wrap(err, "failed to serve downloaded file")
 		}
+		recordImageFileOpen(ctx, "download", "retry_success")
 		return file, rsp, nil
 	}
 
+	recordImageFileOpen(ctx, "download", "error")
 	return nil, rsp, errors.Wrap(err, "failed to serve downloaded file")
 }

@@ -81,6 +81,38 @@ func (b *bytesReader) Read(p []byte) (int, error) {
 	return n, nil
 }
 
+func TestCloudCacheProviderReportsStorageSource(t *testing.T) {
+	ctx := context.Background()
+
+	t.Run("local hit", func(t *testing.T) {
+		local := newMemoryStorageProvider()
+		local.data["asset"] = []byte("local")
+		cloud := newMemoryStorageProvider()
+		provider := NewCloudCacheProvider(cloud, local)
+
+		reader, size, err := provider.Open(ctx, "asset")
+		require.NoError(t, err)
+		defer reader.Close()
+
+		require.Equal(t, int64(len("local")), size)
+		require.Equal(t, fileStorageSourceLocal, storageSourceFromReader(reader))
+	})
+
+	t.Run("cloud hit", func(t *testing.T) {
+		local := newMemoryStorageProvider()
+		cloud := newMemoryStorageProvider()
+		cloud.data["asset"] = []byte("cloud")
+		provider := NewCloudCacheProvider(cloud, local)
+
+		reader, size, err := provider.Open(ctx, "asset")
+		require.NoError(t, err)
+		defer reader.Close()
+
+		require.Equal(t, int64(len("cloud")), size)
+		require.Equal(t, fileStorageSourceGCS, storageSourceFromReader(reader))
+	})
+}
+
 func TestPersistAndRestoreDownloadStorage(t *testing.T) {
 	tmp := t.TempDir()
 	localFile := filepath.Join(tmp, "downloads", "asset.bin")
@@ -142,6 +174,32 @@ func TestDownloadFilePersistsToDownloadStorage(t *testing.T) {
 	storageKey := DownloadStorageFilePath(d.URL)
 	_, ok := storage.data[storageKey]
 	require.True(t, ok, "expected completed download to be persisted to download storage")
+}
+
+func TestMaybeBackfillDownloadToStorageChecksCloudNotLocalCache(t *testing.T) {
+	tmp := t.TempDir()
+	url := "https://example.com/assets/template.png"
+	localPath := filepath.Join(tmp, "downloads", EncodeURLtoFileName(url))
+	require.NoError(t, os.MkdirAll(filepath.Dir(localPath), 0755))
+	require.NoError(t, os.WriteFile(localPath, []byte("from-node"), 0644))
+
+	storageKey := DownloadStorageFilePath(url)
+	localCache := newMemoryStorageProvider()
+	localCache.data[storageKey] = []byte("local-cache-only")
+	cloud := newMemoryStorageProvider()
+
+	fs := &FileService{
+		downloadStorage:              NewCloudCacheProvider(cloud, localCache),
+		downloadStorageBackfillEvery: 1,
+	}
+
+	fs.maybeBackfillDownloadToStorage(&filetypes.InternalDownload{
+		URL:      url,
+		FilePath: localPath,
+		Status:   filetypes.DownloadStatusCompleted,
+	})
+
+	require.Equal(t, []byte("from-node"), cloud.data[storageKey])
 }
 
 func TestServeLocalDownloadRecoversFromStorageWhenLocalMissing(t *testing.T) {

@@ -78,6 +78,13 @@ func (cs *ProxyService) routeBackend(w http.ResponseWriter, r *http.Request) (in
 	// 	slog.String("method", r.Method),
 	// )
 
+	if isHealthProbePath(r.URL.Path) || isHealthProbePath(r.URL.EscapedPath()) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"status":"ok","checks":{"http":"ok"}}`))
+		return http.StatusOK, nil
+	}
+
 	// The proxy service's LazyStart() must be called here because OPTIONS requests
 	// are not handled the standard Lazy logic. Unlike other services, the Proxy does handle
 	// OPTIONS requests and requires initialization (including token acquisition) to do so.
@@ -222,4 +229,13 @@ func getServiceSlug(path string) string {
 	// 2. Get the first segment only
 	segments := strings.SplitN(path, "/", 2)
 	return segments[0]
+}
+
+func isHealthProbePath(path string) bool {
+	switch path {
+	case "/healthz", "/livez", "/readyz":
+		return true
+	default:
+		return false
+	}
 }

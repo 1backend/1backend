@@ -84,6 +84,7 @@ func (fs *FileService) ServeUpload(
 
 	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", sanitizeFilename(filename)))
+	setFileStorageSourceHeader(w, storageSourceFromReader(src))
 	if size > 0 {
 		w.Header().Set("Content-Length", strconv.FormatInt(size, 10))
 	}

@@ -9,7 +9,6 @@ package imageservice
 
 import (
 	"bytes"
-	"context"
 	"crypto/sha1"
 	"encoding/hex"
 	"fmt"
@@ -23,9 +22,12 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 	"golang.org/x/image/bmp"
 	"golang.org/x/image/tiff"
 
@@ -80,6 +82,14 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	if r.URL.Query().Get("fit") == "" {
 		params.Fit = fitContain
 	}
+	ctx, span := startImageSpan(r.Context(), "image.serve_uploaded",
+		attribute.Int("image.width", params.Width),
+		attribute.Int("image.height", params.Height),
+		attribute.String("image.fit", params.Fit),
+		attribute.String("image.format", params.RequestedFormat),
+	)
+	defer span.End()
+	r = r.WithContext(ctx)
 
 	originalContentType, _ := cs.metaCache.Get(fileId)
 
@@ -108,38 +118,9 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 	h.Write([]byte(cacheKeyData))
 	hash := hex.EncodeToString(h.Sum(nil))
 
-	var rsp *os.File
-
-	if originalContentType == "" {
-		var (
-			hrsp *http.Response
-			err  error
-		)
-
-		_, err, _ = cs.sf.Do(hash, func() (interface{}, error) {
-			rsp, hrsp, err = cs.options.ClientFactory.Client(client.WithToken(cs.token)).
-				FileSvcAPI.ServeUpload(context.Background(), fileId).Execute()
-			if err != nil {
-				endpoint.WriteErr(w, http.StatusInternalServerError, err)
-				return nil, errors.Wrap(err, "error calling serve upload to get content type")
-			}
-
-			originalContentType = hrsp.Header["Content-Type"][0]
-			cs.metaCache.Add(fileId, originalContentType)
-
-			return nil, nil
-		})
-
-		if err != nil {
-			endpoint.WriteErr(w, http.StatusInternalServerError, err)
-			return
-		}
-
-		defer rsp.Close()
-	}
-
 	// Check RAM
 	if data, ok := cs.imageDataCache.Get(hash); ok {
+		recordImageServe(r.Context(), "upload", "ram", "success", int64(len(data)), params)
 		writeCachedImage(w, targetContentType, data)
 		return
 	}
@@ -151,31 +132,35 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			cs.imageDataCache.Add(hash, data)
 		}
 
+		recordImageServe(r.Context(), "upload", "disk", "success", int64(len(data)), params)
 		writeCachedImage(w, targetContentType, data)
 		return
 	}
 
+	didTransform := false
+	transformCache := "cold_miss"
 	val, err, _ := cs.sf.Do(hash, func() (interface{}, error) {
+		transformStart := time.Now()
 		logger.Info("Reading image from file service",
 			slog.String("hash", hash),
 			slog.String("fileId", fileId),
 		)
 
-		if rsp == nil {
-			var (
-				hrsp *http.Response
-				err  error
-			)
-
-			rsp, hrsp, err = cs.options.ClientFactory.Client(client.WithToken(cs.token)).
-				FileSvcAPI.ServeUpload(context.Background(), fileId).Execute()
-			if err != nil {
-				return nil, err
-			}
-			defer rsp.Close()
-
-			cs.metaCache.Add(fileId, hrsp.Header.Get("Content-Type"))
+		rsp, hrsp, err := cs.options.ClientFactory.Client(client.WithToken(cs.token)).
+			FileSvcAPI.ServeUpload(r.Context(), fileId).Execute()
+		if err != nil {
+			recordImageFileOpen(r.Context(), "upload", "error")
+			recordImageTransform(r.Context(), "upload", "error", time.Since(transformStart))
+			return nil, err
 		}
+		recordImageFileOpen(r.Context(), "upload", "success")
+		defer rsp.Close()
+
+		if originalContentType == "" {
+			originalContentType = hrsp.Header.Get("Content-Type")
+			cs.metaCache.Add(fileId, originalContentType)
+		}
+		transformCache = imageCacheLabelFromStorageSource(hrsp.Header.Get(imageStorageSourceHeader))
 
 		var img stdimage.Image
 		switch originalContentType {
@@ -199,6 +184,7 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 		}
 		if err != nil {
 			endpoint.WriteErr(w, http.StatusInternalServerError, err)
+			recordImageTransform(r.Context(), "upload", "error", time.Since(transformStart))
 			return nil, errors.Wrap(err, "decode err")
 		}
 
@@ -238,6 +224,10 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			// If unknown, default to PNG as a safe web standard
 			err = png.Encode(buf, img)
 		}
+		if err != nil {
+			recordImageTransform(r.Context(), "upload", "error", time.Since(transformStart))
+			return nil, errors.Wrap(err, "encode err")
+		}
 
 		finalData := buf.Bytes()
 		_ = os.WriteFile(cachePath, finalData, 0644)
@@ -247,15 +237,25 @@ func (cs *ImageService) ServeUploadedImage(w http.ResponseWriter, r *http.Reques
 			cs.imageDataCache.Add(hash, result.Data)
 		}
 
+		recordImageTransform(r.Context(), "upload", "success", time.Since(transformStart))
+		didTransform = true
 		return result, nil
 	})
 
 	if err != nil {
+		span.RecordError(err)
+		span.SetStatus(codes.Error, "transform")
+		recordImageServe(r.Context(), "upload", "cold_miss", "error", -1, params)
 		endpoint.WriteErr(w, http.StatusInternalServerError, err)
 		return
 	}
 
 	res := val.(*imgResult)
+	cache := "coalesced"
+	if didTransform {
+		cache = transformCache
+	}
+	recordImageServe(r.Context(), "upload", cache, "success", int64(len(res.Data)), params)
 	writeCachedImage(w, res.ContentType, res.Data)
 }
 

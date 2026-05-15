@@ -20,7 +20,6 @@ import (
 
 	sdk "github.com/1backend/1backend/sdk/go"
 	"github.com/1backend/1backend/sdk/go/logger"
-	"github.com/pkg/errors"
 
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 )
@@ -43,25 +42,6 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 
 	if isMetricsEndpoint(r.URL.Path) || isMetricsEndpoint(r.URL.EscapedPath()) {
 		http.NotFound(w, r)
-		return
-	}
-
-	redirectLocation, redirectStatusCode, foundRedirect, err := cs.findRedirectTarget(
-		r.Host,
-		r.URL.EscapedPath(),
-		r.URL.RawQuery,
-	)
-	if err != nil {
-		logger.Error("Error finding redirect target",
-			slog.String("host", r.Host),
-			slog.String("path", r.URL.EscapedPath()),
-			slog.Any("error", err),
-		)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-	if foundRedirect {
-		http.Redirect(w, r, redirectLocation, redirectStatusCode)
 		return
 	}
 
@@ -148,71 +128,6 @@ func (cs *ProxyService) RouteFrontend(w http.ResponseWriter, r *http.Request) {
 
 func (cs *ProxyService) findRouteTarget(host, path, rawQuery string) (string, error) {
 
-	snapshot, err := cs.cachedRouteSnapshot()
-	if err != nil {
-		return "", sdk.NewHTTPError(
-			http.StatusInternalServerError,
-			fmt.Sprintf("failed to query routes: %v", err),
-		)
-	}
-
-	// Pick longest match (candidates is already longest to shortest).
-	var route *proxy.Route
-	for _, key := range routeCandidates(host, path) {
-		if r, ok := snapshot.route(key); ok {
-			route = r
-			break
-		}
-	}
-
-	if route == nil {
-		return "", sdk.NewHTTPError(
-			http.StatusNotFound,
-			fmt.Sprintf("route not found for host %q and path %q", host, path),
-		)
-	}
-
-	target := strings.TrimSuffix(route.Target, "/") + path
-	if rawQuery != "" {
-		target += "?" + rawQuery
-	}
-
-	return target, nil
-}
-
-func (cs *ProxyService) findRedirectTarget(host, path, rawQuery string) (string, int, bool, error) {
-	snapshot, err := cs.cachedRedirectSnapshot()
-	if err != nil {
-		return "", 0, false, errors.Wrap(err, "failed to query redirects")
-	}
-
-	var redirect *proxy.Redirect
-	matchedID := ""
-	for _, key := range routeCandidates(host, path) {
-		if r, ok := snapshot.redirect(key); ok {
-			redirect = r
-			matchedID = key
-			break
-		}
-	}
-	if redirect == nil {
-		return "", 0, false, nil
-	}
-
-	statusCode, err := normalizeRedirectStatusCode(redirect.StatusCode)
-	if err != nil {
-		return "", 0, false, err
-	}
-
-	matchedPathPrefix := strings.TrimPrefix(matchedID, host)
-	if matchedPathPrefix == matchedID {
-		matchedPathPrefix = ""
-	}
-
-	return buildRedirectLocation(redirect.Target, matchedPathPrefix, path, rawQuery), statusCode, true, nil
-}
-
-func routeCandidates(host, path string) []string {
 	candidates := make([]string, 0, strings.Count(path, "/")+1)
 
 	p := path
@@ -239,54 +154,36 @@ func routeCandidates(host, path string) []string {
 		}
 	}
 
-	return candidates
-}
+	snapshot, err := cs.cachedRouteSnapshot()
+	if err != nil {
+		return "", sdk.NewHTTPError(
+			http.StatusInternalServerError,
+			fmt.Sprintf("failed to query routes: %v", err),
+		)
+	}
 
-func buildRedirectLocation(target, matchedPathPrefix, requestPath, rawQuery string) string {
-	base, targetQuery, fragment := splitLocation(target)
-	suffix := strings.TrimPrefix(requestPath, matchedPathPrefix)
-
-	if suffix != "" {
-		switch {
-		case strings.HasSuffix(base, "/") && strings.HasPrefix(suffix, "/"):
-			base = strings.TrimRight(base, "/") + suffix
-		case !strings.HasSuffix(base, "/") && !strings.HasPrefix(suffix, "/"):
-			base += "/" + suffix
-		default:
-			base += suffix
+	// Pick longest match (candidates is already longest to shortest).
+	var route *proxy.Route
+	for _, key := range candidates {
+		if r, ok := snapshot.route(key); ok {
+			route = r
+			break
 		}
 	}
 
-	query := targetQuery
+	if route == nil {
+		return "", sdk.NewHTTPError(
+			http.StatusNotFound,
+			fmt.Sprintf("route not found for host %q and path %q", host, path),
+		)
+	}
+
+	target := strings.TrimSuffix(route.Target, "/") + path
 	if rawQuery != "" {
-		if query != "" {
-			query += "&" + rawQuery
-		} else {
-			query = rawQuery
-		}
+		target += "?" + rawQuery
 	}
 
-	location := base
-	if query != "" {
-		location += "?" + query
-	}
-	if fragment != "" {
-		location += "#" + fragment
-	}
-
-	return location
-}
-
-func splitLocation(location string) (base, query, fragment string) {
-	if i := strings.IndexByte(location, '#'); i >= 0 {
-		fragment = location[i+1:]
-		location = location[:i]
-	}
-	if i := strings.IndexByte(location, '?'); i >= 0 {
-		query = location[i+1:]
-		location = location[:i]
-	}
-	return location, query, fragment
+	return target, nil
 }
 
 func isMetricsEndpoint(path string) bool {

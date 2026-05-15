@@ -15,7 +15,9 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"cloud.google.com/go/storage"
@@ -54,6 +56,10 @@ type FileService struct {
 	// downloadStorage is an optional backing storage used for downloaded
 	// internet assets (e.g. GCS). Local disk remains the serving cache.
 	downloadStorage StorageProvider
+	// downloadStorageBackfillEvery controls the sampled cloud-presence check
+	// for completed downloads. 0 disables the check.
+	downloadStorageBackfillEvery   uint64
+	downloadStorageBackfillCounter atomic.Uint64
 
 	nodeId string
 	cache  *lru.Cache[string, *file.Upload]
@@ -90,8 +96,17 @@ func NewFileService(
 	fs.cache, _ = lru.New[string, *file.Upload](100000)
 	fs.pendingLastAccessAt = map[string]pendingAccess{}
 	fs.accessFlushInterval = 30 * time.Second
+	fs.downloadStorageBackfillEvery = 1000
 	if options.Test {
 		fs.accessFlushInterval = 250 * time.Millisecond
+		fs.downloadStorageBackfillEvery = 0
+	}
+	if every := os.Getenv("OB_FILE_DOWNLOAD_STORAGE_BACKFILL_EVERY"); every != "" {
+		parsed, err := strconv.ParseUint(every, 10, 64)
+		if err != nil {
+			return nil, fmt.Errorf("invalid OB_FILE_DOWNLOAD_STORAGE_BACKFILL_EVERY: %w", err)
+		}
+		fs.downloadStorageBackfillEvery = parsed
 	}
 
 	// Determine Strategy
@@ -117,6 +132,7 @@ func NewFileService(
 		fs.storage = &CloudCacheProvider{
 			cloud: gcsProvider,
 			local: localProvider,
+			name:  "upload_storage",
 		}
 		// Downloads are backed by cloud and cached under ~/.1backend/downloads.
 		fs.downloadStorage = &CloudCacheProvider{
@@ -125,6 +141,7 @@ func NewFileService(
 				prefix: "downloads",
 			},
 			local: localDownloadProvider,
+			name:  "download_storage",
 		}
 		logger.Info("File service initialized with GCS Cloud Cache")
 	} else {
