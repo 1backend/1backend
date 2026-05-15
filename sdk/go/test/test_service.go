@@ -58,7 +58,7 @@ type Options struct {
 	SourceControlToken  string
 	SecretEncryptionKey string
 
-	// Url of the 1Backend server
+	// ServerUrl is the internally addressable URL of the 1Backend server.
 	ServerUrl string
 
 	// OB_EDGE_PROXY is used to enable the edge proxy.
@@ -73,7 +73,8 @@ type Options struct {
 
 	VerifyContacts bool
 
-	// Self url
+	// Url is this process's public URL, exported as OB_PUBLIC_URL and the
+	// deprecated OB_SELF_URL alias.
 	Url string
 
 	// Test mode if true will cause the localstore to
@@ -151,8 +152,10 @@ func StartService(options Options) (*ServiceProcess, error) {
 
 	envVars := map[string]string{
 		"OB_TEST":                      fmt.Sprintf("%v", options.Test),
+		"OB_PUBLIC_URL":                options.Url,
 		"OB_SELF_URL":                  options.Url,
 		"OB_FOLDER":                    options.ConfigPath,
+		"OB_INTERNAL_SERVER_URL":       options.ServerUrl,
 		"OB_SERVER_URL":                options.ServerUrl,
 		"OB_GPU_PLATFORM":              options.GpuPlatform,
 		"OB_NODE_ID":                   options.NodeId,

@@ -25,7 +25,14 @@ import {
 } from "@1backend/sdk-node";
 
 const options = await createDefaultOptions({
-  selfUrl: process.env.OB_SELF_URL ?? "http://127.0.0.1:9111",
+  serverUrl:
+    process.env.OB_INTERNAL_SERVER_URL ??
+    process.env.OB_SERVER_URL ??
+    "http://127.0.0.1:11337",
+  selfUrl:
+    process.env.OB_PUBLIC_URL ??
+    process.env.OB_SELF_URL ??
+    "http://127.0.0.1:9111",
 });
 
 const store = createCredentialFileStore("./.service-credential.json");

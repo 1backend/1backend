@@ -382,7 +382,19 @@ Use a number from `0` to `1`, for example `0.1` for 10% sampling or `1` for all 
 
 Sets the port used by the 1Backend server's internal API listener. Defaults to `11337`.
 
-If `OB_PORT` is not set, the server also derives the listen port from `OB_SELF_URL` when that URL includes a port.
+If `OB_PORT` is not set, the server also derives the listen port from `OB_PUBLIC_URL` or deprecated `OB_SELF_URL` when that URL includes a port.
+
+## `OB_PUBLIC_URL`
+
+The OB_PUBLIC_URL is the externally reachable public URL of this process.
+
+For the 1Backend server, this is the public server identity. Contact auth uses it to build OAuth/OIDC callback URLs, so in production it should be the externally reachable API origin, for example:
+
+```sh
+OB_PUBLIC_URL=https://api.singulatron.com
+```
+
+For microservices built on 1Backend, this is the URL registered in the 1Backend registry.
 
 ## `OB_REGION`
 
@@ -398,15 +410,31 @@ When set to true, registration of new users with a contact address requires an O
 
 Sets the service version label used by telemetry.
 
+## `OB_INTERNAL_SERVER_URL`
+
+The OB_INTERNAL_SERVER_URL is the internally addressable (non-public-facing) URL of a 1Backend server. It should point to the local 1Backend instance on each physical node. Ideally, every node should have its own 1Backend instance.
+
+The 1Backend server uses this URL for its own internal API client. Microservices built on 1Backend also use this URL to call the server.
+
+For production deployments where the public API is behind DNS, a CDN, or a load balancer, set this to the local listener, for example:
+
+```sh
+OB_INTERNAL_SERVER_URL=http://127.0.0.1:11337
+```
+
 ## `OB_SERVER_URL`
 
-The OB_SERVER_URL is the internally addressable (non-public-facing) URL of an 1Backend server. It should point to the local 1Backend instance on each physical node. Ideally, every node should have its own 1Backend instance.
+Deprecated alias for `OB_INTERNAL_SERVER_URL`.
 
-This envar should be set only for microservices built on 1Backend. The 1Backend server itself should use `OB_SELF_URL`.
+This variable is still supported for backward compatibility, but new deployments should use `OB_INTERNAL_SERVER_URL`.
 
 ## `OB_SELF_URL`
 
-Microservices use this to register themselves in the 1Backend registry. The 1Backend server uses this to address itself.
+Deprecated alias for `OB_PUBLIC_URL`.
+
+This variable is still supported for backward compatibility, but new deployments should use `OB_PUBLIC_URL`.
+
+When `OB_INTERNAL_SERVER_URL` is set, the 1Backend server does not use `OB_PUBLIC_URL` for its internal self-calls.
 
 ## `OB_SYNC_CERTS_TO_FILES`
 

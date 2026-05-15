@@ -81,6 +81,16 @@ type Universe struct {
 	started atomic.Bool
 }
 
+func withDefaultHTTPscheme(rawURL string) string {
+	if rawURL == "" ||
+		strings.HasPrefix(rawURL, "http://") ||
+		strings.HasPrefix(rawURL, "https://") {
+		return rawURL
+	}
+
+	return fmt.Sprintf("http://%v", rawURL)
+}
+
 func BigBang(options *universe.Options) (*Universe, error) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -109,14 +119,15 @@ func BigBang(options *universe.Options) (*Universe, error) {
 		router.SetPort(options.Port)
 	}
 	if options.Url == "" {
+		options.Url = os.Getenv("OB_PUBLIC_URL")
+	}
+	if options.Url == "" {
 		options.Url = os.Getenv("OB_SELF_URL")
 	}
 	if options.Url == "" {
 		options.Url = router.SelfAddress()
 	} else {
-		if !strings.HasPrefix(options.Url, "http") {
-			options.Url = fmt.Sprintf("http://%v", options.Url)
-		}
+		options.Url = withDefaultHTTPscheme(options.Url)
 		uri, err := url.Parse(options.Url)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to parse url")
@@ -130,9 +141,19 @@ func BigBang(options *universe.Options) (*Universe, error) {
 				options.Port = int(p)
 				router.SetPort(options.Port)
 			}
-		} else if options.Port == 0 {
-			return nil, errors.New("failed to parse port")
 		}
+	}
+
+	if options.ServerUrl == "" {
+		options.ServerUrl = os.Getenv("OB_INTERNAL_SERVER_URL")
+	}
+	if options.ServerUrl == "" {
+		options.ServerUrl = os.Getenv("OB_SERVER_URL")
+	}
+	if options.ServerUrl == "" {
+		options.ServerUrl = options.Url
+	} else {
+		options.ServerUrl = withDefaultHTTPscheme(options.ServerUrl)
 	}
 
 	if options.NodeId == "" {
@@ -374,7 +395,7 @@ func BigBang(options *universe.Options) (*Universe, error) {
 	}
 
 	if options.ClientFactory == nil {
-		options.ClientFactory = client.NewApiClientFactory(options.Url)
+		options.ClientFactory = client.NewApiClientFactory(options.ServerUrl)
 	}
 
 	if options.TokenRefresher == nil {

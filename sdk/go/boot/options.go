@@ -30,11 +30,14 @@ type Options struct {
 	// service-level defaults. Use NewOptions to set this for normal services.
 	ServiceName string
 
-	// ServerUrl is the URL of the 1Backend server.
+	// ServerUrl is the internally addressable URL of the 1Backend server.
+	// It configures the API client used for service-to-service calls.
+	// Defaults to OB_INTERNAL_SERVER_URL, then deprecated OB_SERVER_URL.
 	ServerUrl string
 
-	// SelfUrl is the URL of the service itself.
-	// Used for service registration.
+	// SelfUrl is the public URL of the service itself.
+	// It is used for service registration.
+	// Defaults to OB_PUBLIC_URL, then deprecated OB_SELF_URL.
 	SelfUrl string
 
 	// Db is the database engine (for example: postgres, mysql).
@@ -139,11 +142,19 @@ func (o *Options) LoadEnvars() error {
 
 func (o *Options) loadEnvars() error {
 	if o.ServerUrl == "" {
+		o.ServerUrl = os.Getenv("OB_INTERNAL_SERVER_URL")
+	}
+
+	if o.ServerUrl == "" {
 		o.ServerUrl = os.Getenv("OB_SERVER_URL")
 	}
 
 	if o.ServerUrl == "" {
 		o.ServerUrl = "http://127.0.0.1:11337"
+	}
+
+	if o.SelfUrl == "" {
+		o.SelfUrl = os.Getenv("OB_PUBLIC_URL")
 	}
 
 	if o.SelfUrl == "" {

@@ -72,8 +72,15 @@ type Options struct {
 	GcpSaKey  string
 	GcsBucket string
 
-	// URL of the local 1Backend server instance
+	// Url is the public, externally reachable URL of this 1Backend server.
+	// It is used as the server's self identity, including OAuth/OIDC callback
+	// URL construction. Defaults to OB_PUBLIC_URL, then deprecated OB_SELF_URL.
 	Url string
+
+	// ServerUrl is the internally addressable URL used by the server's own
+	// API client for service-to-service calls. Defaults to OB_INTERNAL_SERVER_URL,
+	// then deprecated OB_SERVER_URL, then Url.
+	ServerUrl string
 
 	// EdgeCacheItemMaxSize defines the maximum size of a single response allowed in the cache.
 	// Use bytes (e.g., 50 * 1024 * 1024 for 50MB).

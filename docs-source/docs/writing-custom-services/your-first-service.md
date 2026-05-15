@@ -178,7 +178,7 @@ func (service *BasicService) registerRoutes() {
 Make sure to run it with the appropriate environment variables:
 
 ```sh
-OB_SERVER_URL=http://127.0.0.1:11337 OB_SELF_URL=http://127.0.0.1:9111 go run main.go
+OB_INTERNAL_SERVER_URL=http://127.0.0.1:11337 OB_PUBLIC_URL=http://127.0.0.1:9111 go run main.go
 ```
 
 Once it's running, you'll be able to call the 1Backend server proxy, which will forward the request to your basic service:

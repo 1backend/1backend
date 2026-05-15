@@ -31,7 +31,10 @@ import (
 // @name Authorization
 // @description Type "Bearer" followed by a space and token acquired from the User Svc Login endpoint.
 func main() {
-	selfUrl := os.Getenv("OB_SELF_URL")
+	selfUrl := os.Getenv("OB_PUBLIC_URL")
+	if selfUrl == "" {
+		selfUrl = os.Getenv("OB_SELF_URL")
+	}
 	if selfUrl == "" {
 		selfUrl = "http://127.0.0.1:9111"
 	}
