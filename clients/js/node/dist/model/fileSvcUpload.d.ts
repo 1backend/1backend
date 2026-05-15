@@ -12,7 +12,7 @@
 export declare class FileSvcUpload {
     'createdAt': string;
     /**
-    * Logical file ID spanning all replicas
+    * Public ID used to serve or delete the file.
     */
     'fileId': string;
     /**
@@ -25,17 +25,13 @@ export declare class FileSvcUpload {
     'filePath': string;
     'fileSize': number;
     /**
-    * Unique ID for this replica
+    * Unique ID for this upload record.
     */
     'id': string;
     /**
     * LastAccessedAt is updated asynchronously by the file service when the file is served.
     */
     'lastAccessedAt'?: string;
-    /**
-    * ID of the node storing this replica
-    */
-    'nodeId': string;
     'updatedAt': string;
     'userId': string;
     static discriminator: string | undefined;

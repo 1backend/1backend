@@ -9,12 +9,9 @@ package file_svc
 
 import "time"
 
-// Upload represents a single instance of a file upload in the system.
-// A single file upload can result in multiple Upload records due to replication
-// across different nodes or instances. Each record corresponds to a specific
-// replica of the file on a particular node.
+// Upload represents file upload metadata.
 type Upload struct {
-	// Unique ID for this replica
+	// Unique ID for this upload record.
 	Id string `json:"id" binding:"required"`
 
 	CreatedAt time.Time `json:"createdAt" binding:"required"`
@@ -22,10 +19,7 @@ type Upload struct {
 	// LastAccessedAt is updated asynchronously by the file service when the file is served.
 	LastAccessedAt *time.Time `json:"lastAccessedAt,omitempty"`
 
-	// ID of the node storing this replica
-	NodeId string `json:"nodeId" binding:"required"`
-
-	// Logical file ID spanning all replicas
+	// Public ID used to serve or delete the file.
 	FileId string `json:"fileId" binding:"required"`
 
 	// FilePath is the canonical object path used by file-svc for both:

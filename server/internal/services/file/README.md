@@ -1,6 +1,6 @@
 # File Service (short overview)
 
-This service stores **uploads** and **downloads** on node-local disk, with optional cloud backing (GCS).
+This service stores **uploads** and **downloads** on local disk/PVC, with optional cloud backing (GCS).
 
 ## High-level flow
 
@@ -36,7 +36,7 @@ Generate FilePath (canonical)
 GET /file-svc/serve/upload/{fileId}
       |
       v
-Find upload replica metadata by fileId
+Find upload metadata by fileId
       |
       v
 Open file via fs.storage
@@ -64,7 +64,7 @@ Generate download FilePath + storage key (sharded)
 GET /file-svc/serve/download/{url}
       |
       v
-Find local replica metadata
+Find download metadata by URL
       |
       +--> if local file exists: serve local file (no cloud restore)
       '--> if local file missing:

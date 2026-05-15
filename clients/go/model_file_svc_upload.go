@@ -12,8 +12,8 @@ Contact: sales@singulatron.com
 package openapi
 
 import (
-	"encoding/json"
 	"bytes"
+	"encoding/json"
 	"fmt"
 )
 
@@ -23,21 +23,19 @@ var _ MappedNullable = &FileSvcUpload{}
 // FileSvcUpload struct for FileSvcUpload
 type FileSvcUpload struct {
 	CreatedAt string `json:"createdAt"`
-	// Logical file ID spanning all replicas
+	// Public ID used to serve or delete the file.
 	FileId string `json:"fileId"`
 	// Filename is the original name of the file
 	FileName string `json:"fileName"`
 	// FilePath is the canonical object path used by file-svc for both: 1) local node disk location and 2) storage backend object key/path. The exact path-generation algorithm is an implementation detail and may evolve over time; callers must treat FilePath as the source of truth.
 	FilePath string `json:"filePath"`
-	FileSize int64 `json:"fileSize"`
-	// Unique ID for this replica
+	FileSize int64  `json:"fileSize"`
+	// Unique ID for this upload record.
 	Id string `json:"id"`
 	// LastAccessedAt is updated asynchronously by the file service when the file is served.
 	LastAccessedAt *string `json:"lastAccessedAt,omitempty"`
-	// ID of the node storing this replica
-	NodeId string `json:"nodeId"`
-	UpdatedAt string `json:"updatedAt"`
-	UserId string `json:"userId"`
+	UpdatedAt      string  `json:"updatedAt"`
+	UserId         string  `json:"userId"`
 }
 
 type _FileSvcUpload FileSvcUpload
@@ -46,7 +44,7 @@ type _FileSvcUpload FileSvcUpload
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewFileSvcUpload(createdAt string, fileId string, fileName string, filePath string, fileSize int64, id string, nodeId string, updatedAt string, userId string) *FileSvcUpload {
+func NewFileSvcUpload(createdAt string, fileId string, fileName string, filePath string, fileSize int64, id string, updatedAt string, userId string) *FileSvcUpload {
 	this := FileSvcUpload{}
 	this.CreatedAt = createdAt
 	this.FileId = fileId
@@ -54,7 +52,6 @@ func NewFileSvcUpload(createdAt string, fileId string, fileName string, filePath
 	this.FilePath = filePath
 	this.FileSize = fileSize
 	this.Id = id
-	this.NodeId = nodeId
 	this.UpdatedAt = updatedAt
 	this.UserId = userId
 	return &this
@@ -244,30 +241,6 @@ func (o *FileSvcUpload) SetLastAccessedAt(v string) {
 	o.LastAccessedAt = &v
 }
 
-// GetNodeId returns the NodeId field value
-func (o *FileSvcUpload) GetNodeId() string {
-	if o == nil {
-		var ret string
-		return ret
-	}
-
-	return o.NodeId
-}
-
-// GetNodeIdOk returns a tuple with the NodeId field value
-// and a boolean to check if the value has been set.
-func (o *FileSvcUpload) GetNodeIdOk() (*string, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return &o.NodeId, true
-}
-
-// SetNodeId sets field value
-func (o *FileSvcUpload) SetNodeId(v string) {
-	o.NodeId = v
-}
-
 // GetUpdatedAt returns the UpdatedAt field value
 func (o *FileSvcUpload) GetUpdatedAt() string {
 	if o == nil {
@@ -317,7 +290,7 @@ func (o *FileSvcUpload) SetUserId(v string) {
 }
 
 func (o FileSvcUpload) MarshalJSON() ([]byte, error) {
-	toSerialize,err := o.ToMap()
+	toSerialize, err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -335,7 +308,6 @@ func (o FileSvcUpload) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.LastAccessedAt) {
 		toSerialize["lastAccessedAt"] = o.LastAccessedAt
 	}
-	toSerialize["nodeId"] = o.NodeId
 	toSerialize["updatedAt"] = o.UpdatedAt
 	toSerialize["userId"] = o.UserId
 	return toSerialize, nil
@@ -352,7 +324,6 @@ func (o *FileSvcUpload) UnmarshalJSON(data []byte) (err error) {
 		"filePath",
 		"fileSize",
 		"id",
-		"nodeId",
 		"updatedAt",
 		"userId",
 	}
@@ -362,10 +333,10 @@ func (o *FileSvcUpload) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err;
+		return err
 	}
 
-	for _, requiredProperty := range(requiredProperties) {
+	for _, requiredProperty := range requiredProperties {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -421,5 +392,3 @@ func (v *NullableFileSvcUpload) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

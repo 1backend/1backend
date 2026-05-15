@@ -61,8 +61,7 @@ type FileService struct {
 	downloadStorageBackfillEvery   uint64
 	downloadStorageBackfillCounter atomic.Uint64
 
-	nodeId string
-	cache  *lru.Cache[string, *file.Upload]
+	cache *lru.Cache[string, *file.Upload]
 
 	accessFlushInterval time.Duration
 	lastAccessMu        sync.Mutex
@@ -145,7 +144,7 @@ func NewFileService(
 		}
 		logger.Info("File service initialized with GCS Cloud Cache")
 	} else {
-		// Fallback to standard distributed behavior
+		// Fallback to local disk storage.
 		fs.storage = localProvider
 		fs.downloadStorage = nil
 		logger.Info("File service initialized with Local Storage")
@@ -191,12 +190,6 @@ func (fs *FileService) RegisterRoutes(router *mux.Router) {
 		fs.DeleteUpload(w, r)
 	}))).
 		Methods("OPTIONS", "DELETE")
-
-	// @todo
-	// Investigate why SkipLock is needed here.
-	// I placed it here because the serve proxy tests were deadlocking.
-	// Not sure why though as they are not routing to the same node (themselves),
-	// but to an other node.
 
 	router.HandleFunc("/file-svc/serve/upload/{fileId}", appl(service.Lazy(fs, func(w http.ResponseWriter, r *http.Request) {
 		fs.ServeUpload(w, r)
@@ -246,10 +239,6 @@ func (fs *FileService) Start() error {
 		return err
 	}
 	fs.uploadStore = uploadStore
-
-	if fs.nodeId == "" {
-		fs.nodeId = fs.options.NodeId
-	}
 
 	downloads, err := fs.downloadStore.Query(
 		datastore.Equals([]string{"status"}, types.DownloadStatusInProgress),

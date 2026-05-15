@@ -26,7 +26,7 @@ export interface FileSvcUpload {
      */
     createdAt: string;
     /**
-     * Logical file ID spanning all replicas
+     * Public ID used to serve or delete the file.
      * @type {string}
      * @memberof FileSvcUpload
      */
@@ -54,7 +54,7 @@ export interface FileSvcUpload {
      */
     fileSize: number;
     /**
-     * Unique ID for this replica
+     * Unique ID for this upload record.
      * @type {string}
      * @memberof FileSvcUpload
      */
@@ -65,12 +65,6 @@ export interface FileSvcUpload {
      * @memberof FileSvcUpload
      */
     lastAccessedAt?: string;
-    /**
-     * ID of the node storing this replica
-     * @type {string}
-     * @memberof FileSvcUpload
-     */
-    nodeId: string;
     /**
      * 
      * @type {string}
@@ -95,7 +89,6 @@ export function instanceOfFileSvcUpload(value: object): value is FileSvcUpload {
     if (!('filePath' in value) || value['filePath'] === undefined) return false;
     if (!('fileSize' in value) || value['fileSize'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
-    if (!('nodeId' in value) || value['nodeId'] === undefined) return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined) return false;
     if (!('userId' in value) || value['userId'] === undefined) return false;
     return true;
@@ -118,7 +111,6 @@ export function FileSvcUploadFromJSONTyped(json: any, ignoreDiscriminator: boole
         'fileSize': json['fileSize'],
         'id': json['id'],
         'lastAccessedAt': json['lastAccessedAt'] == null ? undefined : json['lastAccessedAt'],
-        'nodeId': json['nodeId'],
         'updatedAt': json['updatedAt'],
         'userId': json['userId'],
     };
@@ -142,7 +134,6 @@ export function FileSvcUploadToJSONTyped(value?: FileSvcUpload | null, ignoreDis
         'fileSize': value['fileSize'],
         'id': value['id'],
         'lastAccessedAt': value['lastAccessedAt'],
-        'nodeId': value['nodeId'],
         'updatedAt': value['updatedAt'],
         'userId': value['userId'],
     };

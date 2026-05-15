@@ -1,7 +1,6 @@
 package fileservice
 
 import (
-	"context"
 	"encoding/json"
 	"io"
 	"log/slog"
@@ -9,11 +8,9 @@ import (
 	"time"
 
 	sdk "github.com/1backend/1backend/sdk/go"
-	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
 	file "github.com/1backend/1backend/server/internal/services/file/types"
-	"github.com/pkg/errors"
 )
 
 // @ID uploadFile
@@ -78,15 +75,6 @@ func (fs *FileService) UploadFile(
 		// prevent enumeration, as there is no concept of file ownership.
 		fileId := sdk.OpaqueId("file")
 
-		if fs.nodeId == "" {
-			err := fs.getNodeId(r.Context())
-			if err != nil {
-				logger.Error("Failed to get node ID", slog.Any("error", err))
-				endpoint.InternalServerError(w)
-				return
-			}
-		}
-
 		intricatePath := calculateIntricatePath(fileId)
 		now := time.Now().UTC()
 
@@ -94,7 +82,6 @@ func (fs *FileService) UploadFile(
 		uploadRecord = file.Upload{
 			Id:        sdk.Id("upl"),
 			FileId:    fileId,
-			NodeId:    fs.nodeId,
 			FileName:  part.FileName(),
 			FilePath:  intricatePath,
 			UserId:    isAuthRsp.User.Id,
@@ -127,24 +114,6 @@ func (fs *FileService) UploadFile(
 		logger.Error("Error writing response", slog.Any("error", err))
 		return
 	}
-}
-
-func (fs *FileService) getNodeId(ctx context.Context) error {
-	token, err := fs.getToken()
-	if err != nil {
-		return errors.Wrap(err, "cannot get token")
-	}
-
-	nodeRsp, _, err := fs.options.ClientFactory.
-		Client(client.WithToken(token)).
-		RegistrySvcAPI.SelfNode(ctx).
-		Execute()
-	if err != nil {
-		return err
-	}
-
-	fs.nodeId = nodeRsp.Node.Id
-	return nil
 }
 
 // Calculate the nested path: e.g., "81/d2/file_81d2..."

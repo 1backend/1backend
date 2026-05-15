@@ -21,13 +21,11 @@ import (
 // @Description Retrieves and serves a previously uploaded file using its File ID.
 // @Description Note: The `ID` and `FileID` fields of an upload are different.
 // @Description - `FileID` is a unique identifier for the file itself.
-// @Description - `ID` is a unique identifier for a specific replica of the file.
-// @Description Since 1Backend is a distributed system, files can be replicated across multiple nodes.
-// @Description This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+// @Description - `ID` is a unique identifier for the upload metadata record.
 // @Tags File Svc
 // @Accept json
 // @Produce application/octet-stream
-// @Param fileId path string true "FileID uniquely identifies the file itself (not an ID, which represents a specific replica)"
+// @Param fileId path string true "FileID uniquely identifies the file itself."
 // @Success 200 {file} binary "File served successfully"
 // @Failure 400 {object} file.ErrorResponse "Missing Upload ID"
 // @Failure 404 {object} file.ErrorResponse "File Not Found"
@@ -49,18 +47,18 @@ func (fs *FileService) ServeUpload(
 	if cachedUpload, ok := fs.cache.Get(fileId); ok {
 		upload = cachedUpload
 	} else {
-		uploadReplicaIs, err := fs.uploadStore.Query(datastore.Equals(
+		uploadRows, err := fs.uploadStore.Query(datastore.Equals(
 			[]string{"fileId"},
 			fileId,
 		)).Find()
 
-		if err != nil || len(uploadReplicaIs) == 0 {
+		if err != nil || len(uploadRows) == 0 {
 			endpoint.WriteString(w, http.StatusNotFound, "File not found")
 			return
 		}
 
-		uploadReplicas := toUploads(uploadReplicaIs)
-		upload = uploadReplicas[0]
+		uploads := toUploads(uploadRows)
+		upload = uploads[0]
 
 		fs.cache.Add(fileId, upload)
 	}

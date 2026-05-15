@@ -56,7 +56,7 @@ const transformCacheVersion = "v2-contain-default"
 // @Tags Image Svc
 // @Accept json
 // @Produce application/octet-stream
-// @Param fileId path string true "FileID uniquely identifies the file itself (not an ID, which represents a specific replica)"
+// @Param fileId path string true "FileID uniquely identifies the file itself."
 // @Param width query int false "Optional width to resize the image to"
 // @Param height query int false "Optional height to resize the image to"
 // @Param fit query string false "Resize strategy: contain|cover (default contain)"

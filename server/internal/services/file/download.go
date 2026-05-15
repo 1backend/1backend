@@ -41,13 +41,6 @@ func (dm *FileService) download(
 		downloadDir = dm.downloadFolder
 	}
 
-	if dm.nodeId == "" {
-		err := dm.getNodeId(ctx)
-		if err != nil {
-			return errors.Wrap(err, "cannot get node id")
-		}
-	}
-
 	safeFileName := EncodeURLtoFileName(url)
 	storageFilePath := DownloadStorageFilePath(url)
 	safeFullFilePath := filepath.Join(downloadDir, safeFileName)
@@ -97,7 +90,6 @@ func (dm *FileService) download(
 				download = &types.InternalDownload{
 					Id:             sdk.Id("dl"),
 					URL:            url,
-					NodeId:         dm.nodeId,
 					FilePath:       safeFullFilePath,
 					Status:         types.DownloadStatusCompleted,
 					TotalSize:      fullSize,
@@ -110,7 +102,6 @@ func (dm *FileService) download(
 				download = &types.InternalDownload{
 					Id:             sdk.Id("dl"),
 					URL:            url,
-					NodeId:         dm.nodeId,
 					FilePath:       safeFullFilePath,
 					Status:         types.DownloadStatusInProgress,
 					DownloadedSize: partialSize,
@@ -122,7 +113,6 @@ func (dm *FileService) download(
 				download = &types.InternalDownload{
 					Id:          sdk.Id("dl"),
 					URL:         url,
-					NodeId:      dm.nodeId,
 					FilePath:    safeFullFilePath,
 					Status:      types.DownloadStatusInProgress,
 					RetryCount:  nil,

@@ -27,8 +27,6 @@ export function instanceOfFileSvcUpload(value) {
         return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
-    if (!('nodeId' in value) || value['nodeId'] === undefined)
-        return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     if (!('userId' in value) || value['userId'] === undefined)
@@ -50,7 +48,6 @@ export function FileSvcUploadFromJSONTyped(json, ignoreDiscriminator) {
         'fileSize': json['fileSize'],
         'id': json['id'],
         'lastAccessedAt': json['lastAccessedAt'] == null ? undefined : json['lastAccessedAt'],
-        'nodeId': json['nodeId'],
         'updatedAt': json['updatedAt'],
         'userId': json['userId'],
     };
@@ -70,7 +67,6 @@ export function FileSvcUploadToJSONTyped(value, ignoreDiscriminator = false) {
         'fileSize': value['fileSize'],
         'id': value['id'],
         'lastAccessedAt': value['lastAccessedAt'],
-        'nodeId': value['nodeId'],
         'updatedAt': value['updatedAt'],
         'userId': value['userId'],
     };

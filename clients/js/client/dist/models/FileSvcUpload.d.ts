@@ -22,7 +22,7 @@ export interface FileSvcUpload {
      */
     createdAt: string;
     /**
-     * Logical file ID spanning all replicas
+     * Public ID used to serve or delete the file.
      * @type {string}
      * @memberof FileSvcUpload
      */
@@ -50,7 +50,7 @@ export interface FileSvcUpload {
      */
     fileSize: number;
     /**
-     * Unique ID for this replica
+     * Unique ID for this upload record.
      * @type {string}
      * @memberof FileSvcUpload
      */
@@ -61,12 +61,6 @@ export interface FileSvcUpload {
      * @memberof FileSvcUpload
      */
     lastAccessedAt?: string;
-    /**
-     * ID of the node storing this replica
-     * @type {string}
-     * @memberof FileSvcUpload
-     */
-    nodeId: string;
     /**
      *
      * @type {string}

@@ -9,7 +9,6 @@ const (
 	fileStorageSourceHeader = "X-1Backend-Storage-Source"
 	fileStorageSourceLocal  = "local"
 	fileStorageSourceGCS    = "gcs"
-	fileStorageSourceRemote = "remote"
 )
 
 type storageSourceCarrier interface {

@@ -1213,7 +1213,7 @@ definitions:
       createdAt:
         type: string
       fileId:
-        description: Logical file ID spanning all replicas
+        description: Public ID used to serve or delete the file.
         type: string
       fileName:
         description: Filename is the original name of the file
@@ -1230,14 +1230,11 @@ definitions:
         format: int64
         type: integer
       id:
-        description: Unique ID for this replica
+        description: Unique ID for this upload record.
         type: string
       lastAccessedAt:
         description: LastAccessedAt is updated asynchronously by the file service
           when the file is served.
-        type: string
-      nodeId:
-        description: ID of the node storing this replica
         type: string
       updatedAt:
         type: string
@@ -1250,7 +1247,6 @@ definitions:
     - filePath
     - fileSize
     - id
-    - nodeId
     - updatedAt
     - userId
     type: object
@@ -5253,13 +5249,10 @@ paths:
         Retrieves and serves a previously uploaded file using its File ID.
         Note: The `ID` and `FileID` fields of an upload are different.
         - `FileID` is a unique identifier for the file itself.
-        - `ID` is a unique identifier for a specific replica of the file.
-        Since 1Backend is a distributed system, files can be replicated across multiple nodes.
-        This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+        - `ID` is a unique identifier for the upload metadata record.
       operationId: serveUpload
       parameters:
-      - description: FileID uniquely identifies the file itself (not an ID, which
-          represents a specific replica)
+      - description: FileID uniquely identifies the file itself.
         in: path
         name: fileId
         required: true
@@ -5535,8 +5528,7 @@ paths:
         File ID.
       operationId: serveUploadedImage
       parameters:
-      - description: FileID uniquely identifies the file itself (not an ID, which
-          represents a specific replica)
+      - description: FileID uniquely identifies the file itself.
         in: path
         name: fileId
         required: true

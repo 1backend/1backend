@@ -24,9 +24,8 @@ var (
 
 // Download is the internal type for downloads.
 type InternalDownload struct {
-	Id     string `json:"id"`
-	URL    string `json:"url"`
-	NodeId string `json:"nodeId"`
+	Id  string `json:"id"`
+	URL string `json:"url"`
 	// FilePath is the canonical object path used by file-svc for both:
 	// 1) local node disk location and
 	// 2) storage backend object key/path.

@@ -7,12 +7,12 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
 
 	"github.com/1backend/1backend/sdk/go/datastore/localstore"
-	distlock "github.com/1backend/1backend/sdk/go/lock/local"
 	filetypes "github.com/1backend/1backend/server/internal/services/file/types"
 	"github.com/1backend/1backend/server/internal/universe"
 	"github.com/stretchr/testify/require"
@@ -30,6 +30,53 @@ func newMemoryStorageProvider() *memoryStorageProvider {
 
 func ptrInt(v int) *int {
 	return &v
+}
+
+type testRestartLock struct {
+	mu   sync.Mutex
+	held map[string]bool
+}
+
+func newTestRestartLock() *testRestartLock {
+	return &testRestartLock{held: map[string]bool{}}
+}
+
+func (l *testRestartLock) Acquire(ctx context.Context, key string) error {
+	for {
+		acquired, err := l.TryAcquire(ctx, key)
+		if err != nil || acquired {
+			return err
+		}
+
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case <-time.After(time.Millisecond):
+		}
+	}
+}
+
+func (l *testRestartLock) TryAcquire(_ context.Context, key string) (bool, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	if l.held[key] {
+		return false, nil
+	}
+	l.held[key] = true
+	return true, nil
+}
+
+func (l *testRestartLock) Release(_ context.Context, key string) error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	delete(l.held, key)
+	return nil
+}
+
+func (l *testRestartLock) IsHeld(key string) bool {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.held[key]
 }
 
 func (m *memoryStorageProvider) Open(_ context.Context, filePath string) (io.ReadCloser, int64, error) {
@@ -162,7 +209,6 @@ func TestDownloadFilePersistsToDownloadStorage(t *testing.T) {
 	d := &filetypes.InternalDownload{
 		Id:       "dl_test",
 		URL:      origin.URL + "/asset.txt",
-		NodeId:   "node-1",
 		FilePath: filePath,
 		Status:   filetypes.DownloadStatusInProgress,
 	}
@@ -224,14 +270,12 @@ func TestServeLocalDownloadRecoversFromStorageWhenLocalMissing(t *testing.T) {
 	download := &filetypes.InternalDownload{
 		Id:       "dl_cached",
 		URL:      url,
-		NodeId:   "node-1",
 		FilePath: localPath,
 		Status:   filetypes.DownloadStatusInProgress,
 	}
 	require.NoError(t, downloadStore.Upsert(download))
 
 	fs := &FileService{
-		nodeId:          "node-1",
 		downloadStore:   downloadStore,
 		downloadStorage: storage,
 		downloadFolder:  filepath.Join(tmp, "downloads"),
@@ -279,14 +323,12 @@ func TestServeLocalDownloadRedownloadsWhenLocalAndStorageMissing(t *testing.T) {
 	download := &filetypes.InternalDownload{
 		Id:       "dl_missing",
 		URL:      url,
-		NodeId:   "node-1",
 		FilePath: localPath,
 		Status:   filetypes.DownloadStatusInProgress,
 	}
 	require.NoError(t, downloadStore.Upsert(download))
 
 	fs := &FileService{
-		nodeId:          "node-1",
 		downloadStore:   downloadStore,
 		downloadStorage: storage,
 		downloadFolder:  filepath.Join(tmp, "downloads"),
@@ -309,60 +351,6 @@ func TestServeLocalDownloadRedownloadsWhenLocalAndStorageMissing(t *testing.T) {
 
 	storageKey := DownloadStorageFilePath(url)
 	require.Equal(t, []byte(""), storage.data[storageKey], "expected redownloaded object persisted to storage")
-}
-
-func TestServeRemoteDownloadPromotesStoredDownloadToCurrentNode(t *testing.T) {
-	tmp := t.TempDir()
-	dsPath := filepath.Join(tmp, "downloads.json")
-	downloadStore, err := localstore.NewLocalStore(&filetypes.InternalDownload{}, dsPath)
-	require.NoError(t, err)
-	defer downloadStore.Close()
-
-	url := "https://example.com/assets/stale.txt"
-	stalePath := filepath.Join("/old-node/downloads", EncodeURLtoFileName(url))
-	storage := newMemoryStorageProvider()
-	storage.data[DownloadStorageFilePath(url)] = []byte("from-storage")
-
-	download := &filetypes.InternalDownload{
-		Id:             "dl_stale",
-		URL:            url,
-		NodeId:         "stale-node",
-		FilePath:       stalePath,
-		Status:         filetypes.DownloadStatusCompleted,
-		TotalSize:      0,
-		DownloadedSize: int64(len("from-storage")),
-	}
-	require.NoError(t, downloadStore.Upsert(download))
-
-	fs := &FileService{
-		nodeId:          "current-node",
-		downloadStore:   downloadStore,
-		downloadStorage: storage,
-		downloadFolder:  filepath.Join(tmp, "downloads"),
-	}
-
-	req := httptest.NewRequest(http.MethodGet, "/file-svc/serve/download/ignored", nil)
-	w := httptest.NewRecorder()
-	fs.serveRemoteDownload([]*filetypes.InternalDownload{download}, w, req)
-
-	resp := w.Result()
-	defer resp.Body.Close()
-	require.Equal(t, http.StatusOK, resp.StatusCode)
-
-	body, err := io.ReadAll(resp.Body)
-	require.NoError(t, err)
-	require.Equal(t, "from-storage", string(body))
-
-	localPath := filepath.Join(fs.downloadFolder, EncodeURLtoFileName(url))
-	require.FileExists(t, localPath)
-
-	updated, exists := fs.getDownload(url)
-	require.True(t, exists)
-	require.Equal(t, "current-node", updated.NodeId)
-	require.Equal(t, localPath, updated.FilePath)
-	require.Equal(t, filetypes.DownloadStatusCompleted, updated.Status)
-	require.Equal(t, int64(len("from-storage")), updated.TotalSize)
-	require.Equal(t, int64(len("from-storage")), updated.DownloadedSize)
 }
 
 func TestRestoreDownloadFromStorageReturnsFalseWhenObjectMissing(t *testing.T) {
@@ -525,7 +513,6 @@ func TestRestartDownloadWithBackoffPersistsRetryMetadata(t *testing.T) {
 	defer downloadStore.Close()
 
 	fs := &FileService{
-		nodeId:         "node-1",
 		downloadFolder: filepath.Join(tmp, "downloads"),
 		downloadStore:  downloadStore,
 		SyncDownloads:  true,
@@ -535,7 +522,6 @@ func TestRestartDownloadWithBackoffPersistsRetryMetadata(t *testing.T) {
 	d := &filetypes.InternalDownload{
 		Id:       "dl_retry",
 		URL:      origin.URL + "/asset.txt",
-		NodeId:   "node-1",
 		FilePath: filepath.Join(fs.downloadFolder, EncodeURLtoFileName(origin.URL+"/asset.txt")),
 		Status:   filetypes.DownloadStatusInProgress,
 	}
@@ -570,7 +556,6 @@ func TestRestartDownloadWithBackoffHonorsNextRetryAt(t *testing.T) {
 
 	nextRetry := time.Now().UTC().Add(250 * time.Millisecond)
 	fs := &FileService{
-		nodeId:         "node-1",
 		downloadFolder: filepath.Join(tmp, "downloads"),
 		downloadStore:  downloadStore,
 		SyncDownloads:  true,
@@ -580,7 +565,6 @@ func TestRestartDownloadWithBackoffHonorsNextRetryAt(t *testing.T) {
 	d := &filetypes.InternalDownload{
 		Id:          "dl_delayed",
 		URL:         origin.URL + "/delayed.txt",
-		NodeId:      "node-1",
 		FilePath:    filepath.Join(fs.downloadFolder, EncodeURLtoFileName(origin.URL+"/delayed.txt")),
 		Status:      filetypes.DownloadStatusInProgress,
 		RetryCount:  ptrInt(2),
@@ -624,7 +608,6 @@ func TestRestartDownloadWithBackoffLoopRetriesUntilSuccess(t *testing.T) {
 	defer downloadStore.Close()
 
 	fs := &FileService{
-		nodeId:         "node-1",
 		downloadFolder: filepath.Join(tmp, "downloads"),
 		downloadStore:  downloadStore,
 		SyncDownloads:  true,
@@ -634,7 +617,6 @@ func TestRestartDownloadWithBackoffLoopRetriesUntilSuccess(t *testing.T) {
 	d := &filetypes.InternalDownload{
 		Id:       "dl_loop",
 		URL:      origin.URL + "/loop.txt",
-		NodeId:   "node-1",
 		FilePath: filepath.Join(fs.downloadFolder, EncodeURLtoFileName(origin.URL+"/loop.txt")),
 		Status:   filetypes.DownloadStatusInProgress,
 	}
@@ -658,10 +640,18 @@ func TestRestartDownloadWithBackoffLoopRetriesUntilSuccess(t *testing.T) {
 	require.GreaterOrEqual(t, requestCount.Load(), int32(3))
 }
 
-func TestRestartDownloadWithBackoffUsesDistributedLock(t *testing.T) {
+func TestRestartDownloadWithBackoffUsesRestartLock(t *testing.T) {
 	var requestCount atomic.Int32
+	entered := make(chan struct{})
+	releaseOrigin := make(chan struct{})
 	origin := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestCount.Add(1)
+		select {
+		case <-entered:
+		default:
+			close(entered)
+		}
+		<-releaseOrigin
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer origin.Close()
@@ -672,16 +662,14 @@ func TestRestartDownloadWithBackoffUsesDistributedLock(t *testing.T) {
 	require.NoError(t, err)
 	defer downloadStore.Close()
 
-	lock := distlock.NewLocalDistributedLock()
+	lock := newTestRestartLock()
 	fs1 := &FileService{
-		nodeId:         "node-1",
 		downloadFolder: filepath.Join(tmp, "downloads"),
 		downloadStore:  downloadStore,
 		SyncDownloads:  true,
 		options:        &universe.Options{Lock: lock},
 	}
 	fs2 := &FileService{
-		nodeId:         "node-2",
 		downloadFolder: filepath.Join(tmp, "downloads"),
 		downloadStore:  downloadStore,
 		SyncDownloads:  true,
@@ -692,7 +680,6 @@ func TestRestartDownloadWithBackoffUsesDistributedLock(t *testing.T) {
 	d := &filetypes.InternalDownload{
 		Id:       "dl_lock",
 		URL:      origin.URL + "/lock.txt",
-		NodeId:   "node-1",
 		FilePath: filepath.Join(fs1.downloadFolder, EncodeURLtoFileName(origin.URL+"/lock.txt")),
 		Status:   filetypes.DownloadStatusInProgress,
 	}
@@ -703,7 +690,13 @@ func TestRestartDownloadWithBackoffUsesDistributedLock(t *testing.T) {
 		defer close(done)
 		_ = fs1.restartDownloadWithBackoffOnce(context.Background(), d)
 	}()
+	select {
+	case <-entered:
+	case <-time.After(2 * time.Second):
+		t.Fatal("timeout waiting for first restart request")
+	}
 	_ = fs2.restartDownloadWithBackoffOnce(context.Background(), d)
+	close(releaseOrigin)
 	<-done
 
 	require.Equal(t, int32(1), requestCount.Load())

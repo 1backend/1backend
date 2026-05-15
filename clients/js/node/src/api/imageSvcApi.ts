@@ -191,7 +191,7 @@ export class ImageSvcApi {
     /**
      * Retrieves and serves a previously uploaded image file using its File ID.
      * @summary Serve Uploaded Image
-     * @param fileId FileID uniquely identifies the file itself (not an ID, which represents a specific replica)
+     * @param fileId FileID uniquely identifies the file itself.
      * @param width Optional width to resize the image to
      * @param height Optional height to resize the image to
      * @param fit Resize strategy: contain|cover (default contain)

@@ -341,9 +341,8 @@ func TestDownloadFileWithRestartRetryOptions(t *testing.T) {
 	defer server.Close()
 
 	baseOptions := &univ.Options{
-		Test:   true,
-		Url:    server.URL,
-		NodeId: "test-node-restart-1",
+		Test: true,
+		Url:  server.URL,
 	}
 
 	universe1, err := di.BigBang(baseOptions)

@@ -3833,8 +3833,6 @@ function instanceOfFileSvcUpload(value) {
         return false;
     if (!('id' in value) || value['id'] === undefined)
         return false;
-    if (!('nodeId' in value) || value['nodeId'] === undefined)
-        return false;
     if (!('updatedAt' in value) || value['updatedAt'] === undefined)
         return false;
     if (!('userId' in value) || value['userId'] === undefined)
@@ -3856,7 +3854,6 @@ function FileSvcUploadFromJSONTyped(json, ignoreDiscriminator) {
         'fileSize': json['fileSize'],
         'id': json['id'],
         'lastAccessedAt': json['lastAccessedAt'] == null ? undefined : json['lastAccessedAt'],
-        'nodeId': json['nodeId'],
         'updatedAt': json['updatedAt'],
         'userId': json['userId'],
     };
@@ -3876,7 +3873,6 @@ function FileSvcUploadToJSONTyped(value, ignoreDiscriminator = false) {
         'fileSize': value['fileSize'],
         'id': value['id'],
         'lastAccessedAt': value['lastAccessedAt'],
-        'nodeId': value['nodeId'],
         'updatedAt': value['updatedAt'],
         'userId': value['userId'],
     };
@@ -13440,7 +13436,7 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for a specific replica of the file. Since 1Backend is a distributed system, files can be replicated across multiple nodes. This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+     * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for the upload metadata record.
      * Serve an Uploaded File
      */
     serveUploadRaw(requestParameters, initOverrides) {
@@ -13462,7 +13458,7 @@ class FileSvcApi extends BaseAPI {
         });
     }
     /**
-     * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for a specific replica of the file. Since 1Backend is a distributed system, files can be replicated across multiple nodes. This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+     * Retrieves and serves a previously uploaded file using its File ID. Note: The `ID` and `FileID` fields of an upload are different. - `FileID` is a unique identifier for the file itself. - `ID` is a unique identifier for the upload metadata record.
      * Serve an Uploaded File
      */
     serveUpload(requestParameters, initOverrides) {
