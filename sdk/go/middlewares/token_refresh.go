@@ -25,7 +25,8 @@ func TokenRefreshMiddleware(tr endpoint.TokenRefresher, autorefreshOff bool) fun
 				// @todo this is cruft, this list should be provided by options
 				r.URL.Path != "/user-svc/refresh-token" &&
 				r.URL.Path != "/user-svc/public-key" &&
-				r.URL.Path != "/user-svc/login" {
+				r.URL.Path != "/user-svc/login" &&
+				r.URL.Path != "/user-svc/api-key/exchange" {
 				if tr == nil {
 					panic("token refresher is nil" + r.URL.Path)
 				}

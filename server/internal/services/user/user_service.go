@@ -45,6 +45,7 @@ type UserService struct {
 	credentialStore    datastore.DataStore
 	passwordStore      datastore.DataStore
 	tokenStore         datastore.DataStore
+	apiKeyStore        datastore.DataStore
 	tokenActivityStore datastore.DataStore
 	keyPairStore       datastore.DataStore
 	contactStore       datastore.DataStore
@@ -81,6 +82,14 @@ func NewUserService(
 	authTokensStore, err := options.DataStoreFactory.Create(
 		"userSvcTokens",
 		&usertypes.Token{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	apiKeyStore, err := options.DataStoreFactory.Create(
+		"userSvcApiKeys",
+		&usertypes.ApiKey{},
 	)
 	if err != nil {
 		return nil, err
@@ -203,6 +212,7 @@ func NewUserService(
 		options:               options,
 		userStore:             usersStore,
 		tokenStore:            authTokensStore,
+		apiKeyStore:           apiKeyStore,
 		tokenActivityStore:    tokenActivityStore,
 		credentialStore:       credentialsStore,
 		passwordStore:         passwordsStore,
@@ -410,6 +420,26 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 		us.ExchangeToken(w, r)
 	})).
 		Methods("OPTIONS", "PUT")
+
+	router.HandleFunc("/user-svc/api-key", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.CreateApiKey(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/api-keys", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ListApiKeys(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/api-keys", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.RevokeApiKeys(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
+
+	router.HandleFunc("/user-svc/api-key/exchange", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ExchangeApiKey(w, r)
+	})).
+		Methods("OPTIONS", "POST")
 
 	router.HandleFunc("/user-svc/tokens", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.RevokeTokens(w, r)

@@ -8,6 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	api_key "github.com/1backend/1backend/cli/oo/commands/api_key"
 	"github.com/1backend/1backend/cli/oo/commands/app"
 	call "github.com/1backend/1backend/cli/oo/commands/call"
 	"github.com/1backend/1backend/cli/oo/commands/cert"
@@ -61,6 +62,7 @@ func main() {
 		StringVarP(&globalApp, "app-host", "a", "", "App host name")
 
 	app.AddAppCommands(rootCmd)
+	api_key.AddAPIKeyCommands(rootCmd)
 	user.AddUserCommands(rootCmd)
 	env.AddEnvCommands(rootCmd)
 	instance.AddInstanceCommands(rootCmd)

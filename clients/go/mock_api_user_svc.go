@@ -218,6 +218,36 @@ func (mr *MockUserSvcAPIMockRecorder) ContactAuthStartExecute(r any) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContactAuthStartExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ContactAuthStartExecute), r)
 }
 
+// CreateApiKey mocks base method.
+func (m *MockUserSvcAPI) CreateApiKey(ctx context.Context) ApiCreateApiKeyRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateApiKey", ctx)
+	ret0, _ := ret[0].(ApiCreateApiKeyRequest)
+	return ret0
+}
+
+// CreateApiKey indicates an expected call of CreateApiKey.
+func (mr *MockUserSvcAPIMockRecorder) CreateApiKey(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateApiKey", reflect.TypeOf((*MockUserSvcAPI)(nil).CreateApiKey), ctx)
+}
+
+// CreateApiKeyExecute mocks base method.
+func (m *MockUserSvcAPI) CreateApiKeyExecute(r ApiCreateApiKeyRequest) (*UserSvcCreateApiKeyResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateApiKeyExecute", r)
+	ret0, _ := ret[0].(*UserSvcCreateApiKeyResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// CreateApiKeyExecute indicates an expected call of CreateApiKeyExecute.
+func (mr *MockUserSvcAPIMockRecorder) CreateApiKeyExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateApiKeyExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).CreateApiKeyExecute), r)
+}
+
 // CreateUser mocks base method.
 func (m *MockUserSvcAPI) CreateUser(ctx context.Context) ApiCreateUserRequest {
 	m.ctrl.T.Helper()
@@ -368,6 +398,36 @@ func (mr *MockUserSvcAPIMockRecorder) DeleteUserExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).DeleteUserExecute), r)
 }
 
+// ExchangeApiKey mocks base method.
+func (m *MockUserSvcAPI) ExchangeApiKey(ctx context.Context) ApiExchangeApiKeyRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExchangeApiKey", ctx)
+	ret0, _ := ret[0].(ApiExchangeApiKeyRequest)
+	return ret0
+}
+
+// ExchangeApiKey indicates an expected call of ExchangeApiKey.
+func (mr *MockUserSvcAPIMockRecorder) ExchangeApiKey(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExchangeApiKey", reflect.TypeOf((*MockUserSvcAPI)(nil).ExchangeApiKey), ctx)
+}
+
+// ExchangeApiKeyExecute mocks base method.
+func (m *MockUserSvcAPI) ExchangeApiKeyExecute(r ApiExchangeApiKeyRequest) (*UserSvcExchangeApiKeyResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ExchangeApiKeyExecute", r)
+	ret0, _ := ret[0].(*UserSvcExchangeApiKeyResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ExchangeApiKeyExecute indicates an expected call of ExchangeApiKeyExecute.
+func (mr *MockUserSvcAPIMockRecorder) ExchangeApiKeyExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExchangeApiKeyExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ExchangeApiKeyExecute), r)
+}
+
 // ExchangeToken mocks base method.
 func (m *MockUserSvcAPI) ExchangeToken(ctx context.Context) ApiExchangeTokenRequest {
 	m.ctrl.T.Helper()
@@ -486,6 +546,36 @@ func (m *MockUserSvcAPI) HasPermissionExecute(r ApiHasPermissionRequest) (*UserS
 func (mr *MockUserSvcAPIMockRecorder) HasPermissionExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HasPermissionExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).HasPermissionExecute), r)
+}
+
+// ListApiKeys mocks base method.
+func (m *MockUserSvcAPI) ListApiKeys(ctx context.Context) ApiListApiKeysRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListApiKeys", ctx)
+	ret0, _ := ret[0].(ApiListApiKeysRequest)
+	return ret0
+}
+
+// ListApiKeys indicates an expected call of ListApiKeys.
+func (mr *MockUserSvcAPIMockRecorder) ListApiKeys(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListApiKeys", reflect.TypeOf((*MockUserSvcAPI)(nil).ListApiKeys), ctx)
+}
+
+// ListApiKeysExecute mocks base method.
+func (m *MockUserSvcAPI) ListApiKeysExecute(r ApiListApiKeysRequest) (*UserSvcListApiKeysResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListApiKeysExecute", r)
+	ret0, _ := ret[0].(*UserSvcListApiKeysResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListApiKeysExecute indicates an expected call of ListApiKeysExecute.
+func (mr *MockUserSvcAPIMockRecorder) ListApiKeysExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListApiKeysExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ListApiKeysExecute), r)
 }
 
 // ListApps mocks base method.
@@ -936,6 +1026,36 @@ func (m *MockUserSvcAPI) ResetPasswordExecute(r ApiResetPasswordRequest) (map[st
 func (mr *MockUserSvcAPIMockRecorder) ResetPasswordExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetPasswordExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ResetPasswordExecute), r)
+}
+
+// RevokeApiKeys mocks base method.
+func (m *MockUserSvcAPI) RevokeApiKeys(ctx context.Context) ApiRevokeApiKeysRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RevokeApiKeys", ctx)
+	ret0, _ := ret[0].(ApiRevokeApiKeysRequest)
+	return ret0
+}
+
+// RevokeApiKeys indicates an expected call of RevokeApiKeys.
+func (mr *MockUserSvcAPIMockRecorder) RevokeApiKeys(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RevokeApiKeys", reflect.TypeOf((*MockUserSvcAPI)(nil).RevokeApiKeys), ctx)
+}
+
+// RevokeApiKeysExecute mocks base method.
+func (m *MockUserSvcAPI) RevokeApiKeysExecute(r ApiRevokeApiKeysRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RevokeApiKeysExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// RevokeApiKeysExecute indicates an expected call of RevokeApiKeysExecute.
+func (mr *MockUserSvcAPIMockRecorder) RevokeApiKeysExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RevokeApiKeysExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).RevokeApiKeysExecute), r)
 }
 
 // RevokeTokens mocks base method.

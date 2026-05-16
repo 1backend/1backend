@@ -164,15 +164,18 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**ContactAuthCallback**](docs/UserSvcAPI.md#contactauthcallback) | **Get** /user-svc/auth/{provider}/callback | Contact Auth Callback
 *UserSvcAPI* | [**ContactAuthLogin**](docs/UserSvcAPI.md#contactauthlogin) | **Post** /user-svc/auth/{provider}/login | Contact Auth Login
 *UserSvcAPI* | [**ContactAuthStart**](docs/UserSvcAPI.md#contactauthstart) | **Get** /user-svc/auth/{provider}/start | Start Contact Auth
+*UserSvcAPI* | [**CreateApiKey**](docs/UserSvcAPI.md#createapikey) | **Post** /user-svc/api-key | Create API Key
 *UserSvcAPI* | [**CreateUser**](docs/UserSvcAPI.md#createuser) | **Post** /user-svc/user | Create a New User
 *UserSvcAPI* | [**DeactivateOrganization**](docs/UserSvcAPI.md#deactivateorganization) | **Post** /user-svc/organization/deactivate | Deactivate Organization
 *UserSvcAPI* | [**DeclineMembership**](docs/UserSvcAPI.md#declinemembership) | **Post** /user-svc/organization/{organizationId}/membership/decline | Decline Membership
 *UserSvcAPI* | [**DeleteMembership**](docs/UserSvcAPI.md#deletemembership) | **Delete** /user-svc/organization/{organizationId}/user/{userId} | Delete Membership
 *UserSvcAPI* | [**DeleteUser**](docs/UserSvcAPI.md#deleteuser) | **Delete** /user-svc/user/{userId} | Delete a User
+*UserSvcAPI* | [**ExchangeApiKey**](docs/UserSvcAPI.md#exchangeapikey) | **Post** /user-svc/api-key/exchange | Exchange API Key
 *UserSvcAPI* | [**ExchangeToken**](docs/UserSvcAPI.md#exchangetoken) | **Put** /user-svc/token/exchange | Exchange Token
 *UserSvcAPI* | [**ExchangeToken_0**](docs/UserSvcAPI.md#exchangetoken_0) | **Put** /user-svc/token/exchange | Exchange Token
 *UserSvcAPI* | [**GetPublicKey**](docs/UserSvcAPI.md#getpublickey) | **Get** /user-svc/public-key | Get Public Key
 *UserSvcAPI* | [**HasPermission**](docs/UserSvcAPI.md#haspermission) | **Post** /user-svc/self/has/{permission} | Has Permission
+*UserSvcAPI* | [**ListApiKeys**](docs/UserSvcAPI.md#listapikeys) | **Post** /user-svc/api-keys | List API Keys
 *UserSvcAPI* | [**ListApps**](docs/UserSvcAPI.md#listapps) | **Post** /user-svc/apps | List Apps
 *UserSvcAPI* | [**ListContactAuthProviders**](docs/UserSvcAPI.md#listcontactauthproviders) | **Get** /user-svc/auth/providers | List Contact Auth Providers
 *UserSvcAPI* | [**ListEnrolls**](docs/UserSvcAPI.md#listenrolls) | **Post** /user-svc/enrolls | List Enrolls
@@ -188,6 +191,7 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**RefreshToken**](docs/UserSvcAPI.md#refreshtoken) | **Post** /user-svc/refresh-token | Refresh Token
 *UserSvcAPI* | [**Register**](docs/UserSvcAPI.md#register) | **Post** /user-svc/register | Register
 *UserSvcAPI* | [**ResetPassword**](docs/UserSvcAPI.md#resetpassword) | **Post** /user-svc/{userId}/reset-password | Reset Password
+*UserSvcAPI* | [**RevokeApiKeys**](docs/UserSvcAPI.md#revokeapikeys) | **Delete** /user-svc/api-keys | Revoke API Keys
 *UserSvcAPI* | [**RevokeTokens**](docs/UserSvcAPI.md#revoketokens) | **Delete** /user-svc/tokens | Revoke Tokens
 *UserSvcAPI* | [**SaveEnrolls**](docs/UserSvcAPI.md#saveenrolls) | **Put** /user-svc/enrolls | Save Enrolls
 *UserSvcAPI* | [**SaveMembership**](docs/UserSvcAPI.md#savemembership) | **Put** /user-svc/organization/{organizationId}/user/{userId} | Save Membership
@@ -377,6 +381,7 @@ Class | Method | HTTP request | Description
  - [UserSvcAcceptMembershipResponse](docs/UserSvcAcceptMembershipResponse.md)
  - [UserSvcActivateOrganizationRequest](docs/UserSvcActivateOrganizationRequest.md)
  - [UserSvcActivateOrganizationResponse](docs/UserSvcActivateOrganizationResponse.md)
+ - [UserSvcApiKeyView](docs/UserSvcApiKeyView.md)
  - [UserSvcApp](docs/UserSvcApp.md)
  - [UserSvcChangePasswordRequest](docs/UserSvcChangePasswordRequest.md)
  - [UserSvcContact](docs/UserSvcContact.md)
@@ -384,16 +389,21 @@ Class | Method | HTTP request | Description
  - [UserSvcContactAuthLoginResponse](docs/UserSvcContactAuthLoginResponse.md)
  - [UserSvcContactAuthProviderInfo](docs/UserSvcContactAuthProviderInfo.md)
  - [UserSvcContactInput](docs/UserSvcContactInput.md)
+ - [UserSvcCreateApiKeyRequest](docs/UserSvcCreateApiKeyRequest.md)
+ - [UserSvcCreateApiKeyResponse](docs/UserSvcCreateApiKeyResponse.md)
  - [UserSvcCreateUserRequest](docs/UserSvcCreateUserRequest.md)
  - [UserSvcDeactivateOrganizationResponse](docs/UserSvcDeactivateOrganizationResponse.md)
  - [UserSvcDeclineMembershipResponse](docs/UserSvcDeclineMembershipResponse.md)
  - [UserSvcEnroll](docs/UserSvcEnroll.md)
  - [UserSvcEnrollInput](docs/UserSvcEnrollInput.md)
  - [UserSvcErrorResponse](docs/UserSvcErrorResponse.md)
+ - [UserSvcExchangeApiKeyResponse](docs/UserSvcExchangeApiKeyResponse.md)
  - [UserSvcExchangeTokenRequest](docs/UserSvcExchangeTokenRequest.md)
  - [UserSvcExchangeTokenResponse](docs/UserSvcExchangeTokenResponse.md)
  - [UserSvcGetPublicKeyResponse](docs/UserSvcGetPublicKeyResponse.md)
  - [UserSvcHasPermissionResponse](docs/UserSvcHasPermissionResponse.md)
+ - [UserSvcListApiKeysRequest](docs/UserSvcListApiKeysRequest.md)
+ - [UserSvcListApiKeysResponse](docs/UserSvcListApiKeysResponse.md)
  - [UserSvcListAppsRequest](docs/UserSvcListAppsRequest.md)
  - [UserSvcListAppsResponse](docs/UserSvcListAppsResponse.md)
  - [UserSvcListContactAuthProvidersResponse](docs/UserSvcListContactAuthProvidersResponse.md)
@@ -426,6 +436,7 @@ Class | Method | HTTP request | Description
  - [UserSvcRegisterRequest](docs/UserSvcRegisterRequest.md)
  - [UserSvcRegisterResponse](docs/UserSvcRegisterResponse.md)
  - [UserSvcResetPasswordRequest](docs/UserSvcResetPasswordRequest.md)
+ - [UserSvcRevokeApiKeysRequest](docs/UserSvcRevokeApiKeysRequest.md)
  - [UserSvcRevokeTokensRequest](docs/UserSvcRevokeTokensRequest.md)
  - [UserSvcSaveEnrollsRequest](docs/UserSvcSaveEnrollsRequest.md)
  - [UserSvcSaveEnrollsResponse](docs/UserSvcSaveEnrollsResponse.md)

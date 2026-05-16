@@ -12,8 +12,8 @@ Contact: sales@singulatron.com
 package openapi
 
 import (
-	"bytes"
 	"encoding/json"
+	"bytes"
 	"fmt"
 )
 
@@ -29,13 +29,13 @@ type FileSvcUpload struct {
 	FileName string `json:"fileName"`
 	// FilePath is the canonical object path used by file-svc for both: 1) local node disk location and 2) storage backend object key/path. The exact path-generation algorithm is an implementation detail and may evolve over time; callers must treat FilePath as the source of truth.
 	FilePath string `json:"filePath"`
-	FileSize int64  `json:"fileSize"`
+	FileSize int64 `json:"fileSize"`
 	// Unique ID for this upload record.
 	Id string `json:"id"`
 	// LastAccessedAt is updated asynchronously by the file service when the file is served.
 	LastAccessedAt *string `json:"lastAccessedAt,omitempty"`
-	UpdatedAt      string  `json:"updatedAt"`
-	UserId         string  `json:"userId"`
+	UpdatedAt string `json:"updatedAt"`
+	UserId string `json:"userId"`
 }
 
 type _FileSvcUpload FileSvcUpload
@@ -290,7 +290,7 @@ func (o *FileSvcUpload) SetUserId(v string) {
 }
 
 func (o FileSvcUpload) MarshalJSON() ([]byte, error) {
-	toSerialize, err := o.ToMap()
+	toSerialize,err := o.ToMap()
 	if err != nil {
 		return []byte{}, err
 	}
@@ -333,10 +333,10 @@ func (o *FileSvcUpload) UnmarshalJSON(data []byte) (err error) {
 	err = json.Unmarshal(data, &allProperties)
 
 	if err != nil {
-		return err
+		return err;
 	}
 
-	for _, requiredProperty := range requiredProperties {
+	for _, requiredProperty := range(requiredProperties) {
 		if _, exists := allProperties[requiredProperty]; !exists {
 			return fmt.Errorf("no value given for required property %v", requiredProperty)
 		}
@@ -392,3 +392,5 @@ func (v *NullableFileSvcUpload) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+

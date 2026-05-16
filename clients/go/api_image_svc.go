@@ -45,7 +45,7 @@ type ImageSvcAPI interface {
 	Retrieves and serves a previously uploaded image file using its File ID.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param fileId FileID uniquely identifies the file itself (not an ID, which represents a specific replica)
+	@param fileId FileID uniquely identifies the file itself.
 	@return ApiServeUploadedImageRequest
 	*/
 	ServeUploadedImage(ctx context.Context, fileId string) ApiServeUploadedImageRequest
@@ -297,7 +297,7 @@ ServeUploadedImage Serve Uploaded Image
 Retrieves and serves a previously uploaded image file using its File ID.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param fileId FileID uniquely identifies the file itself (not an ID, which represents a specific replica)
+ @param fileId FileID uniquely identifies the file itself.
  @return ApiServeUploadedImageRequest
 */
 func (a *ImageSvcAPIService) ServeUploadedImage(ctx context.Context, fileId string) ApiServeUploadedImageRequest {

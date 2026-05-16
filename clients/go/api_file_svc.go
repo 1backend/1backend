@@ -146,12 +146,10 @@ Requires the `file-svc:download:edit` permission.
 	Retrieves and serves a previously uploaded file using its File ID.
 Note: The `ID` and `FileID` fields of an upload are different.
 - `FileID` is a unique identifier for the file itself.
-- `ID` is a unique identifier for a specific replica of the file.
-Since 1Backend is a distributed system, files can be replicated across multiple nodes.
-This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+- `ID` is a unique identifier for the upload metadata record.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param fileId FileID uniquely identifies the file itself (not an ID, which represents a specific replica)
+	@param fileId FileID uniquely identifies the file itself.
 	@return ApiServeUploadRequest
 	*/
 	ServeUpload(ctx context.Context, fileId string) ApiServeUploadRequest
@@ -1240,12 +1238,10 @@ ServeUpload Serve an Uploaded File
 Retrieves and serves a previously uploaded file using its File ID.
 Note: The `ID` and `FileID` fields of an upload are different.
 - `FileID` is a unique identifier for the file itself.
-- `ID` is a unique identifier for a specific replica of the file.
-Since 1Backend is a distributed system, files can be replicated across multiple nodes.
-This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+- `ID` is a unique identifier for the upload metadata record.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param fileId FileID uniquely identifies the file itself (not an ID, which represents a specific replica)
+ @param fileId FileID uniquely identifies the file itself.
  @return ApiServeUploadRequest
 */
 func (a *FileSvcAPIService) ServeUpload(ctx context.Context, fileId string) ApiServeUploadRequest {

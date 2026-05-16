@@ -2,6 +2,8 @@ package endpoint
 
 import (
 	"context"
+	"encoding/json"
+	"io"
 	"log/slog"
 	"net/http"
 	"strings"
@@ -44,6 +46,10 @@ type tokenRefresher struct {
 	currentTime           time.Time
 	once                  sync.Once
 	clock                 atomic.Int64
+}
+
+type apiKeyExchangeResponse struct {
+	Token openapi.UserSvcToken `json:"token"`
 }
 
 func NewTokenRefresher(
@@ -123,6 +129,16 @@ func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (token string,
 	// Zero-allocation slicing
 	jwt := authHeader[7:]
 
+	if strings.HasPrefix(jwt, "obk_") {
+		source = "api_key"
+		exchangedToken, exchangedClaims, err := tr.exchangeAPIKeyBearer(request.Context(), jwt)
+		if err != nil {
+			return "", nil, err
+		}
+		request.Header.Set("Authorization", "Bearer "+exchangedToken)
+		return exchangedToken, exchangedClaims, nil
+	}
+
 	now := tr.getNow()
 
 	publicKey, err := tr.getUserServicePublicKey()
@@ -197,6 +213,91 @@ func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (token string,
 	}
 
 	return jwt, claims, nil
+}
+
+func (tr *tokenRefresher) exchangeAPIKeyBearer(
+	ctx context.Context,
+	apiKey string,
+) (string, *auth.Claims, error) {
+	now := tr.getNow()
+	cacheKey := generateCacheKey(apiKey, "api-key")
+
+	if val, found := tr.tokenReplacementCache.Get(cacheKey); found {
+		if cached, ok := val.(*apiKeyExchangeResponse); ok {
+			expiresAt, err := time.Parse(time.RFC3339, cached.Token.ExpiresAt)
+			if err == nil && expiresAt.After(now.Add(5*time.Second)) {
+				telemetry.RecordAuthCache(ctx, telemetry.AuthCacheTokenRefresh, "api_key_hit")
+				return cached.Token.Token, claimsWithExpiry(expiresAt), nil
+			}
+			tr.tokenReplacementCache.Del(cacheKey)
+			telemetry.RecordAuthCache(ctx, telemetry.AuthCacheTokenRefresh, "api_key_expired")
+		}
+	}
+
+	telemetry.RecordAuthCache(ctx, telemetry.AuthCacheTokenRefresh, "api_key_miss")
+
+	apiClient := tr.clientFactory.Client()
+	if apiClient == nil || apiClient.GetConfig() == nil {
+		return "", nil, errors.New("api client is nil")
+	}
+
+	cfg := apiClient.GetConfig()
+	serverURL, err := cfg.ServerURL(0, nil)
+	if err != nil {
+		return "", nil, errors.Wrap(err, "failed to resolve server URL")
+	}
+
+	httpClient := cfg.HTTPClient
+	if httpClient == nil {
+		httpClient = http.DefaultClient
+	}
+
+	url := strings.TrimRight(serverURL, "/") + "/user-svc/api-key/exchange"
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
+	if err != nil {
+		return "", nil, err
+	}
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+	req.Header.Set("Accept", "application/json")
+
+	httpResp, err := httpClient.Do(req)
+	if err != nil {
+		return "", nil, errors.Wrap(err, "API key exchange failed")
+	}
+	defer httpResp.Body.Close()
+
+	if httpResp.StatusCode < 200 || httpResp.StatusCode >= 300 {
+		body, _ := io.ReadAll(io.LimitReader(httpResp.Body, 512))
+		return "", nil, errors.Errorf("API key exchange failed: status %d: %s", httpResp.StatusCode, strings.TrimSpace(string(body)))
+	}
+
+	var exchangeResp apiKeyExchangeResponse
+	if err := json.NewDecoder(httpResp.Body).Decode(&exchangeResp); err != nil {
+		return "", nil, errors.Wrap(err, "failed to decode API key exchange response")
+	}
+	if exchangeResp.Token.Token == "" {
+		return "", nil, errors.New("API key exchange response token is empty")
+	}
+
+	expiresAt, err := time.Parse(time.RFC3339, exchangeResp.Token.ExpiresAt)
+	if err != nil {
+		return "", nil, errors.Wrap(err, "failed to parse API key exchange token expiry")
+	}
+
+	ttl := time.Until(expiresAt)
+	if ttl > 0 {
+		tr.tokenReplacementCache.SetWithTTL(cacheKey, &exchangeResp, 1, ttl)
+	}
+
+	return exchangeResp.Token.Token, claimsWithExpiry(expiresAt), nil
+}
+
+func claimsWithExpiry(expiresAt time.Time) *auth.Claims {
+	return &auth.Claims{
+		RegisteredClaims: jwtlib.RegisteredClaims{
+			ExpiresAt: jwtlib.NewNumericDate(expiresAt),
+		},
+	}
 }
 
 func authResult(err error) string {

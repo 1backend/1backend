@@ -1,8 +1,10 @@
 package endpoint
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -160,6 +162,54 @@ func TestEnsureValidTokenRefreshesWithinPercentageLeewayForShortLifetime(t *test
 	require.Equal(t, newToken, token)
 	require.Equal(t, "Bearer "+newToken, req.Header.Get("Authorization"))
 	require.Equal(t, newExpiry, claims.ExpiresAt.Time)
+}
+
+func TestEnsureValidTokenExchangesOpaqueAPIKeyBearer(t *testing.T) {
+	apiKey := "obk_apik-test_secret"
+	exchangedToken := "jwt-from-api-key"
+	expiresAt := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+	var calls atomic.Int32
+
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		require.Equal(t, "/user-svc/api-key/exchange", r.URL.Path)
+		require.Equal(t, "Bearer "+apiKey, r.Header.Get("Authorization"))
+		calls.Add(1)
+
+		w.Header().Set("Content-Type", "application/json")
+		require.NoError(t, json.NewEncoder(w).Encode(apiKeyExchangeResponse{
+			Token: openapi.UserSvcToken{
+				Token:     exchangedToken,
+				ExpiresAt: expiresAt.Format(time.RFC3339),
+			},
+		}))
+	}))
+	defer server.Close()
+
+	refresher, err := NewTokenRefresher(
+		client.NewApiClientFactory(server.URL),
+		&fakeJWTParser{},
+	)
+	require.NoError(t, err)
+
+	req := httptest.NewRequest(http.MethodGet, "/secret-svc/secrets", nil)
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+
+	token, claims, err := refresher.EnsureValidToken(req)
+	require.NoError(t, err)
+	require.Equal(t, exchangedToken, token)
+	require.Equal(t, "Bearer "+exchangedToken, req.Header.Get("Authorization"))
+	require.Equal(t, expiresAt, claims.ExpiresAt.Time)
+	refresher.(*tokenRefresher).tokenReplacementCache.Wait()
+
+	req2 := httptest.NewRequest(http.MethodGet, "/secret-svc/secrets", nil)
+	req2.Header.Set("Authorization", "Bearer "+apiKey)
+
+	token, claims, err = refresher.EnsureValidToken(req2)
+	require.NoError(t, err)
+	require.Equal(t, exchangedToken, token)
+	require.Equal(t, "Bearer "+exchangedToken, req2.Header.Get("Authorization"))
+	require.Equal(t, expiresAt, claims.ExpiresAt.Time)
+	require.Equal(t, int32(1), calls.Load(), "API key exchange should be cached until the exchanged JWT expires")
 }
 
 func TestTokenRefreshLeewayIsPercentageCapped(t *testing.T) {

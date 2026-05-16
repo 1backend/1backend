@@ -2923,6 +2923,37 @@ definitions:
     required:
     - token
     type: object
+  user_svc.ApiKeyView:
+    properties:
+      activeOrganizationId:
+        type: string
+      appId:
+        type: string
+      createdAt:
+        type: string
+      expiresAt:
+        type: string
+      id:
+        type: string
+      lastUsedAt:
+        type: string
+      name:
+        type: string
+      prefix:
+        type: string
+      revokedAt:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: string
+    required:
+    - appId
+    - createdAt
+    - id
+    - updatedAt
+    - userId
+    type: object
   user_svc.App:
     properties:
       host:
@@ -3063,6 +3094,36 @@ definitions:
     - id
     - platform
     type: object
+  user_svc.CreateApiKeyRequest:
+    properties:
+      activeOrganizationId:
+        description: |-
+          ActiveOrganizationId is optional. If omitted, the current token's active
+          organization is used. If explicitly set to an empty string, the API key
+          authenticates without an active organization.
+        type: string
+      appHost:
+        type: string
+      appId:
+        type: string
+      expiresAt:
+        type: string
+      name:
+        type: string
+      userId:
+        type: string
+    type: object
+  user_svc.CreateApiKeyResponse:
+    properties:
+      apiKey:
+        $ref: '#/definitions/user_svc.ApiKeyView'
+      key:
+        description: Key is the raw bearer credential. It is returned only once.
+        type: string
+    required:
+    - apiKey
+    - key
+    type: object
   user_svc.CreateUserRequest:
     properties:
       appHost:
@@ -3184,6 +3245,13 @@ definitions:
       error:
         type: string
     type: object
+  user_svc.ExchangeApiKeyResponse:
+    properties:
+      token:
+        $ref: '#/definitions/user_svc.Token'
+    required:
+    - token
+    type: object
   user_svc.ExchangeTokenRequest:
     properties:
       newAppHost:
@@ -3231,6 +3299,32 @@ definitions:
     - authorized
     - until
     - user
+    type: object
+  user_svc.ListApiKeysRequest:
+    properties:
+      appHost:
+        type: string
+      appId:
+        type: string
+      id:
+        type: string
+      ids:
+        items:
+          type: string
+        type: array
+      includeRevoked:
+        type: boolean
+      userId:
+        type: string
+    type: object
+  user_svc.ListApiKeysResponse:
+    properties:
+      apiKeys:
+        items:
+          $ref: '#/definitions/user_svc.ApiKeyView'
+        type: array
+    required:
+    - apiKeys
     type: object
   user_svc.ListAppsRequest:
     properties:
@@ -3689,6 +3783,19 @@ definitions:
     - newPassword
     type: object
   user_svc.ResetPasswordResponse:
+    type: object
+  user_svc.RevokeApiKeysRequest:
+    properties:
+      id:
+        type: string
+      ids:
+        items:
+          type: string
+        type: array
+      userId:
+        type: string
+    type: object
+  user_svc.RevokeApiKeysResponse:
     type: object
   user_svc.RevokeTokensRequest:
     properties:
@@ -6992,6 +7099,140 @@ paths:
       security:
       - BearerAuth: []
       summary: Reset Password
+      tags:
+      - User Svc
+  /user-svc/api-key:
+    post:
+      consumes:
+      - application/json
+      description: Creates an opaque bearer API key for the current user.
+      operationId: createApiKey
+      parameters:
+      - description: Create API Key Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.CreateApiKeyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.CreateApiKeyResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create API Key
+      tags:
+      - User Svc
+  /user-svc/api-key/exchange:
+    post:
+      consumes:
+      - application/json
+      description: Exchanges an opaque API key bearer into a normal short-lived JWT.
+      operationId: exchangeApiKey
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.ExchangeApiKeyResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Exchange API Key
+      tags:
+      - User Svc
+  /user-svc/api-keys:
+    delete:
+      consumes:
+      - application/json
+      description: Revokes one or more API keys.
+      operationId: revokeApiKeys
+      parameters:
+      - description: Revoke API Keys Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.RevokeApiKeysRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.RevokeApiKeysResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Revoke API Keys
+      tags:
+      - User Svc
+    post:
+      consumes:
+      - application/json
+      description: Lists API key metadata without returning raw secrets.
+      operationId: listApiKeys
+      parameters:
+      - description: List API Keys Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.ListApiKeysRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.ListApiKeysResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List API Keys
       tags:
       - User Svc
   /user-svc/app:
