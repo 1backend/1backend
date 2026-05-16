@@ -31,6 +31,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/middlewares"
 	"github.com/1backend/1backend/sdk/go/secrets"
 	"github.com/1backend/1backend/sdk/go/service"
+	"github.com/1backend/1backend/sdk/go/telemetry"
 	proxy "github.com/1backend/1backend/server/internal/services/proxy/types"
 	"github.com/1backend/1backend/server/internal/universe"
 )
@@ -147,19 +148,19 @@ func NewProxyService(
 
 				pr.Out.Host = pr.In.Host
 			},
-			Transport: &http.Transport{
+			Transport: telemetry.HTTPClientTransport("1backend-proxy", &http.Transport{
 				MaxIdleConns:        50000,
 				MaxIdleConnsPerHost: 500,
 				IdleConnTimeout:     30 * time.Second,
-			},
+			}),
 		},
 		httpClient: &http.Client{
-			Transport: &http.Transport{
+			Transport: telemetry.HTTPClientTransport("1backend-proxy", &http.Transport{
 				MaxIdleConns:        1000, // Total across all backends
 				MaxIdleConnsPerHost: 200,  // Enough for concurrent spikes to one service
 				IdleConnTimeout:     90 * time.Second,
 				TLSHandshakeTimeout: 10 * time.Second,
-			},
+			}),
 		},
 	}
 

@@ -19,8 +19,12 @@ import (
 	"github.com/1backend/1backend/sdk/go/datastore"
 	"github.com/1backend/1backend/sdk/go/endpoint"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/telemetry"
 	user "github.com/1backend/1backend/server/internal/services/user/types"
 	"github.com/pkg/errors"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/codes"
 )
 
 // @ID refreshToken
@@ -69,13 +73,29 @@ func (s *UserService) RefreshToken(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) refreshToken(
 	ctx context.Context,
 	stringToken string,
-) (*user.Token, error) {
+) (token *user.Token, err error) {
+	started := time.Now()
+	ctx, span := otel.Tracer("github.com/1backend/1backend/server/internal/services/user").Start(ctx, "user.refresh_token")
+	source := "network"
+	defer func() {
+		span.SetAttributes(attribute.String("auth.source", source))
+		if err != nil {
+			span.RecordError(err)
+			span.SetStatus(codes.Error, err.Error())
+		}
+		span.End()
+		telemetry.RecordAuthOperation(ctx, telemetry.AuthOperationTokenRefresh, authResult(err), source, started, err)
+	}()
+
 	cacheKey := generateCacheKey(stringToken)
 
 	// Fast Path: Check cache without any locking (handles 99% of traffic)
 	if cachedToken, found := s.cachedReplacementToken(cacheKey); found {
+		source = "cache"
+		telemetry.RecordAuthCache(ctx, telemetry.AuthCacheTokenRefresh, "hit")
 		return cachedToken, nil
 	}
+	telemetry.RecordAuthCache(ctx, telemetry.AuthCacheTokenRefresh, "miss")
 
 	val, err, _ := s.refreshGroup.Do(cacheKey, func() (interface{}, error) {
 		// THE DOUBLE CHECK:
@@ -83,6 +103,8 @@ func (s *UserService) refreshToken(
 		// and sets the cache, these requests enter one by one (or share the result).
 		// We check the cache again to see if Request 1 already did the work.
 		if cachedToken, found := s.cachedReplacementToken(cacheKey); found {
+			source = "cache"
+			telemetry.RecordAuthCache(ctx, telemetry.AuthCacheTokenRefresh, "hit_after_singleflight")
 			return cachedToken, nil
 		}
 
@@ -415,4 +437,11 @@ func attrsToArgs(attrs []slog.Attr) []any {
 
 func generateCacheKey(token string) string {
 	return auth.TokenHash(token)
+}
+
+func authResult(err error) string {
+	if err != nil {
+		return "error"
+	}
+	return "success"
 }

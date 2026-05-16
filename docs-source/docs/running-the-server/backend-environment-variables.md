@@ -362,6 +362,8 @@ Sets the OTLP HTTP exporter endpoint used by telemetry.
 
 If the standard `OTEL_EXPORTER_OTLP_ENDPOINT` variable is already set, that standard variable takes precedence.
 
+Use this to send traces to an OpenTelemetry Collector or Grafana Tempo. Backend-routed service-to-service calls preserve W3C trace context and produce proxy spans when trace export is enabled.
+
 ## `OB_OTEL_METRICS_PATH`
 
 Sets the Prometheus-format metrics route. Defaults to `/metrics`.
@@ -371,6 +373,8 @@ For service-specific SDK instrumentation, this path is combined with the service
 ## `OB_OTEL_TRACES`
 
 When set to true, enables OTLP trace export.
+
+This includes HTTP server spans, SDK outbound HTTP client spans, 1Backend service-to-service proxy spans, auth/token helper spans where available, and datastore spans.
 
 ## `OB_OTEL_TRACE_SAMPLE_RATIO`
 

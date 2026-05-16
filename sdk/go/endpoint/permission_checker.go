@@ -20,6 +20,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/telemetry"
 	"github.com/dgraph-io/ristretto"
 )
 
@@ -77,7 +78,12 @@ func NewPermissionChecker(
 func (pc *PermissionCheckerImpl) HasPermission(
 	request *http.Request,
 	permission string,
-) (*openapi.UserSvcHasPermissionResponse, int, error) {
+) (rsp *openapi.UserSvcHasPermissionResponse, statusCode int, err error) {
+	started := time.Now()
+	source := "network"
+	defer func() {
+		telemetry.RecordAuthOperation(request.Context(), telemetry.AuthOperationPermissionCheck, authResult(err), source, started, err)
+	}()
 
 	jwt := strings.TrimSpace(
 		strings.TrimPrefix(request.Header.Get("Authorization"), "Bearer "),
@@ -92,12 +98,16 @@ func (pc *PermissionCheckerImpl) HasPermission(
 		if value, found := pc.permissionCache.Get(key); found {
 			if cachedResp, ok := value.(*HasPermissionResponse); ok {
 				if cachedPermissionResponseValid(cachedResp, time.Now()) {
+					source = "cache"
+					telemetry.RecordAuthCache(request.Context(), telemetry.AuthCachePermission, "hit")
 					return cachedResp.Response, cachedResp.StatusCode, nil
 				}
 				pc.permissionCache.Del(key)
+				telemetry.RecordAuthCache(request.Context(), telemetry.AuthCachePermission, "expired")
 			}
 		}
 	}
+	telemetry.RecordAuthCache(request.Context(), telemetry.AuthCachePermission, "miss")
 
 	if pc.clientFactory == nil {
 		return nil, http.StatusInternalServerError, errors.New("client factory is nil")

@@ -18,6 +18,7 @@ import (
 	"github.com/1backend/1backend/sdk/go/auth"
 	"github.com/1backend/1backend/sdk/go/client"
 	"github.com/1backend/1backend/sdk/go/logger"
+	"github.com/1backend/1backend/sdk/go/telemetry"
 )
 
 // Subset of teh auth.Authorizer interface.
@@ -73,9 +74,11 @@ func NewTokenRefresher(
 
 func (tr *tokenRefresher) getUserServicePublicKey() (string, error) {
 	tr.once.Do(func() {
+		started := time.Now()
 		keyResp, _, err := tr.clientFactory.Client().
 			UserSvcAPI.GetPublicKey(context.Background()).
 			Execute()
+		telemetry.RecordAuthOperation(context.Background(), telemetry.AuthOperationPublicKeyFetch, authResult(err), "network", started, err)
 
 		if err != nil {
 			logger.Error("Failed to get public key",
@@ -105,9 +108,16 @@ func (tr *tokenRefresher) backgroundClock() {
 	}
 }
 
-func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth.Claims, error) {
+func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (token string, claims *auth.Claims, err error) {
+	started := time.Now()
+	source := "valid"
+	defer func() {
+		telemetry.RecordAuthOperation(request.Context(), telemetry.AuthOperationTokenRefresh, authResult(err), source, started, err)
+	}()
+
 	authHeader := request.Header.Get("Authorization")
 	if len(authHeader) < 7 || !strings.HasPrefix(authHeader, "Bearer ") {
+		source = "no_token"
 		return "", nil, nil
 	}
 	// Zero-allocation slicing
@@ -120,7 +130,7 @@ func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth
 		return "", nil, err
 	}
 
-	claims, err := tr.parser.ParseJWT(publicKey, jwt)
+	claims, err = tr.parser.ParseJWT(publicKey, jwt)
 	isExpired := false
 
 	if err != nil {
@@ -145,13 +155,18 @@ func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth
 				newClaims, err := tr.parser.ParseJWT(publicKey, replacementToken)
 				if err == nil && newClaims.ExpiresAt != nil &&
 					newClaims.ExpiresAt.Time.After(now.Add(5*time.Second)) {
+					source = "cache"
+					telemetry.RecordAuthCache(request.Context(), telemetry.AuthCacheTokenRefresh, "hit")
 					jwt = replacementToken
 					claims = newClaims
 					request.Header.Set("Authorization", "Bearer "+jwt)
 					return jwt, claims, nil
 				}
+				telemetry.RecordAuthCache(request.Context(), telemetry.AuthCacheTokenRefresh, "invalid")
 			}
 		}
+		telemetry.RecordAuthCache(request.Context(), telemetry.AuthCacheTokenRefresh, "miss")
+		source = "network"
 
 		tokenResp, _, err := tr.clientFactory.Client(client.WithTokenFromRequest(request)).
 			UserSvcAPI.RefreshToken(request.Context()).Execute()
@@ -182,6 +197,13 @@ func (tr *tokenRefresher) EnsureValidToken(request *http.Request) (string, *auth
 	}
 
 	return jwt, claims, nil
+}
+
+func authResult(err error) string {
+	if err != nil {
+		return "error"
+	}
+	return "success"
 }
 
 func shouldRefreshByExpiry(claims *auth.Claims, now time.Time) bool {

@@ -12,7 +12,9 @@ tags:
 
 The built-in 1Backend server initializes telemetry by default at process startup, before services and datastores are constructed. No extra configuration is required. It exposes Prometheus-format metrics at `/metrics` by default. Set `OB_OTEL_METRICS_PATH` to change that route, or `OB_OTEL_DISABLED=true` to disable telemetry.
 
-The server records HTTP request counts, response times, response sizes, 4xx/5xx error counts, datastore operation timings, SQL statement timings, and automatic-index state. If `OB_OTEL_TRACES=true` or an OTLP trace endpoint is configured through the standard `OTEL_EXPORTER_OTLP_*` variables, traces are exported through OTLP HTTP.
+The server records HTTP request counts, response times, response sizes, 4xx/5xx error counts, datastore operation timings, SQL statement timings, automatic-index state, auth helper activity, and service-to-service proxy hops. If `OB_OTEL_TRACES=true` or an OTLP trace endpoint is configured through the standard `OTEL_EXPORTER_OTLP_*` variables, traces are exported through OTLP HTTP.
+
+Every backend service call that flows through 1Backend's service router is represented as a proxy span and receives W3C trace context on the outbound request. Go services built with the 1Backend SDK also use an instrumented HTTP client, so service handler spans, SDK client spans, proxy routing spans, target service handler spans, and datastore spans can appear in one trace. Send OTLP traces to an OpenTelemetry Collector or Grafana Tempo, then view them in Grafana.
 
 ## Consuming services
 

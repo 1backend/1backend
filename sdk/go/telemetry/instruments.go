@@ -27,6 +27,11 @@ var (
 	sqlStatementErrors   metric.Int64Counter
 	sqlStatementDuration metric.Float64Histogram
 
+	authOperations        metric.Int64Counter
+	authOperationErrors   metric.Int64Counter
+	authOperationDuration metric.Float64Histogram
+	authCacheEvents       metric.Int64Counter
+
 	autoIndexSupported metric.Int64ObservableGauge
 	autoIndexShapes    metric.Int64ObservableGauge
 	autoIndexInfo      metric.Int64ObservableGauge
@@ -68,6 +73,28 @@ func ensureInstruments() {
 			metric.WithDescription("Duration of SQL statements executed by datastores."),
 			metric.WithUnit("s"),
 			metric.WithExplicitBucketBoundaries(0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5),
+		)
+
+		authOperations, _ = meter.Int64Counter(
+			"onebackend.auth.operations",
+			metric.WithDescription("Number of auth helper operations executed by 1Backend."),
+			metric.WithUnit("{operation}"),
+		)
+		authOperationErrors, _ = meter.Int64Counter(
+			"onebackend.auth.operation.errors",
+			metric.WithDescription("Number of auth helper operations that returned an error."),
+			metric.WithUnit("{error}"),
+		)
+		authOperationDuration, _ = meter.Float64Histogram(
+			"onebackend.auth.operation.duration",
+			metric.WithDescription("Duration of auth helper operations."),
+			metric.WithUnit("s"),
+			metric.WithExplicitBucketBoundaries(0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5),
+		)
+		authCacheEvents, _ = meter.Int64Counter(
+			"onebackend.auth.cache.events",
+			metric.WithDescription("Number of auth helper cache events."),
+			metric.WithUnit("{event}"),
 		)
 
 		autoIndexSupported, _ = meter.Int64ObservableGauge(

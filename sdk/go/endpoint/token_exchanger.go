@@ -10,6 +10,7 @@ import (
 
 	openapi "github.com/1backend/1backend/clients/go"
 	"github.com/1backend/1backend/sdk/go/client"
+	"github.com/1backend/1backend/sdk/go/telemetry"
 	"github.com/dgraph-io/ristretto"
 	"github.com/pkg/errors"
 )
@@ -77,7 +78,13 @@ func (te *TokenExchangerImpl) ExchangeToken(
 	ctx context.Context,
 	token string,
 	opts ExchangeOptions,
-) (string, error) {
+) (exchangedToken string, err error) {
+	started := time.Now()
+	source := "network"
+	defer func() {
+		telemetry.RecordAuthOperation(ctx, telemetry.AuthOperationTokenExchange, authResult(err), source, started, err)
+	}()
+
 	if err := opts.validate(); err != nil {
 		return "", err
 	}
@@ -85,9 +92,13 @@ func (te *TokenExchangerImpl) ExchangeToken(
 	cacheKey := generateTokenExchangeKey(token, key(opts))
 	if value, found := te.cache.Get(cacheKey); found {
 		if cached, ok := value.(*TokenExchangeResponse); ok {
+			source = "cache"
+			telemetry.RecordAuthCache(ctx, telemetry.AuthCacheTokenExchange, "hit")
 			return cached.Token, nil
 		}
+		telemetry.RecordAuthCache(ctx, telemetry.AuthCacheTokenExchange, "invalid")
 	}
+	telemetry.RecordAuthCache(ctx, telemetry.AuthCacheTokenExchange, "miss")
 
 	req := openapi.UserSvcExchangeTokenRequest{}
 	if opts.AppHost != "" {

@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	onebackendapi "github.com/1backend/1backend/clients/go"
+	"github.com/1backend/1backend/sdk/go/telemetry"
 )
 
 type ClientOption func(*onebackendapi.Configuration)
@@ -73,6 +74,7 @@ func (f *APIClientFactory) Client(opts ...ClientOption) *onebackendapi.APIClient
 				Description: "Default server",
 			},
 		},
+		HTTPClient: telemetry.HTTPClient("1backend-sdk", nil),
 	}
 
 	for _, opt := range opts {
