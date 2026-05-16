@@ -828,6 +828,15 @@ func compileEquals(filter datastore.Filter) (string, []any, error) {
 	var params []any
 	for _, field := range filter.Fields {
 		path := jsonPath(field)
+		if value == nil {
+			parts = append(parts, fmt.Sprintf(
+				"(json_type(data, %s) IS NULL OR json_type(data, %s) = 'null')",
+				sqlStringLiteral(path),
+				sqlStringLiteral(path),
+			))
+			continue
+		}
+
 		parts = append(parts, fmt.Sprintf(
 			"((json_type(data, %s) = 'array' AND EXISTS (SELECT 1 FROM json_each(data, %s) WHERE value = ?)) OR (json_type(data, %s) != 'array' AND %s = ?))",
 			sqlStringLiteral(path),

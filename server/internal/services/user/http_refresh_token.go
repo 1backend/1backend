@@ -201,6 +201,7 @@ func (s *UserService) refreshToken(
 		}
 
 		// Prune old tokens for the same device
+		pruneReadAt := time.Now()
 		tokens, err := s.tokenStore.Query(
 			datastore.Equals(datastore.Field("appId"), token.AppId),
 			datastore.Equals(datastore.Field("userId"), usr.Id),
@@ -231,7 +232,7 @@ func (s *UserService) refreshToken(
 				keptInactive++
 				continue
 			}
-			err := s.tokenStore.Query(datastore.Id(t.Id)).Delete()
+			err := s.deletePrunableToken(t.Id, pruneReadAt)
 			if err != nil {
 				logger.Error("Failed to delete old token",
 					slog.String("appId", t.AppId),
@@ -259,6 +260,46 @@ func (s *UserService) refreshToken(
 	}
 
 	return val.(*user.Token), nil
+}
+
+func (s *UserService) deletePrunableToken(
+	tokenId string,
+	pruneReadAt time.Time,
+) error {
+	tokenI, found, err := s.tokenStore.Query(datastore.Id(tokenId)).FindOne()
+	if err != nil {
+		return err
+	}
+	if !found {
+		return nil
+	}
+
+	token, ok := tokenI.(*user.Token)
+	if !ok {
+		return errors.Errorf("type mismatch: expected *user.Token, got %T", tokenI)
+	}
+	if token.Active {
+		return nil
+	}
+	if !tokenPruneTime(token).Before(pruneReadAt) {
+		return nil
+	}
+
+	filters := []datastore.Filter{datastore.Id(token.Id)}
+	if token.LastRefreshedAt == nil {
+		filters = append(filters,
+			datastore.Equals(datastore.Field("lastRefreshedAt"), nil),
+		)
+	} else {
+		filters = append(filters,
+			datastore.Equals(
+				datastore.Field("lastRefreshedAt"),
+				*token.LastRefreshedAt,
+			),
+		)
+	}
+
+	return s.tokenStore.Query(filters...).Delete()
 }
 
 func (s *UserService) cachedReplacementToken(

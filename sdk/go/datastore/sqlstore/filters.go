@@ -64,7 +64,10 @@ func (q *SQLQueryBuilder) evaluateFilters(
 
 			parts := strings.Split(field, ".")
 
-			if len(values) > 1 {
+			if len(values) == 1 && values[0] == nil {
+				orFilters = append(orFilters, fmt.Sprintf("%s IS NULL", fieldName))
+				continue
+			} else if len(values) > 1 {
 				orFilters = append(orFilters, fmt.Sprintf("%s = ANY(%s)", placeHolder, fieldName))
 				param, err = q.store.convertParam(values)
 			} else if v := q.store.fieldTypes[lowercaseFirstChar(parts[0])]; v != nil && v.Kind() == reflect.Slice {

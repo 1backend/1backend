@@ -165,6 +165,211 @@ func TestRefreshTokenMarksInFlightTokenBeforeLockKeyParsing(t *testing.T) {
 	require.NoError(t, competingErr)
 }
 
+func TestRefreshTokenPruneDoesNotDeleteTokenMarkedAfterPruneRead(t *testing.T) {
+	s := newRefreshRaceTestService(t)
+
+	tok0 := registerRefreshRaceUser(t, s, "refresh-prune-stale-read")
+
+	waitForReplacementCacheExpiry()
+	tok1, err := s.refreshToken(context.Background(), tok0.Token)
+	require.NoError(t, err)
+
+	waitForReplacementCacheExpiry()
+	tok2, err := s.refreshToken(context.Background(), tok1.Token)
+	require.NoError(t, err)
+
+	waitForReplacementCacheExpiry()
+
+	realTokenStore := s.tokenStore
+	pruner := &stalePruneWindowStore{
+		DataStore:    realTokenStore,
+		token:        tok0.Token,
+		pruneRead:    make(chan struct{}),
+		releasePrune: make(chan struct{}),
+		markerDone:   make(chan struct{}),
+	}
+	s.tokenStore = pruner
+
+	var pruneErr error
+	pruneDone := make(chan struct{})
+	go func() {
+		_, pruneErr = s.refreshToken(context.Background(), tok2.Token)
+		close(pruneDone)
+	}()
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-pruner.pruneRead:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+
+	var originalErr error
+	originalDone := make(chan struct{})
+	go func() {
+		_, originalErr = s.refreshToken(context.Background(), tok0.Token)
+		close(originalDone)
+	}()
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-pruner.markerDone:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+
+	close(pruner.releasePrune)
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-pruneDone:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+	require.NoError(t, pruneErr)
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-originalDone:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+	require.NoError(t, originalErr)
+
+	_, found, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("token"), tok0.Token),
+	).FindOne()
+	require.NoError(t, err)
+	require.True(t, found, "token marked as recently refreshed was pruned from a stale read")
+}
+
+func TestRefreshTokenPruneDeleteIsConditionalOnCurrentMarker(t *testing.T) {
+	s := newRefreshRaceTestService(t)
+
+	tok0 := registerRefreshRaceUser(t, s, "refresh-prune-delete-window")
+
+	waitForReplacementCacheExpiry()
+	tok1, err := s.refreshToken(context.Background(), tok0.Token)
+	require.NoError(t, err)
+
+	waitForReplacementCacheExpiry()
+	tok2, err := s.refreshToken(context.Background(), tok1.Token)
+	require.NoError(t, err)
+
+	waitForReplacementCacheExpiry()
+
+	realTokenStore := s.tokenStore
+	pruner := &deleteWindowStore{
+		DataStore:     realTokenStore,
+		token:         tok0.Token,
+		targetId:      tok0.Id,
+		deleteStarted: make(chan struct{}),
+		releaseDelete: make(chan struct{}),
+		markerDone:    make(chan struct{}),
+	}
+	s.tokenStore = pruner
+
+	var pruneErr error
+	pruneDone := make(chan struct{})
+	go func() {
+		_, pruneErr = s.refreshToken(context.Background(), tok2.Token)
+		close(pruneDone)
+	}()
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-pruner.deleteStarted:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+
+	var originalErr error
+	originalDone := make(chan struct{})
+	go func() {
+		_, originalErr = s.refreshToken(context.Background(), tok0.Token)
+		close(originalDone)
+	}()
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-pruner.markerDone:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+
+	close(pruner.releaseDelete)
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-pruneDone:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+	require.NoError(t, pruneErr)
+
+	require.Eventually(t, func() bool {
+		select {
+		case <-originalDone:
+			return true
+		default:
+			return false
+		}
+	}, time.Second, time.Millisecond)
+	require.NoError(t, originalErr)
+
+	_, found, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("token"), tok0.Token),
+	).FindOne()
+	require.NoError(t, err)
+	require.True(t, found, "token marked before prune delete completed was deleted")
+}
+
+func TestRefreshTokenRepeatedOriginalTokenUseStaysBounded(t *testing.T) {
+	s := newRefreshRaceTestServiceWithExpiration(t, 2*time.Millisecond)
+
+	original := registerRefreshRaceUser(t, s, "refresh-repeated-original")
+	startedAt := time.Now()
+
+	const refreshCount = 200
+	for i := 0; i < refreshCount; i++ {
+		waitForReplacementCacheKeyExpiry(t, s, original.Token)
+
+		refreshed, err := s.refreshToken(context.Background(), original.Token)
+		require.NoError(t, err)
+		require.NotEmpty(t, refreshed.Token)
+
+		if i%10 == 0 {
+			assertRefreshRaceTokenState(t, s, original)
+		}
+	}
+
+	assertRefreshRaceTokenState(t, s, original)
+
+	tokenI, found, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("token"), original.Token),
+	).FindOne()
+	require.NoError(t, err)
+	require.True(t, found, "repeatedly used original token was pruned")
+
+	storedOriginal := tokenI.(*user.Token)
+	require.NotNil(t, storedOriginal.LastRefreshedAt)
+	require.True(t, storedOriginal.LastRefreshedAt.After(startedAt))
+}
+
 func TestRefreshTokenConcurrentIssueTokenKeepsSingleActiveToken(t *testing.T) {
 	s := newRefreshRaceTestServiceWithExpiration(t, time.Minute)
 
@@ -330,14 +535,29 @@ func TestRefreshTokenDifferentDevicesDoNotShareEntryLock(t *testing.T) {
 	require.NoError(t, refreshAErr)
 }
 
-func newRefreshRaceTestService(t *testing.T) *UserService {
+func BenchmarkRefreshTokenPruneWithConditionalDelete(b *testing.B) {
+	s := newRefreshRaceTestServiceWithExpiration(b, time.Minute)
+	current := registerRefreshRaceUser(b, s, "refresh-prune-bench")
+
+	b.ReportAllocs()
+	b.ResetTimer()
+	for range b.N {
+		next, err := s.refreshToken(context.Background(), current.Token)
+		if err != nil {
+			b.Fatal(err)
+		}
+		current = next
+	}
+}
+
+func newRefreshRaceTestService(t testing.TB) *UserService {
 	t.Helper()
 
 	return newRefreshRaceTestServiceWithExpiration(t, 20*time.Millisecond)
 }
 
 func newRefreshRaceTestServiceWithExpiration(
-	t *testing.T,
+	t testing.TB,
 	tokenExpiration time.Duration,
 ) *UserService {
 	t.Helper()
@@ -363,7 +583,7 @@ func newRefreshRaceTestServiceWithExpiration(
 }
 
 func registerRefreshRaceUser(
-	t *testing.T,
+	t testing.TB,
 	s *UserService,
 	slugPrefix string,
 ) *user.Token {
@@ -383,6 +603,50 @@ func registerRefreshRaceUser(
 
 func waitForReplacementCacheExpiry() {
 	time.Sleep(30 * time.Millisecond)
+}
+
+func waitForReplacementCacheKeyExpiry(
+	t testing.TB,
+	s *UserService,
+	token string,
+) {
+	t.Helper()
+
+	require.Eventually(t, func() bool {
+		_, found := s.cachedReplacementToken(generateCacheKey(token))
+		return !found
+	}, time.Second, time.Millisecond)
+}
+
+func assertRefreshRaceTokenState(
+	t testing.TB,
+	s *UserService,
+	original *user.Token,
+) {
+	t.Helper()
+
+	_, found, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("token"), original.Token),
+	).FindOne()
+	require.NoError(t, err)
+	require.True(t, found, "original token was pruned")
+
+	activeTokens, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("appId"), original.AppId),
+		datastore.Equals(datastore.Field("userId"), original.UserId),
+		datastore.Equals(datastore.Field("device"), original.Device),
+		datastore.Equals(datastore.Field("active"), true),
+	).Find()
+	require.NoError(t, err)
+	require.Len(t, activeTokens, 1)
+
+	deviceTokens, err := s.tokenStore.Query(
+		datastore.Equals(datastore.Field("appId"), original.AppId),
+		datastore.Equals(datastore.Field("userId"), original.UserId),
+		datastore.Equals(datastore.Field("device"), original.Device),
+	).Find()
+	require.NoError(t, err)
+	require.LessOrEqual(t, len(deviceTokens), 3)
 }
 
 type blockingParseUnverifiedAuthorizer struct {
@@ -481,6 +745,114 @@ func (q *blockTokenLastRefreshedQuery) UpdateFields(fields map[string]interface{
 	return q.QueryBuilder.UpdateFields(fields)
 }
 
+type stalePruneWindowStore struct {
+	datastore.DataStore
+	token        string
+	pruneRead    chan struct{}
+	releasePrune chan struct{}
+	markerDone   chan struct{}
+	pruneOnce    sync.Once
+	markerOnce   sync.Once
+}
+
+func (s *stalePruneWindowStore) Query(filters ...datastore.Filter) datastore.QueryBuilder {
+	return &stalePruneWindowQuery{
+		QueryBuilder: s.DataStore.Query(filters...),
+		store:        s,
+		filters:      filters,
+	}
+}
+
+type stalePruneWindowQuery struct {
+	datastore.QueryBuilder
+	store   *stalePruneWindowStore
+	filters []datastore.Filter
+}
+
+func (q *stalePruneWindowQuery) Find() ([]datastore.Row, error) {
+	rows, err := q.QueryBuilder.Find()
+	if err != nil {
+		return nil, err
+	}
+
+	if isRefreshPruneLookup(q.filters) {
+		q.store.pruneOnce.Do(func() {
+			close(q.store.pruneRead)
+			<-q.store.releasePrune
+		})
+	}
+
+	return rows, nil
+}
+
+func (q *stalePruneWindowQuery) UpdateFields(fields map[string]interface{}) error {
+	err := q.QueryBuilder.UpdateFields(fields)
+	if err != nil {
+		return err
+	}
+
+	_, updatesLastRefreshedAt := fields["lastRefreshedAt"]
+	if updatesLastRefreshedAt && hasEqualsFilterValue(q.filters, "token", q.store.token) {
+		q.store.markerOnce.Do(func() {
+			close(q.store.markerDone)
+		})
+	}
+
+	return nil
+}
+
+type deleteWindowStore struct {
+	datastore.DataStore
+	token         string
+	targetId      string
+	deleteStarted chan struct{}
+	releaseDelete chan struct{}
+	markerDone    chan struct{}
+	deleteOnce    sync.Once
+	markerOnce    sync.Once
+}
+
+func (s *deleteWindowStore) Query(filters ...datastore.Filter) datastore.QueryBuilder {
+	return &deleteWindowQuery{
+		QueryBuilder: s.DataStore.Query(filters...),
+		store:        s,
+		filters:      filters,
+	}
+}
+
+type deleteWindowQuery struct {
+	datastore.QueryBuilder
+	store   *deleteWindowStore
+	filters []datastore.Filter
+}
+
+func (q *deleteWindowQuery) Delete() error {
+	if hasEqualsFilterValue(q.filters, "id", q.store.targetId) {
+		q.store.deleteOnce.Do(func() {
+			close(q.store.deleteStarted)
+			<-q.store.releaseDelete
+		})
+	}
+
+	return q.QueryBuilder.Delete()
+}
+
+func (q *deleteWindowQuery) UpdateFields(fields map[string]interface{}) error {
+	err := q.QueryBuilder.UpdateFields(fields)
+	if err != nil {
+		return err
+	}
+
+	_, updatesLastRefreshedAt := fields["lastRefreshedAt"]
+	if updatesLastRefreshedAt && hasEqualsFilterValue(q.filters, "token", q.store.token) {
+		q.store.markerOnce.Do(func() {
+			close(q.store.markerDone)
+		})
+	}
+
+	return nil
+}
+
 type activeTokenLookupBarrierStore struct {
 	datastore.DataStore
 	barrier *activeTokenLookupBarrier
@@ -540,6 +912,14 @@ func isActiveTokenLookup(filters []datastore.Filter) bool {
 		hasEqualsFilter(filters, "userId") &&
 		hasEqualsFilter(filters, "device") &&
 		hasEqualsFilterValue(filters, "active", true)
+}
+
+func isRefreshPruneLookup(filters []datastore.Filter) bool {
+	return hasEqualsFilter(filters, "appId") &&
+		hasEqualsFilter(filters, "userId") &&
+		hasEqualsFilter(filters, "device") &&
+		!hasEqualsFilter(filters, "active") &&
+		!hasEqualsFilter(filters, "token")
 }
 
 func hasEqualsFilter(filters []datastore.Filter, field string) bool {
