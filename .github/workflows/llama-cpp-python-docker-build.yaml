@@ -1,6 +1,9 @@
 name: "Llama CPP Python Docker build"
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       branch:
@@ -24,6 +27,10 @@ env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
   IMAGE_NAME: "llama-cpp-python"
+  BUILD_BRANCH: ${{ github.event.inputs.branch || github.ref }}
+  BUILD_BACKEND: ${{ github.event.inputs.backend || 'cuda' }}
+  BUILD_BACKEND_VERSION: ${{ github.event.inputs.backend_version || '12.5.0' }}
+  BUILD_TAG: ${{ github.event.inputs.tag || 'latest' }}
 
 jobs:
   build-and-push:
@@ -33,7 +40,7 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ env.BUILD_BRANCH }}
 
       - name: Login to Docker Hub
         id: login-dockerhub
@@ -44,22 +51,22 @@ jobs:
 
       - name: Validate Backend Selection
         run: |
-          case "${{ github.event.inputs.backend }}" in
+          case "${{ env.BUILD_BACKEND }}" in
             "cuda"|"openblas"|"mkl"|"default") ;;
             *) echo "Error: Invalid backend specified"; exit 1 ;;
           esac
 
       - name: Set Image Tag
         run: |
-          IMAGE_TAG="${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.event.inputs.backend }}-${{ github.event.inputs.backend_version }}-${{ github.event.inputs.tag }}"
+          IMAGE_TAG="${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.BUILD_BACKEND }}-${{ env.BUILD_BACKEND_VERSION }}-${{ env.BUILD_TAG }}"
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
 
       - name: Build and Push Docker Image
         run: |
-          cd ${{ github.event.inputs.backend }}
+          cd ${{ env.BUILD_BACKEND }}
 
           DOCKER_BUILDKIT=1 docker build \
-            --build-arg BACKEND_VERSION="${{ github.event.inputs.backend_version }}" \
+            --build-arg BACKEND_VERSION="${{ env.BUILD_BACKEND_VERSION }}" \
             -t ${{ env.IMAGE_TAG }} .
 
           docker push ${{ env.IMAGE_TAG }}
