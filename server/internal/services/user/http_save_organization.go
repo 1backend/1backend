@@ -212,7 +212,7 @@ func (s *UserService) saveOrganization(
 	}
 
 	acceptedAt := now
-	_, err = s.createMembership(
+	membership, err := s.createMembership(
 		appId,
 		userId,
 		final.Id,
@@ -229,7 +229,13 @@ func (s *UserService) saveOrganization(
 		return final, nil, nil
 	}
 
-	token, err := s.activateOrganization(appId, u, final.Id, claims.Device)
+	token, err := s.issueTokenForActiveOrganization(
+		appId,
+		u,
+		claims.Device,
+		final.Id,
+		membership.Roles,
+	)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "error activating organization")
 	}

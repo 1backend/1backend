@@ -393,6 +393,68 @@ func (s *UserService) generateAuthToken(
 
 	roles = filterRolesForActiveOrganization(roles, activeOrganizationId)
 
+	return s.buildAuthToken(appId, u, device, roles, activeOrganizationId)
+}
+
+func (s *UserService) issueTokenForActiveOrganization(
+	appId string,
+	usr *user.User,
+	device string,
+	activeOrganizationId string,
+	activeOrganizationRoles []string,
+) (*user.Token, error) {
+	if strings.TrimSpace(activeOrganizationId) == "" {
+		return nil, errors.New("active organization id is required")
+	}
+	if device == "" {
+		device = unknownDevice
+	}
+
+	releaseLock, err := s.acquireRefreshTokenLock(
+		context.Background(),
+		refreshTokenLockKeyForParts(appId, usr.Id, device),
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer releaseLock()
+
+	roles, err := s.getRolesByUserId(appId, usr.Id)
+	if err != nil {
+		return nil, errors.Wrap(err, "error listing roles")
+	}
+
+	roles = appendUniqueRoles(
+		roles,
+		append([]string{orgMemberRole(activeOrganizationId, usr.Id)}, activeOrganizationRoles...)...,
+	)
+	roles = filterRolesForActiveOrganization(roles, activeOrganizationId)
+
+	if err := s.setActivation(appId, usr.Id, device, activeOrganizationId); err != nil {
+		return nil, errors.Wrap(err, "failed to update activation")
+	}
+	if err := s.inactivateTokens(appId, usr.Id); err != nil {
+		return nil, errors.Wrap(err, "failed to inactivate tokens")
+	}
+
+	token, err := s.buildAuthToken(appId, usr, device, roles, activeOrganizationId)
+	if err != nil {
+		return nil, err
+	}
+	if err := s.tokenStore.Create(token); err != nil {
+		return nil, errors.Wrap(err, "error creating token")
+	}
+
+	return token, nil
+}
+
+func (s *UserService) buildAuthToken(
+	appId string,
+	u *user.User,
+	device string,
+	roles []string,
+	activeOrganizationId string,
+) (*user.Token, error) {
 	_, token, err := s.generateJWT(
 		appId, u, roles, activeOrganizationId,
 		s.privateKey, device)
@@ -434,6 +496,24 @@ func (s *UserService) generateAuthToken(
 		ExpiresAt:  now.Add(s.options.TokenExpiration),
 		CreatedAt:  now,
 	}, nil
+}
+
+func appendUniqueRoles(roles []string, extras ...string) []string {
+	seen := map[string]struct{}{}
+	merged := make([]string, 0, len(roles)+len(extras))
+	for _, role := range append(roles, extras...) {
+		role = strings.TrimSpace(role)
+		if role == "" {
+			continue
+		}
+		if _, ok := seen[role]; ok {
+			continue
+		}
+
+		seen[role] = struct{}{}
+		merged = append(merged, role)
+	}
+	return merged
 }
 
 func filterRolesForActiveOrganization(roles []string, activeOrganizationId string) []string {

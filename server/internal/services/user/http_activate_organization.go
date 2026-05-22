@@ -115,19 +115,5 @@ func (s *UserService) activateOrganization(
 		return nil, ErrOrganizationMembershipNotFound
 	}
 
-	if err := s.setActivation(appId, usr.Id, device, organizationId); err != nil {
-		return nil, errors.Wrap(err, "failed to update activation")
-	}
-
-	err = s.inactivateTokens(appId, usr.Id)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to inactivate tokens")
-	}
-
-	token, err := s.issueToken(appId, usr, device)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to issue token")
-	}
-
-	return token, nil
+	return s.issueTokenForActiveOrganization(appId, usr, device, organizationId, link.Roles)
 }

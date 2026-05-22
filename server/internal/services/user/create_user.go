@@ -92,7 +92,7 @@ func (s *UserService) createUserWithoutVerification(
 
 	err = s.userStore.Create(user)
 	if err != nil {
-		return nil
+		return errors.Wrap(err, "failed to create user")
 	}
 
 	for _, role := range roles {
