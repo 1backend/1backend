@@ -132,43 +132,20 @@ func (s *UserService) saveOrganization(
 	shouldActivate := request.Activate
 
 	if exists {
-		final = orgI.(*user.Organization)
+		return s.updateOrganization(appId, userId, orgI.(*user.Organization), request, claims, now)
+	}
 
-		roles, err := s.getRolesByUserId(claims.AppId, claims.UserId)
-		if err != nil {
-			return nil, nil, errors.Wrap(err, "failed to list effective roles")
-		}
-
-		if !hasOrganizationAdminAccess(roles, final.Id) {
-			return nil, nil, ErrNotAnAdmin
-		}
-
-		if request.Name != "" {
-			final.Name = request.Name
-		}
-		if request.ThumbnailFileId != "" {
-			final.ThumbnailFileId = request.ThumbnailFileId
-		}
-		final.UpdatedAt = now
-		err = s.organizationStore.Upsert(final)
+	if request.Id != "" {
+		orgI, exists, err := s.organizationStore.Query(
+			datastore.Equals(datastore.Field("appId"), appId),
+			datastore.Equals(datastore.Field("id"), request.Id),
+		).FindOne()
 		if err != nil {
 			return nil, nil, err
 		}
-
-		u, err := s.readSelf(userId)
-		if err != nil {
-			return nil, nil, errors.Wrap(err, "error finding user by id")
+		if exists {
+			return s.updateOrganization(appId, userId, orgI.(*user.Organization), request, claims, now)
 		}
-
-		var token *user.Token
-		if shouldActivate {
-			token, err = s.activateOrganization(appId, u, final.Id, claims.Device)
-			if err != nil {
-				return nil, nil, errors.Wrap(err, "error activating organization")
-			}
-		}
-
-		return final, token, nil
 	}
 
 	final = &user.Organization{
@@ -190,7 +167,7 @@ func (s *UserService) saveOrganization(
 		return nil, nil, errors.Wrap(err, "failed to create organization internal id")
 	}
 
-	err = s.organizationStore.Upsert(final)
+	err = s.organizationStore.Create(final)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -238,6 +215,51 @@ func (s *UserService) saveOrganization(
 	)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "error activating organization")
+	}
+
+	return final, token, nil
+}
+
+func (s *UserService) updateOrganization(
+	appId string,
+	userId string,
+	final *user.Organization,
+	request *user.SaveOrganizationRequest,
+	claims *auth.Claims,
+	now time.Time,
+) (*user.Organization, *user.Token, error) {
+	roles, err := s.getRolesByUserId(claims.AppId, claims.UserId)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "failed to list effective roles")
+	}
+
+	if !hasOrganizationAdminAccess(roles, final.Id) {
+		return nil, nil, ErrNotAnAdmin
+	}
+
+	if request.Name != "" {
+		final.Name = request.Name
+	}
+	if request.ThumbnailFileId != "" {
+		final.ThumbnailFileId = request.ThumbnailFileId
+	}
+	final.UpdatedAt = now
+	err = s.organizationStore.Upsert(final)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	u, err := s.readSelf(userId)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "error finding user by id")
+	}
+
+	var token *user.Token
+	if request.Activate {
+		token, err = s.activateOrganization(appId, u, final.Id, claims.Device)
+		if err != nil {
+			return nil, nil, errors.Wrap(err, "error activating organization")
+		}
 	}
 
 	return final, token, nil

@@ -38,13 +38,12 @@ func TestSaveOrganization(t *testing.T) {
 	orgId := ""
 	otherOrgId := ""
 	slug := "some-org-name"
+	initialOrgName := "Some org name"
 
 	t.Run("save organization", func(t *testing.T) {
-		orgName := "Some org name"
-
 		req := openapi.UserSvcSaveOrganizationRequest{
 			Activate: openapi.PtrBool(true),
-			Name:     openapi.PtrString(orgName),
+			Name:     openapi.PtrString(initialOrgName),
 			Slug:     slug,
 		}
 
@@ -85,6 +84,51 @@ func TestSaveOrganization(t *testing.T) {
 		require.Error(t, err)
 		require.NotNil(t, httpResp)
 		require.Equal(t, 401, httpResp.StatusCode)
+	})
+
+	t.Run("other user cannot take over organization by reusing id with new slug", func(t *testing.T) {
+		otherSelf, _, err := otherClient.UserSvcAPI.
+			ReadSelf(context.Background()).
+			Body(openapi.UserSvcReadSelfRequest{}).
+			Execute()
+		require.NoError(t, err)
+
+		_, httpResp, err := otherClient.UserSvcAPI.
+			SaveOrganization(
+				context.Background(),
+			).
+			Body(openapi.UserSvcSaveOrganizationRequest{
+				Id:   openapi.PtrString(orgId),
+				Name: openapi.PtrString("Hijacked organization"),
+				Slug: "hijacked-organization",
+			}).
+			Execute()
+
+		require.Error(t, err)
+		require.NotNil(t, httpResp)
+		require.Equal(t, 401, httpResp.StatusCode)
+
+		orgRsp, _, err := adminClient.UserSvcAPI.
+			ListOrganizations(context.Background()).
+			Body(openapi.UserSvcListOrganizationsRequest{
+				All: openapi.PtrBool(true),
+				Ids: []string{orgId},
+			}).
+			Execute()
+		require.NoError(t, err)
+		require.Len(t, orgRsp.Organizations, 1)
+		require.Equal(t, initialOrgName, orgRsp.Organizations[0].Name)
+		require.Equal(t, slug, orgRsp.Organizations[0].Slug)
+
+		membershipRsp, httpResp := listMemberships(
+			t,
+			userClient,
+			&openapi.UserSvcListMembershipsRequest{OrganizationId: openapi.PtrString(orgId)},
+		)
+		require.Equal(t, 200, httpResp.StatusCode)
+		for _, membership := range membershipRsp.Memberships {
+			require.NotEqual(t, otherSelf.User.Id, membership.User.Id)
+		}
 	})
 
 	t.Run("organization admin can update own organization", func(t *testing.T) {
