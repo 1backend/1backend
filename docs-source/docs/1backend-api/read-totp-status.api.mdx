@@ -1,0 +1,72 @@
+---
+id: read-totp-status
+title: "Read TOTP Status"
+description: "Returns whether an email contact belongs to an account with TOTP enabled."
+sidebar_label: "Read TOTP Status"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVU1v40YM/SsDnh3J3qQoKqBAkyIogi6QIE5OSQ70iJZmM5qZ5VD2uob/e0HJzjof6GEPBdYXy/Ij+fjIN7OFmrJll8TFABXckvQcslm3JC2xwWCoQ+eNjUHQilmQj6HJRqL+h9bGPohZO2nN3fXdjaGAC0918Rjuw3OI6318NjxkNhIlXY6Y35foMxkXshDWJi7N2fRsSLyKrjZomBqXhZjqQDmb7JqA3iwjmxDDyVBuTyAXMIGYiFH7uKqhAiasFTIXlD7DBJi+9pTlItYbqLagDVEQfcSUvLNDaPklqw5byLalDvUpsSYWR1l/Dd3og2wSQQVZ2IUGdruxgGOqoXrYw54mB1hcfCErsFPcW8WxHqUbmZrbkSccJxTuaaiQUwx5ZPJpOtWv19mGRPnQ8g/2eDSjo04XMXrC8K7VY/RHDe8mcPYR1auwQu9qwy/9/uhImCN/PJKPyPzyMRkh1u2aE6+IzeWQ8/+hpC+xyarlfSY285VVITuSNuompziok1BaqKDsM/FJXtlShS9fZp0H4pplCz17RZY+WvRtzFLNZqenv8LuSXG2ZyebuVIf2V4QMvF5r/nfLdQmkXncQx7BLKP3cU21WWwMmpzQksFQG4nPpOfBuBdmybEz0pI5dGQ+x8YFQ6FO0QVRvzrN3xLWpEoH7FQXZRHZ/TPoDC9yYXJ/02YQULW//e7ly2/YJU9H3nxRW0ss48HsaOUVCD3lP7ILTe9ROIbCxu6Ix82VmfcpRVbtR0FbkVSV5WyB9plCrQElvDP0+dVJQHErMp2zHHUuzlI2yaMsI3fauneWQh5IH+r9dfPZrE6L6atquSrL9XpdNKEvIjflPi6X2CR/clpMi1Y6rxyEuMvXy/lY7TvZvMamIS5cLAdIqZo6UcFgdjE2AhPQ1RnpT4vfitmZptS96zAckXx7VsGb3o9O1Z/6JtkvndA3KZNHF1SOYSrbvQ0f4GBDhUdJ6sBRk6cJqOUUs90uMNM9+91OX3/tiTdQPTxNYIXslLr+2k0OLlDvPtMGKvhz1PFE7afjQd+PNnhzBu0mh4hzaynJf2KPD5Wb6/kdTGCxvw27WGsM41rvHVxDBcONqtHDGTG824LH0PTYKHbMqZ9/ARUO31g=
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Read TOTP Status"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/totp/status"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Returns whether an email contact belongs to an account with TOTP enabled.
+Unknown emails return totpEnabled=false instead of 404 to avoid a registeredness signal for non-TOTP accounts.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"email":{"type":"string"}},"required":["email"],"type":"object"}}},"description":"Read TOTP Status Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"TOTP status","content":{"application/json":{"schema":{"properties":{"totpEnabled":{"type":"boolean"}},"required":["totpEnabled"],"type":"object"}}}},"400":{"description":"Invalid request","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

@@ -1,0 +1,71 @@
+---
+id: enable-totp
+title: "Enable TOTP"
+description: "Verifies a pending TOTP setup code and enables TOTP for the authenticated user's account."
+sidebar_label: "Enable TOTP"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VsFu4zYQ/RViLr0okt2kKKpTkyIogi6QYJ30ks1hTI1lbiiSS1L2uoL+vRhRip3YW2B30b3YgjSceW9m3pM6qChIr1xU1kAJf5NXK0VBoHBkKmVqcX97fycCxdYJaSsSaCpBBpeaQnq2sl7ENQls45pMVBIjVaIN5H8KAqW0rYk5ZGAdeeQ6NxWUkFJwAsjA06eWQryy1Q7KDqQ1kUzkS3ROc0ZlTfExMMYOglxTg3zlPCeNikI6VhH/x50jKCFEr0wNfQbRRsdFjx71qbTyVEH5mBI8ZVOUXX4kGaHnsNdtuh7AJ/rvE3Y4TBV9S0Pu4KwJCd3Psxn/vU40ZEitqCD7VuJTgj3BpbWa0BwxnCJPkewzuDiF8cZsUKtK+Bei3wrTe+tPT+E0mPkxmAfDa2a9+ue7Gva1SC6+MLqkC2OjWNnW/DhEv5weVCRvUIsF+Q15cT3k/DGQ+gwCydaruIPysYMrQk/+so1rKB+fet43rAOv4EMgLxYbyTvYUFxbdgNnh8VyyPFQsHmchY0sWLlFWlrgCswrDAVarzmy0FaiXtsQy/n8/PxX4FITkgUzS2QO8RxNcudIfBhDPoBYWa3tliqx3AkUwaFMrhftMxmBMslJrLxtBuObGIl3tlZGkKmcVcnzFOdfE1bEgzDYcNsuxw0exgAv3USn/qLd0F8ezfu9J15/xsZp2nvcNIu9tR24nTIrO7koymHs1KDidgXUFH4PytStxuityaVtDoDd3YhF65z1PIzU4XWMriyK+RLlM5mKDxRwZIiXN2cGo9qQaJT0lgelJAXhNMaV9Q33QitJJgwspnp/3r0Tm/N89qpaKItiu93mtWlz6+tiPBcKrJ0+O89n+To2evB18k24XS1StT3YsMW6Jp8rWwwhBTdKRe4gzK8SEciAdynBn+W/5fMLTsmL2KA5AHng9fCG9sGb6n99c44LEulzLJxGZRjp0LBulMwjTJIZdwKy0etZZiwPjum6JQZ68Lrv+fanljyr9SmDDXo1RLNYs2ljWWfPtIMS/kg8z1gq3DnUbVrZN3bSZ9OJSynJxf+MPTSAu9vFPWSwHL8AmrTmHrf8XsUtlDB8QfDpQc/DvQ40mrrFmmNTTlYPjirf64ohZdMFs5oemd0Bwre6TET4l2mdPNJ1SbV9/xKfHn3xxIsZpGie5VPf9/8CvIhGvw==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Enable TOTP"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/totp/enable"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Verifies a pending TOTP setup code and enables TOTP for the authenticated user's account.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"code":{"type":"string"},"totpId":{"type":"string"}},"required":["code"],"type":"object"}}},"description":"Enable TOTP Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"TOTP enabled","content":{"application/json":{"schema":{"properties":{"enabled":{"type":"boolean"}},"required":["enabled"],"type":"object"}}}},"400":{"description":"Invalid request","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"TOTP setup not found","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

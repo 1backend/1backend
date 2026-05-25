@@ -99,6 +99,36 @@ func (mr *MockUserSvcAPIMockRecorder) ActivateOrganizationExecute(r any) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActivateOrganizationExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ActivateOrganizationExecute), r)
 }
 
+// BeginTOTPSetup mocks base method.
+func (m *MockUserSvcAPI) BeginTOTPSetup(ctx context.Context) ApiBeginTOTPSetupRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BeginTOTPSetup", ctx)
+	ret0, _ := ret[0].(ApiBeginTOTPSetupRequest)
+	return ret0
+}
+
+// BeginTOTPSetup indicates an expected call of BeginTOTPSetup.
+func (mr *MockUserSvcAPIMockRecorder) BeginTOTPSetup(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BeginTOTPSetup", reflect.TypeOf((*MockUserSvcAPI)(nil).BeginTOTPSetup), ctx)
+}
+
+// BeginTOTPSetupExecute mocks base method.
+func (m *MockUserSvcAPI) BeginTOTPSetupExecute(r ApiBeginTOTPSetupRequest) (*UserSvcBeginTOTPSetupResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "BeginTOTPSetupExecute", r)
+	ret0, _ := ret[0].(*UserSvcBeginTOTPSetupResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// BeginTOTPSetupExecute indicates an expected call of BeginTOTPSetupExecute.
+func (mr *MockUserSvcAPIMockRecorder) BeginTOTPSetupExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BeginTOTPSetupExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).BeginTOTPSetupExecute), r)
+}
+
 // ChangePassword mocks base method.
 func (m *MockUserSvcAPI) ChangePassword(ctx context.Context) ApiChangePasswordRequest {
 	m.ctrl.T.Helper()
@@ -396,6 +426,66 @@ func (m *MockUserSvcAPI) DeleteUserExecute(r ApiDeleteUserRequest) (map[string]a
 func (mr *MockUserSvcAPIMockRecorder) DeleteUserExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteUserExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).DeleteUserExecute), r)
+}
+
+// DisableTOTP mocks base method.
+func (m *MockUserSvcAPI) DisableTOTP(ctx context.Context) ApiDisableTOTPRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisableTOTP", ctx)
+	ret0, _ := ret[0].(ApiDisableTOTPRequest)
+	return ret0
+}
+
+// DisableTOTP indicates an expected call of DisableTOTP.
+func (mr *MockUserSvcAPIMockRecorder) DisableTOTP(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableTOTP", reflect.TypeOf((*MockUserSvcAPI)(nil).DisableTOTP), ctx)
+}
+
+// DisableTOTPExecute mocks base method.
+func (m *MockUserSvcAPI) DisableTOTPExecute(r ApiDisableTOTPRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisableTOTPExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// DisableTOTPExecute indicates an expected call of DisableTOTPExecute.
+func (mr *MockUserSvcAPIMockRecorder) DisableTOTPExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableTOTPExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).DisableTOTPExecute), r)
+}
+
+// EnableTOTP mocks base method.
+func (m *MockUserSvcAPI) EnableTOTP(ctx context.Context) ApiEnableTOTPRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnableTOTP", ctx)
+	ret0, _ := ret[0].(ApiEnableTOTPRequest)
+	return ret0
+}
+
+// EnableTOTP indicates an expected call of EnableTOTP.
+func (mr *MockUserSvcAPIMockRecorder) EnableTOTP(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableTOTP", reflect.TypeOf((*MockUserSvcAPI)(nil).EnableTOTP), ctx)
+}
+
+// EnableTOTPExecute mocks base method.
+func (m *MockUserSvcAPI) EnableTOTPExecute(r ApiEnableTOTPRequest) (*UserSvcEnableTOTPResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnableTOTPExecute", r)
+	ret0, _ := ret[0].(*UserSvcEnableTOTPResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// EnableTOTPExecute indicates an expected call of EnableTOTPExecute.
+func (mr *MockUserSvcAPIMockRecorder) EnableTOTPExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableTOTPExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).EnableTOTPExecute), r)
 }
 
 // ExchangeApiKey mocks base method.
@@ -938,6 +1028,36 @@ func (mr *MockUserSvcAPIMockRecorder) ReadSelfExecute(r any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadSelfExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ReadSelfExecute), r)
 }
 
+// ReadTOTPStatus mocks base method.
+func (m *MockUserSvcAPI) ReadTOTPStatus(ctx context.Context) ApiReadTOTPStatusRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReadTOTPStatus", ctx)
+	ret0, _ := ret[0].(ApiReadTOTPStatusRequest)
+	return ret0
+}
+
+// ReadTOTPStatus indicates an expected call of ReadTOTPStatus.
+func (mr *MockUserSvcAPIMockRecorder) ReadTOTPStatus(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadTOTPStatus", reflect.TypeOf((*MockUserSvcAPI)(nil).ReadTOTPStatus), ctx)
+}
+
+// ReadTOTPStatusExecute mocks base method.
+func (m *MockUserSvcAPI) ReadTOTPStatusExecute(r ApiReadTOTPStatusRequest) (*UserSvcReadTOTPStatusResponse, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReadTOTPStatusExecute", r)
+	ret0, _ := ret[0].(*UserSvcReadTOTPStatusResponse)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ReadTOTPStatusExecute indicates an expected call of ReadTOTPStatusExecute.
+func (mr *MockUserSvcAPIMockRecorder) ReadTOTPStatusExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReadTOTPStatusExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ReadTOTPStatusExecute), r)
+}
+
 // RefreshToken mocks base method.
 func (m *MockUserSvcAPI) RefreshToken(ctx context.Context) ApiRefreshTokenRequest {
 	m.ctrl.T.Helper()
@@ -1296,6 +1416,35 @@ func (m *MockUserSvcAPI) SendOtpExecute(r ApiSendOtpRequest) (*UserSvcSendOtpRes
 func (mr *MockUserSvcAPIMockRecorder) SendOtpExecute(r any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SendOtpExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).SendOtpExecute), r)
+}
+
+// ServeTOTPQRCode mocks base method.
+func (m *MockUserSvcAPI) ServeTOTPQRCode(ctx context.Context, totpId string) ApiServeTOTPQRCodeRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ServeTOTPQRCode", ctx, totpId)
+	ret0, _ := ret[0].(ApiServeTOTPQRCodeRequest)
+	return ret0
+}
+
+// ServeTOTPQRCode indicates an expected call of ServeTOTPQRCode.
+func (mr *MockUserSvcAPIMockRecorder) ServeTOTPQRCode(ctx, totpId any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServeTOTPQRCode", reflect.TypeOf((*MockUserSvcAPI)(nil).ServeTOTPQRCode), ctx, totpId)
+}
+
+// ServeTOTPQRCodeExecute mocks base method.
+func (m *MockUserSvcAPI) ServeTOTPQRCodeExecute(r ApiServeTOTPQRCodeRequest) (*http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ServeTOTPQRCodeExecute", r)
+	ret0, _ := ret[0].(*http.Response)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ServeTOTPQRCodeExecute indicates an expected call of ServeTOTPQRCodeExecute.
+func (mr *MockUserSvcAPIMockRecorder) ServeTOTPQRCodeExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServeTOTPQRCodeExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).ServeTOTPQRCodeExecute), r)
 }
 
 // UpdateApp mocks base method.

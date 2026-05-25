@@ -174,23 +174,33 @@ export * from './userSvcAcceptMembershipRequest';
 export * from './userSvcAcceptMembershipResponse';
 export * from './userSvcActivateOrganizationRequest';
 export * from './userSvcActivateOrganizationResponse';
+export * from './userSvcApiKeyView';
 export * from './userSvcApp';
+export * from './userSvcBeginTOTPSetupResponse';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
 export * from './userSvcContactAuthLoginRequest';
 export * from './userSvcContactAuthLoginResponse';
 export * from './userSvcContactAuthProviderInfo';
 export * from './userSvcContactInput';
+export * from './userSvcCreateApiKeyRequest';
+export * from './userSvcCreateApiKeyResponse';
 export * from './userSvcCreateUserRequest';
 export * from './userSvcDeactivateOrganizationResponse';
 export * from './userSvcDeclineMembershipResponse';
+export * from './userSvcDisableTOTPRequest';
+export * from './userSvcEnableTOTPRequest';
+export * from './userSvcEnableTOTPResponse';
 export * from './userSvcEnroll';
 export * from './userSvcEnrollInput';
 export * from './userSvcErrorResponse';
+export * from './userSvcExchangeApiKeyResponse';
 export * from './userSvcExchangeTokenRequest';
 export * from './userSvcExchangeTokenResponse';
 export * from './userSvcGetPublicKeyResponse';
 export * from './userSvcHasPermissionResponse';
+export * from './userSvcListApiKeysRequest';
+export * from './userSvcListApiKeysResponse';
 export * from './userSvcListAppsRequest';
 export * from './userSvcListAppsResponse';
 export * from './userSvcListContactAuthProvidersResponse';
@@ -219,10 +229,13 @@ export * from './userSvcReadAppRequest';
 export * from './userSvcReadAppResponse';
 export * from './userSvcReadSelfRequest';
 export * from './userSvcReadSelfResponse';
+export * from './userSvcReadTOTPStatusRequest';
+export * from './userSvcReadTOTPStatusResponse';
 export * from './userSvcRefreshTokenResponse';
 export * from './userSvcRegisterRequest';
 export * from './userSvcRegisterResponse';
 export * from './userSvcResetPasswordRequest';
+export * from './userSvcRevokeApiKeysRequest';
 export * from './userSvcRevokeTokensRequest';
 export * from './userSvcSaveEnrollsRequest';
 export * from './userSvcSaveEnrollsResponse';
@@ -416,23 +429,33 @@ import { UserSvcAcceptMembershipRequest } from './userSvcAcceptMembershipRequest
 import { UserSvcAcceptMembershipResponse } from './userSvcAcceptMembershipResponse';
 import { UserSvcActivateOrganizationRequest } from './userSvcActivateOrganizationRequest';
 import { UserSvcActivateOrganizationResponse } from './userSvcActivateOrganizationResponse';
+import { UserSvcApiKeyView } from './userSvcApiKeyView';
 import { UserSvcApp } from './userSvcApp';
+import { UserSvcBeginTOTPSetupResponse } from './userSvcBeginTOTPSetupResponse';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
 import { UserSvcContactAuthLoginRequest } from './userSvcContactAuthLoginRequest';
 import { UserSvcContactAuthLoginResponse } from './userSvcContactAuthLoginResponse';
 import { UserSvcContactAuthProviderInfo } from './userSvcContactAuthProviderInfo';
 import { UserSvcContactInput } from './userSvcContactInput';
+import { UserSvcCreateApiKeyRequest } from './userSvcCreateApiKeyRequest';
+import { UserSvcCreateApiKeyResponse } from './userSvcCreateApiKeyResponse';
 import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
 import { UserSvcDeactivateOrganizationResponse } from './userSvcDeactivateOrganizationResponse';
 import { UserSvcDeclineMembershipResponse } from './userSvcDeclineMembershipResponse';
+import { UserSvcDisableTOTPRequest } from './userSvcDisableTOTPRequest';
+import { UserSvcEnableTOTPRequest } from './userSvcEnableTOTPRequest';
+import { UserSvcEnableTOTPResponse } from './userSvcEnableTOTPResponse';
 import { UserSvcEnroll } from './userSvcEnroll';
 import { UserSvcEnrollInput } from './userSvcEnrollInput';
 import { UserSvcErrorResponse } from './userSvcErrorResponse';
+import { UserSvcExchangeApiKeyResponse } from './userSvcExchangeApiKeyResponse';
 import { UserSvcExchangeTokenRequest } from './userSvcExchangeTokenRequest';
 import { UserSvcExchangeTokenResponse } from './userSvcExchangeTokenResponse';
 import { UserSvcGetPublicKeyResponse } from './userSvcGetPublicKeyResponse';
 import { UserSvcHasPermissionResponse } from './userSvcHasPermissionResponse';
+import { UserSvcListApiKeysRequest } from './userSvcListApiKeysRequest';
+import { UserSvcListApiKeysResponse } from './userSvcListApiKeysResponse';
 import { UserSvcListAppsRequest } from './userSvcListAppsRequest';
 import { UserSvcListAppsResponse } from './userSvcListAppsResponse';
 import { UserSvcListContactAuthProvidersResponse } from './userSvcListContactAuthProvidersResponse';
@@ -461,10 +484,13 @@ import { UserSvcReadAppRequest } from './userSvcReadAppRequest';
 import { UserSvcReadAppResponse } from './userSvcReadAppResponse';
 import { UserSvcReadSelfRequest } from './userSvcReadSelfRequest';
 import { UserSvcReadSelfResponse } from './userSvcReadSelfResponse';
+import { UserSvcReadTOTPStatusRequest } from './userSvcReadTOTPStatusRequest';
+import { UserSvcReadTOTPStatusResponse } from './userSvcReadTOTPStatusResponse';
 import { UserSvcRefreshTokenResponse } from './userSvcRefreshTokenResponse';
 import { UserSvcRegisterRequest } from './userSvcRegisterRequest';
 import { UserSvcRegisterResponse } from './userSvcRegisterResponse';
 import { UserSvcResetPasswordRequest } from './userSvcResetPasswordRequest';
+import { UserSvcRevokeApiKeysRequest } from './userSvcRevokeApiKeysRequest';
 import { UserSvcRevokeTokensRequest } from './userSvcRevokeTokensRequest';
 import { UserSvcSaveEnrollsRequest } from './userSvcSaveEnrollsRequest';
 import { UserSvcSaveEnrollsResponse } from './userSvcSaveEnrollsResponse';
@@ -675,23 +701,33 @@ let typeMap = {
     "UserSvcAcceptMembershipResponse": UserSvcAcceptMembershipResponse,
     "UserSvcActivateOrganizationRequest": UserSvcActivateOrganizationRequest,
     "UserSvcActivateOrganizationResponse": UserSvcActivateOrganizationResponse,
+    "UserSvcApiKeyView": UserSvcApiKeyView,
     "UserSvcApp": UserSvcApp,
+    "UserSvcBeginTOTPSetupResponse": UserSvcBeginTOTPSetupResponse,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,
     "UserSvcContactAuthLoginRequest": UserSvcContactAuthLoginRequest,
     "UserSvcContactAuthLoginResponse": UserSvcContactAuthLoginResponse,
     "UserSvcContactAuthProviderInfo": UserSvcContactAuthProviderInfo,
     "UserSvcContactInput": UserSvcContactInput,
+    "UserSvcCreateApiKeyRequest": UserSvcCreateApiKeyRequest,
+    "UserSvcCreateApiKeyResponse": UserSvcCreateApiKeyResponse,
     "UserSvcCreateUserRequest": UserSvcCreateUserRequest,
     "UserSvcDeactivateOrganizationResponse": UserSvcDeactivateOrganizationResponse,
     "UserSvcDeclineMembershipResponse": UserSvcDeclineMembershipResponse,
+    "UserSvcDisableTOTPRequest": UserSvcDisableTOTPRequest,
+    "UserSvcEnableTOTPRequest": UserSvcEnableTOTPRequest,
+    "UserSvcEnableTOTPResponse": UserSvcEnableTOTPResponse,
     "UserSvcEnroll": UserSvcEnroll,
     "UserSvcEnrollInput": UserSvcEnrollInput,
     "UserSvcErrorResponse": UserSvcErrorResponse,
+    "UserSvcExchangeApiKeyResponse": UserSvcExchangeApiKeyResponse,
     "UserSvcExchangeTokenRequest": UserSvcExchangeTokenRequest,
     "UserSvcExchangeTokenResponse": UserSvcExchangeTokenResponse,
     "UserSvcGetPublicKeyResponse": UserSvcGetPublicKeyResponse,
     "UserSvcHasPermissionResponse": UserSvcHasPermissionResponse,
+    "UserSvcListApiKeysRequest": UserSvcListApiKeysRequest,
+    "UserSvcListApiKeysResponse": UserSvcListApiKeysResponse,
     "UserSvcListAppsRequest": UserSvcListAppsRequest,
     "UserSvcListAppsResponse": UserSvcListAppsResponse,
     "UserSvcListContactAuthProvidersResponse": UserSvcListContactAuthProvidersResponse,
@@ -717,10 +753,13 @@ let typeMap = {
     "UserSvcReadAppResponse": UserSvcReadAppResponse,
     "UserSvcReadSelfRequest": UserSvcReadSelfRequest,
     "UserSvcReadSelfResponse": UserSvcReadSelfResponse,
+    "UserSvcReadTOTPStatusRequest": UserSvcReadTOTPStatusRequest,
+    "UserSvcReadTOTPStatusResponse": UserSvcReadTOTPStatusResponse,
     "UserSvcRefreshTokenResponse": UserSvcRefreshTokenResponse,
     "UserSvcRegisterRequest": UserSvcRegisterRequest,
     "UserSvcRegisterResponse": UserSvcRegisterResponse,
     "UserSvcResetPasswordRequest": UserSvcResetPasswordRequest,
+    "UserSvcRevokeApiKeysRequest": UserSvcRevokeApiKeysRequest,
     "UserSvcRevokeTokensRequest": UserSvcRevokeTokensRequest,
     "UserSvcSaveEnrollsRequest": UserSvcSaveEnrollsRequest,
     "UserSvcSaveEnrollsResponse": UserSvcSaveEnrollsResponse,

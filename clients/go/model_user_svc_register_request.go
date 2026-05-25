@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.13
+API version: 0.9.14
 Contact: sales@singulatron.com
 */
 
@@ -30,6 +30,7 @@ type UserSvcRegisterRequest struct {
 	Password *string `json:"password,omitempty"`
 	// Slug is a URL-friendly unique (inside the 1Backend platform) identifier for the `user`. Required due to its central role in the platform. If your project has no use for a slug, just derive it from the email or similar.
 	Slug string `json:"slug"`
+	TotpCode *string `json:"totpCode,omitempty"`
 }
 
 type _UserSvcRegisterRequest UserSvcRegisterRequest
@@ -229,6 +230,38 @@ func (o *UserSvcRegisterRequest) SetSlug(v string) {
 	o.Slug = v
 }
 
+// GetTotpCode returns the TotpCode field value if set, zero value otherwise.
+func (o *UserSvcRegisterRequest) GetTotpCode() string {
+	if o == nil || IsNil(o.TotpCode) {
+		var ret string
+		return ret
+	}
+	return *o.TotpCode
+}
+
+// GetTotpCodeOk returns a tuple with the TotpCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcRegisterRequest) GetTotpCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.TotpCode) {
+		return nil, false
+	}
+	return o.TotpCode, true
+}
+
+// HasTotpCode returns a boolean if a field has been set.
+func (o *UserSvcRegisterRequest) HasTotpCode() bool {
+	if o != nil && !IsNil(o.TotpCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetTotpCode gets a reference to the given string and assigns it to the TotpCode field.
+func (o *UserSvcRegisterRequest) SetTotpCode(v string) {
+	o.TotpCode = &v
+}
+
 func (o UserSvcRegisterRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -253,6 +286,9 @@ func (o UserSvcRegisterRequest) ToMap() (map[string]interface{}, error) {
 		toSerialize["password"] = o.Password
 	}
 	toSerialize["slug"] = o.Slug
+	if !IsNil(o.TotpCode) {
+		toSerialize["totpCode"] = o.TotpCode
+	}
 	return toSerialize, nil
 }
 

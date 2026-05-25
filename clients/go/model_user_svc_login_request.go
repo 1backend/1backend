@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.13
+API version: 0.9.14
 Contact: sales@singulatron.com
 */
 
@@ -27,6 +27,7 @@ type UserSvcLoginRequest struct {
 	Device *string `json:"device,omitempty"`
 	Password *string `json:"password,omitempty"`
 	Slug *string `json:"slug,omitempty"`
+	TotpCode *string `json:"totpCode,omitempty"`
 }
 
 type _UserSvcLoginRequest UserSvcLoginRequest
@@ -201,6 +202,38 @@ func (o *UserSvcLoginRequest) SetSlug(v string) {
 	o.Slug = &v
 }
 
+// GetTotpCode returns the TotpCode field value if set, zero value otherwise.
+func (o *UserSvcLoginRequest) GetTotpCode() string {
+	if o == nil || IsNil(o.TotpCode) {
+		var ret string
+		return ret
+	}
+	return *o.TotpCode
+}
+
+// GetTotpCodeOk returns a tuple with the TotpCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcLoginRequest) GetTotpCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.TotpCode) {
+		return nil, false
+	}
+	return o.TotpCode, true
+}
+
+// HasTotpCode returns a boolean if a field has been set.
+func (o *UserSvcLoginRequest) HasTotpCode() bool {
+	if o != nil && !IsNil(o.TotpCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetTotpCode gets a reference to the given string and assigns it to the TotpCode field.
+func (o *UserSvcLoginRequest) SetTotpCode(v string) {
+	o.TotpCode = &v
+}
+
 func (o UserSvcLoginRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -223,6 +256,9 @@ func (o UserSvcLoginRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Slug) {
 		toSerialize["slug"] = o.Slug
+	}
+	if !IsNil(o.TotpCode) {
+		toSerialize["totpCode"] = o.TotpCode
 	}
 	return toSerialize, nil
 }

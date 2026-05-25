@@ -582,6 +582,30 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend-api/create-api-key",
+          label: "Create API Key",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/exchange-api-key",
+          label: "Exchange API Key",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/revoke-api-keys",
+          label: "Revoke API Keys",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/list-api-keys",
+          label: "List API Keys",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
           id: "1backend-api/read-app",
           label: "Read or Create App",
           className: "api-method post",
@@ -777,6 +801,36 @@ const sidebar: SidebarsConfig = {
           id: "1backend-api/revoke-tokens",
           label: "Revoke Tokens",
           className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/disable-totp",
+          label: "Disable TOTP",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/enable-totp",
+          label: "Enable TOTP",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/begin-totp-setup",
+          label: "Begin TOTP Setup",
+          className: "api-method post",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/serve-totpqr-code",
+          label: "Serve TOTP QR Code",
+          className: "api-method get",
+        },
+        {
+          type: "doc",
+          id: "1backend-api/read-totp-status",
+          label: "Read TOTP Status",
+          className: "api-method post",
         },
         {
           type: "doc",

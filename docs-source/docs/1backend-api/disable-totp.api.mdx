@@ -1,0 +1,71 @@
+---
+id: disable-totp
+title: "Disable TOTP"
+description: "Verifies the current TOTP code and disables TOTP for the authenticated user's account."
+sidebar_label: "Disable TOTP"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VVFv2zYQ/ivEvexFkewlwzA9LWmNIViABnWyl9QPZ+oss6FIlqTseoL+e3Gi5TiJO6wtthdbkO6++747fscOKgrSKxeVNVDCX+TVSlEQcU1Ctt6TieLu3d2tkLYigaYSlQq41BTS65X1Qyy2cU0mKomRKtEG8j8FgVLa1sQcMrCOPHKR6wpK2GMwAmTg6VNLIV7ZagdlB9KaSCbyIzqnGVJZU3wMzLCDINfUID85z6hRUUhpFfF/3DmCEkL0ytTQ9wlfeaqgfEhRi2yMssuPJCP0HPa8E28TxaTyfWIIx1jRtzSAB2dNSBx+nkz47znSgLBXXEH27/W94thncHGqwrXZoFaV8Aea39lD8t760008TWb6msy94bNgvfr729T+IJOLrzTe2CjIfHPvf4jNL6eHFMkb1GJOfkNezAbM/4dSn0Eg2XoVd1A+dHBF6MlftnEN5cOiZz9gHdgf94G8mG8ke6ShuLaDXUlTJMjAIWdAwf4+CxtZRBsdMDhLCgN26zWHFNpK1GsbYjmdnp//ClxlJDFnUUnHMZVXA9w5Eh/2IR9ArKzWdkuVWO4EiuBQppUU7SMZgTJZU6y8bYalNIoRN7ZWRpCpnFVpHynGXxNWxDMw2HDHLvcHd5gAHBqJTv1Ju6G1PJX3T+tq9hkbp+lp/RzGwBVWdlxnKIf5UoOKmxNQU/g9KFO3GqO3Jpe2OaJxey3mrXPWs5VTP9cxurIopkuUj2QqTijg1dK6vD4zGNWGRKOktzwWJSkIpzGurG9YuVaSTBg4j/X+uL0Rm/N88qxaKItiu93mtWlz6+tinxcKrJ0+O88n+To2mjlE8k14t5qnak9kwxbrmnyubDGEFNxSFblfML1KQiADPjmJ/iT/LZ9eMKSzITZojkge72N4ofvozvjvbrD9YYj0ORZOozLMc2hXt/fFA4y+4HB2xiIDdgB/6rolBrr3uu/59aeWPHtxkcEGvWI+gxWz8VCylR5pByW8SdrO2A3cLtRtOpUvlkWfjRmXUpKL/xh7bO+3s5vZ3QwyWO5v4CadZY9bvvFwCyUMVzjnD6Yd3nWg0dQt1hybUNkiuLfyk3mYVDY+sK7xk9kdcXxpviSFf1nYyZSuS9bs+0N8+vTVjIPjUzQPcdH3/Rf3kBoi
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Disable TOTP"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/user-svc/totp"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Verifies the current TOTP code and disables TOTP for the authenticated user's account.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"code":{"type":"string"}},"required":["code"],"type":"object"}}},"description":"Disable TOTP Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"TOTP disabled","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid request","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"TOTP not enabled","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

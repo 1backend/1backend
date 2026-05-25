@@ -1213,7 +1213,7 @@ definitions:
       createdAt:
         type: string
       fileId:
-        description: Logical file ID spanning all replicas
+        description: Public ID used to serve or delete the file.
         type: string
       fileName:
         description: Filename is the original name of the file
@@ -1230,14 +1230,11 @@ definitions:
         format: int64
         type: integer
       id:
-        description: Unique ID for this replica
+        description: Unique ID for this upload record.
         type: string
       lastAccessedAt:
         description: LastAccessedAt is updated asynchronously by the file service
           when the file is served.
-        type: string
-      nodeId:
-        description: ID of the node storing this replica
         type: string
       updatedAt:
         type: string
@@ -1250,7 +1247,6 @@ definitions:
     - filePath
     - fileSize
     - id
-    - nodeId
     - updatedAt
     - userId
     type: object
@@ -2927,6 +2923,37 @@ definitions:
     required:
     - token
     type: object
+  user_svc.ApiKeyView:
+    properties:
+      activeOrganizationId:
+        type: string
+      appId:
+        type: string
+      createdAt:
+        type: string
+      expiresAt:
+        type: string
+      id:
+        type: string
+      lastUsedAt:
+        type: string
+      name:
+        type: string
+      prefix:
+        type: string
+      revokedAt:
+        type: string
+      updatedAt:
+        type: string
+      userId:
+        type: string
+    required:
+    - appId
+    - createdAt
+    - id
+    - updatedAt
+    - userId
+    type: object
   user_svc.App:
     properties:
       host:
@@ -2936,6 +2963,24 @@ definitions:
     required:
     - host
     - id
+    type: object
+  user_svc.BeginTOTPSetupRequest:
+    type: object
+  user_svc.BeginTOTPSetupResponse:
+    properties:
+      provisioningUri:
+        type: string
+      qrImagePath:
+        type: string
+      secret:
+        type: string
+      totpId:
+        type: string
+    required:
+    - provisioningUri
+    - qrImagePath
+    - secret
+    - totpId
     type: object
   user_svc.ChangePasswordRequest:
     properties:
@@ -3017,6 +3062,8 @@ definitions:
           Token is the provider token. For OIDC providers this is an ID token.
           For Facebook this is a user access token.
         type: string
+      totpCode:
+        type: string
     required:
     - appHost
     type: object
@@ -3067,6 +3114,36 @@ definitions:
     - id
     - platform
     type: object
+  user_svc.CreateApiKeyRequest:
+    properties:
+      activeOrganizationId:
+        description: |-
+          ActiveOrganizationId is optional. If omitted, the current token's active
+          organization is used. If explicitly set to an empty string, the API key
+          authenticates without an active organization.
+        type: string
+      appHost:
+        type: string
+      appId:
+        type: string
+      expiresAt:
+        type: string
+      name:
+        type: string
+      userId:
+        type: string
+    type: object
+  user_svc.CreateApiKeyResponse:
+    properties:
+      apiKey:
+        $ref: '#/definitions/user_svc.ApiKeyView'
+      key:
+        description: Key is the raw bearer credential. It is returned only once.
+        type: string
+    required:
+    - apiKey
+    - key
+    type: object
   user_svc.CreateUserRequest:
     properties:
       appHost:
@@ -3108,6 +3185,31 @@ definitions:
   user_svc.DeleteMembershipResponse:
     type: object
   user_svc.DeleteUserResponse:
+    type: object
+  user_svc.DisableTOTPRequest:
+    properties:
+      code:
+        type: string
+    required:
+    - code
+    type: object
+  user_svc.DisableTOTPResponse:
+    type: object
+  user_svc.EnableTOTPRequest:
+    properties:
+      code:
+        type: string
+      totpId:
+        type: string
+    required:
+    - code
+    type: object
+  user_svc.EnableTOTPResponse:
+    properties:
+      enabled:
+        type: boolean
+    required:
+    - enabled
     type: object
   user_svc.Enroll:
     properties:
@@ -3188,6 +3290,13 @@ definitions:
       error:
         type: string
     type: object
+  user_svc.ExchangeApiKeyResponse:
+    properties:
+      token:
+        $ref: '#/definitions/user_svc.Token'
+    required:
+    - token
+    type: object
   user_svc.ExchangeTokenRequest:
     properties:
       newAppHost:
@@ -3235,6 +3344,32 @@ definitions:
     - authorized
     - until
     - user
+    type: object
+  user_svc.ListApiKeysRequest:
+    properties:
+      appHost:
+        type: string
+      appId:
+        type: string
+      id:
+        type: string
+      ids:
+        items:
+          type: string
+        type: array
+      includeRevoked:
+        type: boolean
+      userId:
+        type: string
+    type: object
+  user_svc.ListApiKeysResponse:
+    properties:
+      apiKeys:
+        items:
+          $ref: '#/definitions/user_svc.ApiKeyView'
+        type: array
+    required:
+    - apiKeys
     type: object
   user_svc.ListAppsRequest:
     properties:
@@ -3428,6 +3563,8 @@ definitions:
       password:
         type: string
       slug:
+        type: string
+      totpCode:
         type: string
     required:
     - appHost
@@ -3641,6 +3778,8 @@ definitions:
         type: array
       tokenCount:
         type: integer
+      totpEnabled:
+        type: boolean
       user:
         allOf:
         - $ref: '#/definitions/user_svc.User'
@@ -3648,6 +3787,20 @@ definitions:
     required:
     - tokenCount
     - user
+    type: object
+  user_svc.ReadTOTPStatusRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  user_svc.ReadTOTPStatusResponse:
+    properties:
+      totpEnabled:
+        type: boolean
+    required:
+    - totpEnabled
     type: object
   user_svc.RefreshTokenResponse:
     properties:
@@ -3676,6 +3829,8 @@ definitions:
           Required due to its central role in the platform.
           If your project has no use for a slug, just derive it from the email or similar.
         type: string
+      totpCode:
+        type: string
     required:
     - appHost
     - slug
@@ -3693,6 +3848,19 @@ definitions:
     - newPassword
     type: object
   user_svc.ResetPasswordResponse:
+    type: object
+  user_svc.RevokeApiKeysRequest:
+    properties:
+      id:
+        type: string
+      ids:
+        items:
+          type: string
+        type: array
+      userId:
+        type: string
+    type: object
+  user_svc.RevokeApiKeysResponse:
     type: object
   user_svc.RevokeTokensRequest:
     properties:
@@ -4028,7 +4196,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.13
+  version: 0.9.14
 paths:
   /chat-svc/events:
     get:
@@ -5253,13 +5421,10 @@ paths:
         Retrieves and serves a previously uploaded file using its File ID.
         Note: The `ID` and `FileID` fields of an upload are different.
         - `FileID` is a unique identifier for the file itself.
-        - `ID` is a unique identifier for a specific replica of the file.
-        Since 1Backend is a distributed system, files can be replicated across multiple nodes.
-        This means each uploaded file may have multiple records with the same `FileID` but different `ID`s.
+        - `ID` is a unique identifier for the upload metadata record.
       operationId: serveUpload
       parameters:
-      - description: FileID uniquely identifies the file itself (not an ID, which
-          represents a specific replica)
+      - description: FileID uniquely identifies the file itself.
         in: path
         name: fileId
         required: true
@@ -5535,8 +5700,7 @@ paths:
         File ID.
       operationId: serveUploadedImage
       parameters:
-      - description: FileID uniquely identifies the file itself (not an ID, which
-          represents a specific replica)
+      - description: FileID uniquely identifies the file itself.
         in: path
         name: fileId
         required: true
@@ -7002,6 +7166,140 @@ paths:
       summary: Reset Password
       tags:
       - User Svc
+  /user-svc/api-key:
+    post:
+      consumes:
+      - application/json
+      description: Creates an opaque bearer API key for the current user.
+      operationId: createApiKey
+      parameters:
+      - description: Create API Key Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.CreateApiKeyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.CreateApiKeyResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create API Key
+      tags:
+      - User Svc
+  /user-svc/api-key/exchange:
+    post:
+      consumes:
+      - application/json
+      description: Exchanges an opaque API key bearer into a normal short-lived JWT.
+      operationId: exchangeApiKey
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.ExchangeApiKeyResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Exchange API Key
+      tags:
+      - User Svc
+  /user-svc/api-keys:
+    delete:
+      consumes:
+      - application/json
+      description: Revokes one or more API keys.
+      operationId: revokeApiKeys
+      parameters:
+      - description: Revoke API Keys Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.RevokeApiKeysRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.RevokeApiKeysResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Revoke API Keys
+      tags:
+      - User Svc
+    post:
+      consumes:
+      - application/json
+      description: Lists API key metadata without returning raw secrets.
+      operationId: listApiKeys
+      parameters:
+      - description: List API Keys Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.ListApiKeysRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_svc.ListApiKeysResponse'
+        "400":
+          description: Invalid JSON
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List API Keys
+      tags:
+      - User Svc
   /user-svc/app:
     post:
       consumes:
@@ -8228,6 +8526,193 @@ paths:
       security:
       - BearerAuth: []
       summary: Revoke Tokens
+      tags:
+      - User Svc
+  /user-svc/totp:
+    delete:
+      consumes:
+      - application/json
+      description: Verifies the current TOTP code and disables TOTP for the authenticated
+        user's account.
+      operationId: disableTOTP
+      parameters:
+      - description: Disable TOTP Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.DisableTOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: TOTP disabled
+          schema:
+            $ref: '#/definitions/user_svc.DisableTOTPResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "404":
+          description: TOTP not enabled
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Disable TOTP
+      tags:
+      - User Svc
+  /user-svc/totp/enable:
+    post:
+      consumes:
+      - application/json
+      description: Verifies a pending TOTP setup code and enables TOTP for the authenticated
+        user's account.
+      operationId: enableTOTP
+      parameters:
+      - description: Enable TOTP Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.EnableTOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: TOTP enabled
+          schema:
+            $ref: '#/definitions/user_svc.EnableTOTPResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "404":
+          description: TOTP setup not found
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Enable TOTP
+      tags:
+      - User Svc
+  /user-svc/totp/setup:
+    post:
+      consumes:
+      - application/json
+      description: Creates a pending time-based one-time password secret for the authenticated
+        user's account.
+      operationId: beginTOTPSetup
+      parameters:
+      - description: Begin TOTP Setup Request
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/user_svc.BeginTOTPSetupRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: TOTP setup started
+          schema:
+            $ref: '#/definitions/user_svc.BeginTOTPSetupResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "409":
+          description: TOTP already enabled
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Begin TOTP Setup
+      tags:
+      - User Svc
+  /user-svc/totp/setup/{totpId}/qr.png:
+    get:
+      description: Generates and serves a PNG QR code for a pending TOTP setup owned
+        by the authenticated user.
+      operationId: serveTOTPQRCode
+      parameters:
+      - description: TOTP setup ID
+        in: path
+        name: totpId
+        required: true
+        type: string
+      produces:
+      - image/png
+      responses:
+        "200":
+          description: PNG QR code
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "404":
+          description: TOTP setup not found
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Serve TOTP QR Code
+      tags:
+      - User Svc
+  /user-svc/totp/status:
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Returns whether an email contact belongs to an account with TOTP enabled.
+        Unknown emails return totpEnabled=false instead of 404 to avoid a registeredness signal for non-TOTP accounts.
+      operationId: readTOTPStatus
+      parameters:
+      - description: Read TOTP Status Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.ReadTOTPStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: TOTP status
+          schema:
+            $ref: '#/definitions/user_svc.ReadTOTPStatusResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      summary: Read TOTP Status
       tags:
       - User Svc
   /user-svc/user:

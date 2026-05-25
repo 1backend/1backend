@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.13
+API version: 0.9.14
 Contact: sales@singulatron.com
 */
 
@@ -32,6 +32,7 @@ type UserSvcContactAuthLoginRequest struct {
 	Slug *string `json:"slug,omitempty"`
 	// Token is the provider token. For OIDC providers this is an ID token. For Facebook this is a user access token.
 	Token *string `json:"token,omitempty"`
+	TotpCode *string `json:"totpCode,omitempty"`
 }
 
 type _UserSvcContactAuthLoginRequest UserSvcContactAuthLoginRequest
@@ -238,6 +239,38 @@ func (o *UserSvcContactAuthLoginRequest) SetToken(v string) {
 	o.Token = &v
 }
 
+// GetTotpCode returns the TotpCode field value if set, zero value otherwise.
+func (o *UserSvcContactAuthLoginRequest) GetTotpCode() string {
+	if o == nil || IsNil(o.TotpCode) {
+		var ret string
+		return ret
+	}
+	return *o.TotpCode
+}
+
+// GetTotpCodeOk returns a tuple with the TotpCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcContactAuthLoginRequest) GetTotpCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.TotpCode) {
+		return nil, false
+	}
+	return o.TotpCode, true
+}
+
+// HasTotpCode returns a boolean if a field has been set.
+func (o *UserSvcContactAuthLoginRequest) HasTotpCode() bool {
+	if o != nil && !IsNil(o.TotpCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetTotpCode gets a reference to the given string and assigns it to the TotpCode field.
+func (o *UserSvcContactAuthLoginRequest) SetTotpCode(v string) {
+	o.TotpCode = &v
+}
+
 func (o UserSvcContactAuthLoginRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -263,6 +296,9 @@ func (o UserSvcContactAuthLoginRequest) ToMap() (map[string]interface{}, error) 
 	}
 	if !IsNil(o.Token) {
 		toSerialize["token"] = o.Token
+	}
+	if !IsNil(o.TotpCode) {
+		toSerialize["totpCode"] = o.TotpCode
 	}
 	return toSerialize, nil
 }

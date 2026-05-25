@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.13
+API version: 0.9.14
 Contact: sales@singulatron.com
 */
 
@@ -31,6 +31,7 @@ type UserSvcReadSelfResponse struct {
 	// Roles the token has that made this request.
 	Roles []string `json:"roles,omitempty"`
 	TokenCount int32 `json:"tokenCount"`
+	TotpEnabled *bool `json:"totpEnabled,omitempty"`
 	// The user who made the request.
 	User UserSvcUser `json:"user"`
 }
@@ -208,6 +209,38 @@ func (o *UserSvcReadSelfResponse) SetTokenCount(v int32) {
 	o.TokenCount = v
 }
 
+// GetTotpEnabled returns the TotpEnabled field value if set, zero value otherwise.
+func (o *UserSvcReadSelfResponse) GetTotpEnabled() bool {
+	if o == nil || IsNil(o.TotpEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.TotpEnabled
+}
+
+// GetTotpEnabledOk returns a tuple with the TotpEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcReadSelfResponse) GetTotpEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.TotpEnabled) {
+		return nil, false
+	}
+	return o.TotpEnabled, true
+}
+
+// HasTotpEnabled returns a boolean if a field has been set.
+func (o *UserSvcReadSelfResponse) HasTotpEnabled() bool {
+	if o != nil && !IsNil(o.TotpEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetTotpEnabled gets a reference to the given bool and assigns it to the TotpEnabled field.
+func (o *UserSvcReadSelfResponse) SetTotpEnabled(v bool) {
+	o.TotpEnabled = &v
+}
+
 // GetUser returns the User field value
 func (o *UserSvcReadSelfResponse) GetUser() UserSvcUser {
 	if o == nil {
@@ -255,6 +288,9 @@ func (o UserSvcReadSelfResponse) ToMap() (map[string]interface{}, error) {
 		toSerialize["roles"] = o.Roles
 	}
 	toSerialize["tokenCount"] = o.TokenCount
+	if !IsNil(o.TotpEnabled) {
+		toSerialize["totpEnabled"] = o.TotpEnabled
+	}
 	toSerialize["user"] = o.User
 	return toSerialize, nil
 }

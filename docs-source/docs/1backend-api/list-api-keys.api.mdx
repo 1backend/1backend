@@ -1,0 +1,71 @@
+---
+id: list-api-keys
+title: "List API Keys"
+description: "Lists API key metadata without returning raw secrets."
+sidebar_label: "List API Keys"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9Vk1zGzcM/Sscntdaq06nU50qdzKtG0/tseKTogPEhVaMuCQDciUrmv3vGXBXH9aHp/UhF3tFAiDw3gPIjSwwKNI+amflQN7rEIMYPt6JBa5FhREKiCBWOs5dHQVhrMlqWwqClQioCGPoyUw6jwQc466QA2l0iEOvP+E6yEwSfqsxxFtXrOVgI5WzEW3kT/DeaJX88q+BE9jIoOZYAX954qhRY+hs/3YhucW1RzmQIZK2pWwy3uNzz+zoS8sppo5YhbMG3QIQwTo5WGXqAp9w6RZ4GHPqnEGwbFMHpLNp7OO56VdUUTa8dAp8wp1BE08tZByVMHhnQwvCL9fX/O+168Mnmb0f1ZalQzCOLFTUS3ygEqz+vqP4f5GgCCFiMTxPHr54TRgu7F4g0ECIz+FiTAsVnt3whDP9cnaLWm4vRKx98UYNb1HP8tfEohl3GB0ikio8DL8LNjlRzbEsT4K3XJ46Jr19OKedO7sEowvxz+jh3/erCIkc/Ufhp0z6p5k8W6jj3JH+jsVPy+TX85hEJAtGjJCWSOJjivlzUmoyGVDVpONaDsYbeYtASMM6zuVgPGmYWigDs/0ckMRoqZjuCuPc8eD1PCEz6YHtZc5KugpLlYPXV4t2GodUVEjRazJslhunwMxdiIN+/+bmN8nnbNMYcVltJYfJHIP2ee1RfOlMvkgxc8a4FRZiuhYgggeFAmwholugFaBa2YoZuUrEOYptOeLeldoKtIV32ka+WzTHnyMUyCy0rS2HnVgSB3LfGakHErjMy9P+6vn4ApU3+Ooq2XKxG177BX30K2He/Z6c3geRatyPgcP5ZWdue+uBSuLBCjTjHsBg+CNoW9YGIjnbU646qPDxToxq7x2loZComsfoB3nen4JaoC3YIZcnd8nw7soCT21RaUWOGdcKg/AG4sxRxaAardCGBMf2vL8e78Xypnf96rQwyPPVatUrbd1zVOadX8ih9Obqpnfdm8fKpNmEVIWH2ag9bZ9sWEFZIvW0y5NJzmzpyFTI/m1biMwki7JN/7r3e6//IU1rF2IF9iDJV9ekPCr84G3x7odMp6OILzH3BnR7szMcm66txnLbVkk3XWNNMjlPmhrLzWYKAZ/JNA0vf6uRuJknmVwCaZhy5eNJk201zZ24wLUcyD/b9K+4mRgSMHUr6qNp02Rbj6FS6OObtofz4fFh9Flmcto9xSpXsA/Bip9psJIDmd5y7J06Pq1tpAFb1lCybRuT+wu6ObDvPE4p235wVdstuz7I8Lhz20L4L5d11mWzafu6aXb27dZFj924aK2ZxknTND8AA0O/BA==
+sidebar_class_name: "post api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"List API Keys"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"post"}
+  path={"/user-svc/api-keys"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Lists API key metadata without returning raw secrets.
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"appHost":{"type":"string"},"appId":{"type":"string"},"id":{"type":"string"},"ids":{"items":{"type":"string"},"type":"array"},"includeRevoked":{"type":"boolean"},"userId":{"type":"string"}},"type":"object"}}},"description":"List API Keys Request"}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"OK","content":{"application/json":{"schema":{"properties":{"apiKeys":{"items":{"properties":{"activeOrganizationId":{"type":"string"},"appId":{"type":"string"},"createdAt":{"type":"string"},"expiresAt":{"type":"string"},"id":{"type":"string"},"lastUsedAt":{"type":"string"},"name":{"type":"string"},"prefix":{"type":"string"},"revokedAt":{"type":"string"},"updatedAt":{"type":"string"},"userId":{"type":"string"}},"required":["appId","createdAt","id","updatedAt","userId"],"type":"object"},"type":"array"}},"required":["apiKeys"],"type":"object"}}}},"400":{"description":"Invalid JSON","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      
