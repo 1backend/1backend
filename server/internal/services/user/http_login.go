@@ -81,6 +81,10 @@ func (s *UserService) Login(w http.ResponseWriter, r *http.Request) {
 				slog.Any("contact", request.Contact),
 			)
 			endpoint.WriteString(w, http.StatusUnauthorized, "Invalid Password")
+		case errTOTPRequired.Error():
+			endpoint.WriteString(w, http.StatusUnauthorized, "TOTP code required")
+		case errTOTPInvalid.Error():
+			endpoint.WriteString(w, http.StatusUnauthorized, "Invalid TOTP code")
 		case "not found":
 			logger.Error(
 				"Cannot find user",
@@ -124,6 +128,7 @@ func (s *UserService) login(
 ) (*user.Token, error) {
 
 	var usr *user.User
+	totpAlreadyVerified := false
 
 	if request.Device == "" {
 		request.Device = unknownDevice
@@ -138,13 +143,6 @@ func (s *UserService) login(
 		}
 
 		if s.options.VerifyContacts {
-			if !otpAlreadyVerified {
-				err = s.verifyContactOTP(&request.Contact)
-				if err != nil {
-					return nil, errors.Wrap(err, "login contact verification failed")
-				}
-			}
-
 			if found {
 				userI, found, err := s.userStore.Query(
 					datastore.Equals(datastore.Field("id"), contactI.(*user.Contact).UserId),
@@ -157,7 +155,22 @@ func (s *UserService) login(
 					return nil, fmt.Errorf("user not found by contact id '%s'", request.Contact.Id)
 				}
 
-				return s.issueToken(appId, userI.(*user.User), request.Device)
+				usr = userI.(*user.User)
+				if err := s.verifyLoginTOTP(usr.Id, request.TOTPCode); err != nil {
+					return nil, err
+				}
+				totpAlreadyVerified = true
+			}
+
+			if !otpAlreadyVerified {
+				err = s.verifyContactOTP(&request.Contact)
+				if err != nil {
+					return nil, errors.Wrap(err, "login contact verification failed")
+				}
+			}
+
+			if found {
+				return s.issueToken(appId, usr, request.Device)
 			} else {
 				if request.Slug == "" {
 					return nil, fmt.Errorf("slug is missing")
@@ -260,6 +273,11 @@ func (s *UserService) login(
 		// If OTP is already verified, we can proceed with login
 		break
 	case request.Contact.OtpId != "" && request.Contact.OtpCode != "":
+		if err := s.verifyLoginTOTP(usr.Id, request.TOTPCode); err != nil {
+			return nil, err
+		}
+		totpAlreadyVerified = true
+
 		err := s.verifyContactOTP(&request.Contact)
 		if err != nil {
 			return nil, err
@@ -267,6 +285,12 @@ func (s *UserService) login(
 
 	default:
 		return nil, errors.New("password or otp required")
+	}
+
+	if !totpAlreadyVerified {
+		if err := s.verifyLoginTOTP(usr.Id, request.TOTPCode); err != nil {
+			return nil, err
+		}
 	}
 
 	return s.issueToken(appId, usr, request.Device)

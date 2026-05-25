@@ -308,10 +308,11 @@ func (s *UserService) ContactAuthLogin(w http.ResponseWriter, r *http.Request) {
 		claims.Name,
 		req.Slug,
 		req.Device,
+		req.TOTPCode,
 	)
 	if err != nil {
 		logger.Error("Contact auth login failed", slog.Any("error", err))
-		endpoint.InternalServerError(w)
+		writeContactAuthLoginError(w, err)
 		return
 	}
 
@@ -461,10 +462,11 @@ func (s *UserService) ContactAuthCallback(w http.ResponseWriter, r *http.Request
 		claims.Name,
 		authState.Slug,
 		authState.Device,
+		"",
 	)
 	if err != nil {
 		logger.Error("Contact auth callback login failed", slog.Any("error", err))
-		endpoint.InternalServerError(w)
+		writeContactAuthLoginError(w, err)
 		return
 	}
 
@@ -1197,6 +1199,7 @@ func (s *UserService) loginWithVerifiedEmailContact(
 	name string,
 	requestedSlug string,
 	device string,
+	totpCode string,
 ) (*user.Token, bool, *user.User, error) {
 	email = normalizeEmail(strings.TrimSpace(email))
 	if email == "" || !isEmail(email) {
@@ -1238,6 +1241,9 @@ func (s *UserService) loginWithVerifiedEmailContact(
 			return nil, false, nil, fmt.Errorf("contact %q has missing user %q", contact.Id, contact.UserId)
 		}
 		usr := userI.(*user.User)
+		if err := s.verifyLoginTOTP(usr.Id, totpCode); err != nil {
+			return nil, false, nil, err
+		}
 		token, err := s.issueToken(appId, usr, device)
 		return token, false, usr, err
 	}
@@ -1291,6 +1297,17 @@ func (s *UserService) loginWithVerifiedEmailContact(
 
 	token, err := s.issueToken(appId, usr, device)
 	return token, true, usr, err
+}
+
+func writeContactAuthLoginError(w http.ResponseWriter, err error) {
+	switch err.Error() {
+	case errTOTPRequired.Error():
+		endpoint.WriteString(w, http.StatusUnauthorized, "TOTP code required")
+	case errTOTPInvalid.Error():
+		endpoint.WriteString(w, http.StatusUnauthorized, "Invalid TOTP code")
+	default:
+		endpoint.InternalServerError(w)
+	}
 }
 
 func (s *UserService) slugForNewContactUser(email string, requestedSlug string) (string, error) {

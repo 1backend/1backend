@@ -122,6 +122,18 @@ func (s *UserService) ReadSelf(w http.ResponseWriter, r *http.Request) {
 		Contacts:             contacts,
 	}
 
+	_, totpEnabled, err := s.enabledTOTPForUser(usr.Id)
+	if err != nil {
+		logger.Error(
+			"Failed to read TOTP status",
+			slog.String("userId", usr.Id),
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
+	rsp.TOTPEnabled = totpEnabled
+
 	if request.CountTokens {
 		tokenCount, err := s.countTokens(usr.Id)
 		if err != nil {

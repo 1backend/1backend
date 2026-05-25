@@ -56,6 +56,7 @@ type UserService struct {
 	enrollStore        datastore.DataStore
 	appStore           datastore.DataStore
 	otpStore           datastore.DataStore
+	totpStore          datastore.DataStore
 	authStateStore     datastore.DataStore
 
 	privateKey   *rsa.PrivateKey
@@ -191,6 +192,14 @@ func NewUserService(
 		return nil, err
 	}
 
+	totpStore, err := options.DataStoreFactory.Create(
+		"userSvcTotps",
+		&usertypes.TOTP{},
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	authStateStore, err := options.DataStoreFactory.Create(
 		"userSvcAuthStates",
 		&usertypes.AuthState{},
@@ -225,6 +234,7 @@ func NewUserService(
 		enrollStore:           enrollsStore,
 		appStore:              appStore,
 		otpStore:              otpStore,
+		totpStore:             totpStore,
 		authStateStore:        authStateStore,
 		tokenReplacementCache: tokenReplacementCache,
 	}
@@ -465,6 +475,31 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 		us.SendOTP(w, r)
 	})).
 		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/totp/setup", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.BeginTOTPSetup(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/totp/status", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ReadTOTPStatus(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/totp/setup/{totpId}/qr.png", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.ServeTOTPQRCode(w, r)
+	})).
+		Methods("OPTIONS", "GET")
+
+	router.HandleFunc("/user-svc/totp/enable", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.EnableTOTP(w, r)
+	})).
+		Methods("OPTIONS", "POST")
+
+	router.HandleFunc("/user-svc/totp", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.DisableTOTP(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
 }
 
 func (s *UserService) bootstrap() error {

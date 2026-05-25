@@ -31,6 +31,7 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/mailersend/mailersend-go v1.6.2
 	github.com/pkg/errors v0.9.1
+	github.com/pquerna/otp v1.5.0
 	github.com/r3labs/sse v0.0.0-20210224172625-26fe804710bc
 	github.com/samber/lo v1.49.1
 	github.com/sendgrid/sendgrid-go v3.16.0+incompatible
@@ -77,6 +78,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.41.5 // indirect
 	github.com/aws/smithy-go v1.24.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudflare/circl v1.6.0 // indirect

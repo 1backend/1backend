@@ -44,6 +44,8 @@ type ContactAuthLoginRequest struct {
 	Slug string `json:"slug,omitempty"`
 
 	Device string `json:"device,omitempty"`
+
+	TOTPCode string `json:"totpCode,omitempty"`
 }
 
 type ContactAuthLoginResponse struct {

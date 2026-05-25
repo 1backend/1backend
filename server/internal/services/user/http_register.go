@@ -176,6 +176,7 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 			Slug:     req.Slug,
 			Password: req.Password,
 			Device:   req.Device,
+			TOTPCode: req.TOTPCode,
 			Contact:  req.Contact,
 		},
 		true,
@@ -185,7 +186,14 @@ func (s *UserService) Register(w http.ResponseWriter, r *http.Request) {
 			"Failed to login after registration",
 			slog.Any("error", err),
 		)
-		endpoint.InternalServerError(w)
+		switch err.Error() {
+		case errTOTPRequired.Error():
+			endpoint.WriteString(w, http.StatusUnauthorized, "TOTP code required")
+		case errTOTPInvalid.Error():
+			endpoint.WriteString(w, http.StatusUnauthorized, "Invalid TOTP code")
+		default:
+			endpoint.InternalServerError(w)
+		}
 		return
 	}
 

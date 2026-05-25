@@ -93,6 +93,8 @@ type ReadSelfResponse struct {
 	ActiveOrganizationId string `json:"activeOrganizationId,omitempty"`
 
 	TokenCount int64 `json:"tokenCount" binding:"required"`
+
+	TOTPEnabled bool `json:"totpEnabled,omitempty"`
 }
 
 type RegisterRequest struct {
@@ -111,6 +113,8 @@ type RegisterRequest struct {
 	Password string `json:"password,omitempty"`
 
 	Device string `json:"device,omitempty"`
+
+	TOTPCode string `json:"totpCode,omitempty"`
 }
 
 type RegisterResponse struct {
@@ -122,6 +126,7 @@ type LoginRequest struct {
 	Slug     string `json:"slug,omitempty"`
 	Password string `json:"password"`
 	Device   string `json:"device,omitempty"`
+	TOTPCode string `json:"totpCode,omitempty"`
 
 	Contact ContactInput `json:"contact,omitempty"`
 }
