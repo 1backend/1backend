@@ -77,6 +77,11 @@ func TestTOTPSetupQRCodeAndLoginEnforcement(t *testing.T) {
 	require.NotEmpty(t, setup.ProvisioningURI)
 	require.Equal(t, "/user-svc/totp/setup/"+setup.TOTPId+"/qr.png", setup.QRImagePath)
 
+	key, err := otp.NewKeyFromURL(setup.ProvisioningURI)
+	require.NoError(t, err)
+	require.Equal(t, "1Backend", key.Issuer())
+	require.Equal(t, "totp-login", key.AccountName())
+
 	selfBefore := readSelfWithServerTypes(t, server.URL, token)
 	require.False(t, selfBefore.TOTPEnabled)
 
@@ -196,6 +201,90 @@ func TestTOTPSetupQRCodeAndLoginEnforcement(t *testing.T) {
 		&login,
 	)
 	require.Equal(t, http.StatusOK, httpRsp.StatusCode)
+}
+
+func TestTOTPSetupCustomIssuer(t *testing.T) {
+	t.Parallel()
+
+	hs := &di.HandlerSwitcher{}
+	server := httptest.NewServer(hs)
+	defer server.Close()
+
+	options := &universe.Options{
+		Test: true,
+		Url:  server.URL,
+	}
+	universe, err := di.BigBang(options)
+	require.NoError(t, err)
+
+	hs.UpdateHandler(universe.Router)
+
+	err = universe.StarterFunc()
+	require.NoError(t, err)
+
+	var register user.RegisterResponse
+	httpRsp := doJSON(
+		t,
+		http.MethodPost,
+		server.URL+"/user-svc/register",
+		"",
+		user.RegisterRequest{
+			AppHost:  sdk.DefaultTestAppHost,
+			Slug:     "totp-custom-issuer",
+			Password: "testUserPassword0",
+			Name:     "TOTP Custom Issuer",
+			Contact: user.ContactInput{
+				Id:       "totp-custom-issuer@test.com",
+				Platform: "email",
+			},
+		},
+		&register,
+	)
+	require.Equal(t, http.StatusOK, httpRsp.StatusCode)
+	require.NotNil(t, register.Token)
+	token := register.Token.Token
+
+	httpRsp = doJSON(
+		t,
+		http.MethodPost,
+		server.URL+"/user-svc/totp/setup",
+		token,
+		user.BeginTOTPSetupRequest{Issuer: "bad:issuer"},
+		nil,
+	)
+	require.Equal(t, http.StatusBadRequest, httpRsp.StatusCode)
+
+	var setup user.BeginTOTPSetupResponse
+	httpRsp = doJSON(
+		t,
+		http.MethodPost,
+		server.URL+"/user-svc/totp/setup",
+		token,
+		user.BeginTOTPSetupRequest{Issuer: " auth.example.com "},
+		&setup,
+	)
+	require.Equal(t, http.StatusOK, httpRsp.StatusCode)
+	require.NotEmpty(t, setup.Secret)
+
+	key, err := otp.NewKeyFromURL(setup.ProvisioningURI)
+	require.NoError(t, err)
+	require.Equal(t, "auth.example.com", key.Issuer())
+	require.Equal(t, "totp-custom-issuer", key.AccountName())
+
+	var enable user.EnableTOTPResponse
+	httpRsp = doJSON(
+		t,
+		http.MethodPost,
+		server.URL+"/user-svc/totp/enable",
+		token,
+		user.EnableTOTPRequest{
+			TOTPId: setup.TOTPId,
+			Code:   currentTOTPCode(t, setup.Secret),
+		},
+		&enable,
+	)
+	require.Equal(t, http.StatusOK, httpRsp.StatusCode)
+	require.True(t, enable.Enabled)
 }
 
 func readTOTPStatus(

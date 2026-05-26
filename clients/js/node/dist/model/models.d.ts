@@ -177,6 +177,7 @@ export * from './userSvcActivateOrganizationRequest';
 export * from './userSvcActivateOrganizationResponse';
 export * from './userSvcApiKeyView';
 export * from './userSvcApp';
+export * from './userSvcBeginTOTPSetupRequest';
 export * from './userSvcBeginTOTPSetupResponse';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';

@@ -34,7 +34,10 @@ func (t *TOTP) GetId() string {
 	return t.Id
 }
 
-type BeginTOTPSetupRequest struct{}
+type BeginTOTPSetupRequest struct {
+	// Issuer is an optional authenticator display label. If omitted, 1Backend is used.
+	Issuer string `json:"issuer,omitempty" example:"app.example.com"`
+}
 
 type BeginTOTPSetupResponse struct {
 	TOTPId          string `json:"totpId" binding:"required"`

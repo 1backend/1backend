@@ -11,8 +11,10 @@ import (
 	"encoding/json"
 	"errors"
 	"image/png"
+	"io"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -29,6 +31,7 @@ import (
 
 const (
 	totpIssuer        = "1Backend"
+	totpIssuerMaxLen  = 128
 	totpPeriod        = 30
 	totpSecretSize    = 20
 	totpQRSize        = 256
@@ -48,6 +51,7 @@ var (
 // @Produce json
 // @Param body body user.BeginTOTPSetupRequest false "Begin TOTP Setup Request"
 // @Success 200 {object} user.BeginTOTPSetupResponse "TOTP setup started"
+// @Failure 400 {object} user.ErrorResponse "Invalid request"
 // @Failure 401 {object} user.ErrorResponse "Unauthorized"
 // @Failure 409 {object} user.ErrorResponse "TOTP already enabled"
 // @Failure 500 {object} user.ErrorResponse "Internal Server Error"
@@ -69,8 +73,23 @@ func (s *UserService) BeginTOTPSetup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	req := user.BeginTOTPSetupRequest{}
+	if r.Body != nil {
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil && !errors.Is(err, io.EOF) {
+			endpoint.WriteString(w, http.StatusBadRequest, "Invalid JSON")
+			return
+		}
+		defer r.Body.Close()
+	}
+
+	issuer, err := totpSetupIssuer(req.Issuer)
+	if err != nil {
+		endpoint.WriteString(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
 	key, err := totp.Generate(totp.GenerateOpts{
-		Issuer:      totpIssuer,
+		Issuer:      issuer,
 		AccountName: usr.Slug,
 		Period:      totpPeriod,
 		SecretSize:  totpSecretSize,
@@ -116,6 +135,28 @@ func (s *UserService) BeginTOTPSetup(w http.ResponseWriter, r *http.Request) {
 		ProvisioningURI: record.ProvisioningURI,
 		QRImagePath:     "/user-svc/totp/setup/" + record.Id + "/qr.png",
 	})
+}
+
+func totpSetupIssuer(raw string) (string, error) {
+	issuer := strings.TrimSpace(raw)
+	if issuer == "" {
+		return totpIssuer, nil
+	}
+	if len(issuer) > totpIssuerMaxLen {
+		return "", errors.New("issuer is too long")
+	}
+
+	for _, r := range issuer {
+		if r < 0x20 || r == 0x7f || r > 0x7e {
+			return "", errors.New("issuer contains unsupported characters")
+		}
+		switch r {
+		case ':', '/', '\\', '?', '#':
+			return "", errors.New("issuer contains unsupported characters")
+		}
+	}
+
+	return issuer, nil
 }
 
 // @ID readTOTPStatus

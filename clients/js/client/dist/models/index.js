@@ -178,6 +178,7 @@ export * from './UserSvcActivateOrganizationRequest';
 export * from './UserSvcActivateOrganizationResponse';
 export * from './UserSvcApiKeyView';
 export * from './UserSvcApp';
+export * from './UserSvcBeginTOTPSetupRequest';
 export * from './UserSvcBeginTOTPSetupResponse';
 export * from './UserSvcChangePasswordRequest';
 export * from './UserSvcContact';

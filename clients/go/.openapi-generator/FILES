@@ -214,6 +214,7 @@ docs/UserSvcActivateOrganizationRequest.md
 docs/UserSvcActivateOrganizationResponse.md
 docs/UserSvcApiKeyView.md
 docs/UserSvcApp.md
+docs/UserSvcBeginTOTPSetupRequest.md
 docs/UserSvcBeginTOTPSetupResponse.md
 docs/UserSvcChangePasswordRequest.md
 docs/UserSvcContact.md
@@ -472,6 +473,7 @@ model_user_svc_activate_organization_request.go
 model_user_svc_activate_organization_response.go
 model_user_svc_api_key_view.go
 model_user_svc_app.go
+model_user_svc_begin_totp_setup_request.go
 model_user_svc_begin_totp_setup_response.go
 model_user_svc_change_password_request.go
 model_user_svc_contact.go

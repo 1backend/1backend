@@ -176,6 +176,7 @@ export * from './userSvcActivateOrganizationRequest';
 export * from './userSvcActivateOrganizationResponse';
 export * from './userSvcApiKeyView';
 export * from './userSvcApp';
+export * from './userSvcBeginTOTPSetupRequest';
 export * from './userSvcBeginTOTPSetupResponse';
 export * from './userSvcChangePasswordRequest';
 export * from './userSvcContact';
@@ -431,6 +432,7 @@ import { UserSvcActivateOrganizationRequest } from './userSvcActivateOrganizatio
 import { UserSvcActivateOrganizationResponse } from './userSvcActivateOrganizationResponse';
 import { UserSvcApiKeyView } from './userSvcApiKeyView';
 import { UserSvcApp } from './userSvcApp';
+import { UserSvcBeginTOTPSetupRequest } from './userSvcBeginTOTPSetupRequest';
 import { UserSvcBeginTOTPSetupResponse } from './userSvcBeginTOTPSetupResponse';
 import { UserSvcChangePasswordRequest } from './userSvcChangePasswordRequest';
 import { UserSvcContact } from './userSvcContact';
@@ -703,6 +705,7 @@ let typeMap = {
     "UserSvcActivateOrganizationResponse": UserSvcActivateOrganizationResponse,
     "UserSvcApiKeyView": UserSvcApiKeyView,
     "UserSvcApp": UserSvcApp,
+    "UserSvcBeginTOTPSetupRequest": UserSvcBeginTOTPSetupRequest,
     "UserSvcBeginTOTPSetupResponse": UserSvcBeginTOTPSetupResponse,
     "UserSvcChangePasswordRequest": UserSvcChangePasswordRequest,
     "UserSvcContact": UserSvcContact,

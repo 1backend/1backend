@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.14
+API version: 0.9.15
 Contact: sales@singulatron.com
 */
 
@@ -1100,11 +1100,11 @@ func (a *UserSvcAPIService) ActivateOrganizationExecute(r ApiActivateOrganizatio
 type ApiBeginTOTPSetupRequest struct {
 	ctx context.Context
 	ApiService UserSvcAPI
-	body *map[string]interface{}
+	body *UserSvcBeginTOTPSetupRequest
 }
 
 // Begin TOTP Setup Request
-func (r ApiBeginTOTPSetupRequest) Body(body map[string]interface{}) ApiBeginTOTPSetupRequest {
+func (r ApiBeginTOTPSetupRequest) Body(body UserSvcBeginTOTPSetupRequest) ApiBeginTOTPSetupRequest {
 	r.body = &body
 	return r
 }
@@ -1203,6 +1203,17 @@ func (a *UserSvcAPIService) BeginTOTPSetupExecute(r ApiBeginTOTPSetupRequest) (*
 		newErr := &GenericOpenAPIError{
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v UserSvcErrorResponse
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 401 {
 			var v UserSvcErrorResponse

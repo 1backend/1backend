@@ -2965,6 +2965,12 @@ definitions:
     - id
     type: object
   user_svc.BeginTOTPSetupRequest:
+    properties:
+      issuer:
+        description: Issuer is an optional authenticator display label. If omitted,
+          1Backend is used.
+        example: app.example.com
+        type: string
     type: object
   user_svc.BeginTOTPSetupResponse:
     properties:
@@ -4196,7 +4202,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.14
+  version: 0.9.15
 paths:
   /chat-svc/events:
     get:
@@ -8632,6 +8638,10 @@ paths:
           description: TOTP setup started
           schema:
             $ref: '#/definitions/user_svc.BeginTOTPSetupResponse'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
