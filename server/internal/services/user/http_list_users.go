@@ -23,7 +23,8 @@ import (
 // @ID listUsers
 // @Summary List Users
 // @Description Fetches a list of users with optional query filters and pagination.
-// @Description Requires the `user-svc:user:view` permission that only admins have by default.
+// @Description Requires the `user-svc:user:view` permission that only admins have by default for unscoped list requests.
+// @Description Requests scoped by `contactId` or `contactIds` do not require the broad user-view permission.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -38,23 +39,8 @@ func (s *UserService) ListUsers(
 	w http.ResponseWriter,
 	r *http.Request,
 ) {
-
-	_, hasPermission, _, err := s.hasPermission(r, user.PermissionUserView)
-	if err != nil {
-		logger.Error(
-			"Failed to check permission",
-			slog.Any("error", err),
-		)
-		endpoint.InternalServerError(w)
-		return
-	}
-	if !hasPermission {
-		endpoint.Unauthorized(w)
-		return
-	}
-
 	req := user.ListUsersRequest{}
-	err = json.NewDecoder(r.Body).Decode(&req)
+	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		logger.Error(
 			"Failed to decode request",
@@ -64,6 +50,22 @@ func (s *UserService) ListUsers(
 		return
 	}
 	defer r.Body.Close()
+
+	if !hasContactIdFilter(&req) {
+		_, hasPermission, _, err := s.hasPermission(r, user.PermissionUserView)
+		if err != nil {
+			logger.Error(
+				"Failed to check permission",
+				slog.Any("error", err),
+			)
+			endpoint.InternalServerError(w)
+			return
+		}
+		if !hasPermission {
+			endpoint.Unauthorized(w)
+			return
+		}
+	}
 
 	users, count, err := s.listUsers(&req)
 	if err != nil {
@@ -127,20 +129,41 @@ func (s *UserService) listUsers(
 		))
 	}
 
-	if request.ContactId != "" {
+	contactIds := uniqueContactIds(request)
+	if len(contactIds) > 0 {
+		contactIdAnys := make([]any, 0, len(contactIds))
+		for _, contactId := range contactIds {
+			contactIdAnys = append(contactIdAnys, contactId)
+		}
+
 		contactIs, err := s.contactStore.Query(
-			datastore.Id(request.ContactId),
+			datastore.IsInList(datastore.Field("id"), contactIdAnys...),
 		).Find()
 		if err != nil {
 			return nil, 0, errors.Wrap(err, "error getting contact")
 		}
 
-		if len(contactIs) == 0 {
-			return nil, 0, fmt.Errorf("cannot find contact with id '%v' when querying users", request.ContactId)
+		foundContactIds := map[string]struct{}{}
+		userIds := make([]any, 0, len(contactIs))
+		seenUserIds := map[string]struct{}{}
+		for _, contactI := range contactIs {
+			contact := contactI.(*user.Contact)
+			foundContactIds[contact.Id] = struct{}{}
+			if _, ok := seenUserIds[contact.UserId]; ok {
+				continue
+			}
+			seenUserIds[contact.UserId] = struct{}{}
+			userIds = append(userIds, contact.UserId)
 		}
 
-		filters = append(filters, datastore.Equals(
-			[]string{"id"}, contactIs[0].(*user.Contact).UserId,
+		for _, contactId := range contactIds {
+			if _, ok := foundContactIds[contactId]; !ok {
+				return nil, 0, fmt.Errorf("cannot find contact with id '%v' when querying users", contactId)
+			}
+		}
+
+		filters = append(filters, datastore.IsInList(
+			[]string{"id"}, userIds...,
 		))
 	}
 
@@ -212,4 +235,36 @@ func (s *UserService) listUsers(
 	}
 
 	return users, count, nil
+}
+
+func hasContactIdFilter(request *user.ListUsersRequest) bool {
+	if request.ContactId != "" {
+		return true
+	}
+
+	for _, contactId := range request.ContactIds {
+		if contactId != "" {
+			return true
+		}
+	}
+
+	return false
+}
+
+func uniqueContactIds(request *user.ListUsersRequest) []string {
+	contactIds := []string{}
+	seen := map[string]struct{}{}
+
+	for _, contactId := range append([]string{request.ContactId}, request.ContactIds...) {
+		if contactId == "" {
+			continue
+		}
+		if _, ok := seen[contactId]; ok {
+			continue
+		}
+		seen[contactId] = struct{}{}
+		contactIds = append(contactIds, contactId)
+	}
+
+	return contactIds
 }

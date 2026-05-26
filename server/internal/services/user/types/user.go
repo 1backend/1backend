@@ -190,6 +190,9 @@ type ListUsersRequest struct {
 	// Will return a user list with one element if set.
 	ContactId string `json:"contactId,omitempty"`
 
+	// ContactIds are ids of contacts the users are associated with.
+	ContactIds []string `json:"contactIds,omitempty"`
+
 	Limit int64 `json:"limit,omitempty" example:"10"`
 
 	// AfterTime is a time in RFC3339 format.
