@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.16
+API version: 0.9.17
 Contact: sales@singulatron.com
 */
 
@@ -22,8 +22,12 @@ var _ MappedNullable = &UserSvcBeginTOTPSetupRequest{}
 type UserSvcBeginTOTPSetupRequest struct {
 	// AccountName is an optional account label template shown by authenticator apps. It may include $name, $slug, $contactId, $contactIds, $email, $phone, or contact platform placeholders. If omitted, $slug is used for backward compatibility.
 	AccountName *string `json:"accountName,omitempty"`
+	// CurrentCode is required when reprovisioning an already-enabled TOTP authenticator.
+	CurrentCode *string `json:"currentCode,omitempty"`
 	// Issuer is the optional service name shown by authenticator apps. If omitted, 1Backend is used.
 	Issuer *string `json:"issuer,omitempty"`
+	// RotateSecret controls whether reprovisioning an already-enabled TOTP authenticator creates a new secret. Defaults to false, preserving the existing secret.
+	RotateSecret *bool `json:"rotateSecret,omitempty"`
 }
 
 // NewUserSvcBeginTOTPSetupRequest instantiates a new UserSvcBeginTOTPSetupRequest object
@@ -75,6 +79,38 @@ func (o *UserSvcBeginTOTPSetupRequest) SetAccountName(v string) {
 	o.AccountName = &v
 }
 
+// GetCurrentCode returns the CurrentCode field value if set, zero value otherwise.
+func (o *UserSvcBeginTOTPSetupRequest) GetCurrentCode() string {
+	if o == nil || IsNil(o.CurrentCode) {
+		var ret string
+		return ret
+	}
+	return *o.CurrentCode
+}
+
+// GetCurrentCodeOk returns a tuple with the CurrentCode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcBeginTOTPSetupRequest) GetCurrentCodeOk() (*string, bool) {
+	if o == nil || IsNil(o.CurrentCode) {
+		return nil, false
+	}
+	return o.CurrentCode, true
+}
+
+// HasCurrentCode returns a boolean if a field has been set.
+func (o *UserSvcBeginTOTPSetupRequest) HasCurrentCode() bool {
+	if o != nil && !IsNil(o.CurrentCode) {
+		return true
+	}
+
+	return false
+}
+
+// SetCurrentCode gets a reference to the given string and assigns it to the CurrentCode field.
+func (o *UserSvcBeginTOTPSetupRequest) SetCurrentCode(v string) {
+	o.CurrentCode = &v
+}
+
 // GetIssuer returns the Issuer field value if set, zero value otherwise.
 func (o *UserSvcBeginTOTPSetupRequest) GetIssuer() string {
 	if o == nil || IsNil(o.Issuer) {
@@ -107,6 +143,38 @@ func (o *UserSvcBeginTOTPSetupRequest) SetIssuer(v string) {
 	o.Issuer = &v
 }
 
+// GetRotateSecret returns the RotateSecret field value if set, zero value otherwise.
+func (o *UserSvcBeginTOTPSetupRequest) GetRotateSecret() bool {
+	if o == nil || IsNil(o.RotateSecret) {
+		var ret bool
+		return ret
+	}
+	return *o.RotateSecret
+}
+
+// GetRotateSecretOk returns a tuple with the RotateSecret field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcBeginTOTPSetupRequest) GetRotateSecretOk() (*bool, bool) {
+	if o == nil || IsNil(o.RotateSecret) {
+		return nil, false
+	}
+	return o.RotateSecret, true
+}
+
+// HasRotateSecret returns a boolean if a field has been set.
+func (o *UserSvcBeginTOTPSetupRequest) HasRotateSecret() bool {
+	if o != nil && !IsNil(o.RotateSecret) {
+		return true
+	}
+
+	return false
+}
+
+// SetRotateSecret gets a reference to the given bool and assigns it to the RotateSecret field.
+func (o *UserSvcBeginTOTPSetupRequest) SetRotateSecret(v bool) {
+	o.RotateSecret = &v
+}
+
 func (o UserSvcBeginTOTPSetupRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -120,8 +188,14 @@ func (o UserSvcBeginTOTPSetupRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.AccountName) {
 		toSerialize["accountName"] = o.AccountName
 	}
+	if !IsNil(o.CurrentCode) {
+		toSerialize["currentCode"] = o.CurrentCode
+	}
 	if !IsNil(o.Issuer) {
 		toSerialize["issuer"] = o.Issuer
+	}
+	if !IsNil(o.RotateSecret) {
+		toSerialize["rotateSecret"] = o.RotateSecret
 	}
 	return toSerialize, nil
 }

@@ -43,6 +43,13 @@ type BeginTOTPSetupRequest struct {
 	// It may include $name, $slug, $contactId, $contactIds, $email, $phone, or contact platform placeholders.
 	// If omitted, $slug is used for backward compatibility.
 	AccountName string `json:"accountName,omitempty" example:"$email"`
+
+	// CurrentCode is required when reprovisioning an already-enabled TOTP authenticator.
+	CurrentCode string `json:"currentCode,omitempty"`
+
+	// RotateSecret controls whether reprovisioning an already-enabled TOTP authenticator
+	// creates a new secret. Defaults to false, preserving the existing secret.
+	RotateSecret bool `json:"rotateSecret,omitempty"`
 }
 
 type BeginTOTPSetupResponse struct {

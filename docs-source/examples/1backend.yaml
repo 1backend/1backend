@@ -2973,12 +2973,21 @@ definitions:
           If omitted, $slug is used for backward compatibility.
         example: $email
         type: string
+      currentCode:
+        description: CurrentCode is required when reprovisioning an already-enabled
+          TOTP authenticator.
+        type: string
       issuer:
         description: |-
           Issuer is the optional service name shown by authenticator apps.
           If omitted, 1Backend is used.
         example: app.example.com
         type: string
+      rotateSecret:
+        description: |-
+          RotateSecret controls whether reprovisioning an already-enabled TOTP authenticator
+          creates a new secret. Defaults to false, preserving the existing secret.
+        type: boolean
     type: object
   user_svc.BeginTOTPSetupResponse:
     properties:
@@ -4215,7 +4224,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.16
+  version: 0.9.17
 paths:
   /chat-svc/events:
     get:
@@ -8635,8 +8644,9 @@ paths:
     post:
       consumes:
       - application/json
-      description: Creates a pending time-based one-time password secret for the authenticated
-        user's account.
+      description: |-
+        Creates a pending time-based one-time password secret for the authenticated user's account.
+        If TOTP is already enabled, currentCode must verify the active authenticator before a reprovisioning setup is created with the requested issuer/accountName. Existing secrets are preserved unless rotateSecret is true.
       operationId: beginTOTPSetup
       parameters:
       - description: Begin TOTP Setup Request

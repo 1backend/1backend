@@ -8,6 +8,7 @@
 package userservice
 
 import (
+	"encoding/base32"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -48,6 +49,7 @@ var (
 // @ID beginTOTPSetup
 // @Summary Begin TOTP Setup
 // @Description Creates a pending time-based one-time password secret for the authenticated user's account.
+// @Description If TOTP is already enabled, currentCode must verify the active authenticator before a reprovisioning setup is created with the requested issuer/accountName. Existing secrets are preserved unless rotateSecret is true.
 // @Tags User Svc
 // @Accept json
 // @Produce json
@@ -66,15 +68,6 @@ func (s *UserService) BeginTOTPSetup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if _, enabled, err := s.enabledTOTPForUser(usr.Id); err != nil {
-		logger.Error("Failed to check TOTP status", slog.Any("error", err))
-		endpoint.InternalServerError(w)
-		return
-	} else if enabled {
-		endpoint.WriteString(w, http.StatusConflict, "TOTP already enabled")
-		return
-	}
-
 	req := user.BeginTOTPSetupRequest{}
 	if r.Body != nil {
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil && !errors.Is(err, io.EOF) {
@@ -82,6 +75,29 @@ func (s *UserService) BeginTOTPSetup(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		defer r.Body.Close()
+	}
+
+	existingSecret := ""
+	if current, enabled, err := s.enabledTOTPForUser(usr.Id); err != nil {
+		logger.Error("Failed to check TOTP status", slog.Any("error", err))
+		endpoint.InternalServerError(w)
+		return
+	} else if enabled {
+		if req.CurrentCode == "" {
+			endpoint.WriteString(w, http.StatusConflict, "TOTP already enabled")
+			return
+		}
+
+		if ok, err := validateTOTPCode(current.Secret, req.CurrentCode); err != nil || !ok {
+			if err != nil {
+				logger.Error("Failed to validate current TOTP", slog.Any("error", err))
+			}
+			endpoint.WriteString(w, http.StatusUnauthorized, "Invalid TOTP code")
+			return
+		}
+		if !req.RotateSecret {
+			existingSecret = current.Secret
+		}
 	}
 
 	issuer, err := totpSetupIssuer(req.Issuer)
@@ -95,14 +111,7 @@ func (s *UserService) BeginTOTPSetup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	key, err := totp.Generate(totp.GenerateOpts{
-		Issuer:      issuer,
-		AccountName: accountName,
-		Period:      totpPeriod,
-		SecretSize:  totpSecretSize,
-		Digits:      otp.DigitsSix,
-		Algorithm:   otp.AlgorithmSHA1,
-	})
+	key, err := generateTOTPKey(issuer, accountName, existingSecret)
 	if err != nil {
 		logger.Error("Failed to generate TOTP key", slog.Any("error", err))
 		endpoint.InternalServerError(w)
@@ -204,6 +213,33 @@ func totpSetupDisplayText(
 	}
 
 	return value, nil
+}
+
+func generateTOTPKey(
+	issuer string,
+	accountName string,
+	existingSecret string,
+) (*otp.Key, error) {
+	var secret []byte
+	if existingSecret != "" {
+		var err error
+		secret, err = base32.StdEncoding.WithPadding(base32.NoPadding).DecodeString(
+			strings.ToUpper(strings.TrimSpace(existingSecret)),
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to decode existing TOTP secret: %w", err)
+		}
+	}
+
+	return totp.Generate(totp.GenerateOpts{
+		Issuer:      issuer,
+		AccountName: accountName,
+		Period:      totpPeriod,
+		SecretSize:  totpSecretSize,
+		Secret:      secret,
+		Digits:      otp.DigitsSix,
+		Algorithm:   otp.AlgorithmSHA1,
+	})
 }
 
 func renderTOTPAccountNameTemplate(
@@ -447,6 +483,15 @@ func (s *UserService) EnableTOTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if current, enabled, err := s.enabledTOTPForUser(claims.UserId); err != nil {
+		logger.Error("Failed to read active TOTP", slog.Any("error", err))
+		endpoint.InternalServerError(w)
+		return
+	} else if enabled && !totpSetupCreatedAfterActive(record, current) {
+		endpoint.WriteString(w, http.StatusConflict, "TOTP setup is no longer valid")
+		return
+	}
+
 	if ok, err := validateTOTPCode(record.Secret, req.Code); err != nil || !ok {
 		if err != nil {
 			logger.Error("Failed to validate TOTP", slog.Any("error", err))
@@ -667,6 +712,13 @@ func (s *UserService) disableEnabledTOTPsForUser(userId string) error {
 	}
 
 	return nil
+}
+
+func totpSetupCreatedAfterActive(setup *user.TOTP, active *user.TOTP) bool {
+	if active.EnabledAt != nil {
+		return setup.CreatedAt.After(*active.EnabledAt)
+	}
+	return setup.CreatedAt.After(active.UpdatedAt)
 }
 
 func validateTOTPCode(secret string, code string) (bool, error) {

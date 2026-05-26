@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.16
+API version: 0.9.17
 Contact: sales@singulatron.com
 */
 
@@ -56,6 +56,7 @@ type UserSvcAPI interface {
 	BeginTOTPSetup Begin TOTP Setup
 
 	Creates a pending time-based one-time password secret for the authenticated user's account.
+If TOTP is already enabled, currentCode must verify the active authenticator before a reprovisioning setup is created with the requested issuer/accountName. Existing secrets are preserved unless rotateSecret is true.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiBeginTOTPSetupRequest
@@ -1118,6 +1119,7 @@ func (r ApiBeginTOTPSetupRequest) Execute() (*UserSvcBeginTOTPSetupResponse, *ht
 BeginTOTPSetup Begin TOTP Setup
 
 Creates a pending time-based one-time password secret for the authenticated user's account.
+If TOTP is already enabled, currentCode must verify the active authenticator before a reprovisioning setup is created with the requested issuer/accountName. Existing secrets are preserved unless rotateSecret is true.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiBeginTOTPSetupRequest
