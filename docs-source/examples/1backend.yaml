@@ -2966,9 +2966,17 @@ definitions:
     type: object
   user_svc.BeginTOTPSetupRequest:
     properties:
+      accountName:
+        description: |-
+          AccountName is an optional account label template shown by authenticator apps.
+          It may include $name, $slug, $contactId, $contactIds, $email, $phone, or contact platform placeholders.
+          If omitted, $slug is used for backward compatibility.
+        example: $email
+        type: string
       issuer:
-        description: Issuer is an optional authenticator display label. If omitted,
-          1Backend is used.
+        description: |-
+          Issuer is the optional service name shown by authenticator apps.
+          If omitted, 1Backend is used.
         example: app.example.com
         type: string
     type: object
@@ -3520,6 +3528,11 @@ definitions:
           ContactId is the id of the contact the user is associated with.
           Will return a user list with one element if set.
         type: string
+      contactIds:
+        description: ContactIds are ids of contacts the users are associated with.
+        items:
+          type: string
+        type: array
       count:
         description: Count is a flag that indicates if the count of the users should
           be returned.
@@ -4202,7 +4215,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.15
+  version: 0.9.16
 paths:
   /chat-svc/events:
     get:
@@ -8845,7 +8858,8 @@ paths:
       - application/json
       description: |-
         Fetches a list of users with optional query filters and pagination.
-        Requires the `user-svc:user:view` permission that only admins have by default.
+        Requires the `user-svc:user:view` permission that only admins have by default for unscoped list requests.
+        Requests scoped by `contactId` or `contactIds` do not require the broad user-view permission.
       operationId: listUsers
       parameters:
       - description: List Users Request

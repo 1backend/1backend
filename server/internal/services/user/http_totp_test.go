@@ -254,13 +254,36 @@ func TestTOTPSetupCustomIssuer(t *testing.T) {
 	)
 	require.Equal(t, http.StatusBadRequest, httpRsp.StatusCode)
 
+	httpRsp = doJSON(
+		t,
+		http.MethodPost,
+		server.URL+"/user-svc/totp/setup",
+		token,
+		user.BeginTOTPSetupRequest{AccountName: "bad\naccount"},
+		nil,
+	)
+	require.Equal(t, http.StatusBadRequest, httpRsp.StatusCode)
+
+	httpRsp = doJSON(
+		t,
+		http.MethodPost,
+		server.URL+"/user-svc/totp/setup",
+		token,
+		user.BeginTOTPSetupRequest{AccountName: "$unknown"},
+		nil,
+	)
+	require.Equal(t, http.StatusBadRequest, httpRsp.StatusCode)
+
 	var setup user.BeginTOTPSetupResponse
 	httpRsp = doJSON(
 		t,
 		http.MethodPost,
 		server.URL+"/user-svc/totp/setup",
 		token,
-		user.BeginTOTPSetupRequest{Issuer: " auth.example.com "},
+		user.BeginTOTPSetupRequest{
+			Issuer:      " auth.example.com ",
+			AccountName: " $name <$email> ",
+		},
 		&setup,
 	)
 	require.Equal(t, http.StatusOK, httpRsp.StatusCode)
@@ -269,7 +292,7 @@ func TestTOTPSetupCustomIssuer(t *testing.T) {
 	key, err := otp.NewKeyFromURL(setup.ProvisioningURI)
 	require.NoError(t, err)
 	require.Equal(t, "auth.example.com", key.Issuer())
-	require.Equal(t, "totp-custom-issuer", key.AccountName())
+	require.Equal(t, "TOTP Custom Issuer <totp-custom-issuer@test.com>", key.AccountName())
 
 	var enable user.EnableTOTPResponse
 	httpRsp = doJSON(

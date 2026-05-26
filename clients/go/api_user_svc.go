@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.15
+API version: 0.9.16
 Contact: sales@singulatron.com
 */
 
@@ -474,7 +474,8 @@ Caller can only list permissions for roles they have.
 	ListUsers List Users
 
 	Fetches a list of users with optional query filters and pagination.
-Requires the `user-svc:user:view` permission that only admins have by default.
+Requires the `user-svc:user:view` permission that only admins have by default for unscoped list requests.
+Requests scoped by `contactId` or `contactIds` do not require the broad user-view permission.
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
 	@return ApiListUsersRequest
@@ -5137,7 +5138,8 @@ func (r ApiListUsersRequest) Execute() (*UserSvcListUsersResponse, *http.Respons
 ListUsers List Users
 
 Fetches a list of users with optional query filters and pagination.
-Requires the `user-svc:user:view` permission that only admins have by default.
+Requires the `user-svc:user:view` permission that only admins have by default for unscoped list requests.
+Requests scoped by `contactId` or `contactIds` do not require the broad user-view permission.
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  @return ApiListUsersRequest

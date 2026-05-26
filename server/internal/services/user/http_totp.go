@@ -10,10 +10,12 @@ package userservice
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"image/png"
 	"io"
 	"log/slog"
 	"net/http"
+	"sort"
 	"strings"
 	"time"
 
@@ -30,12 +32,12 @@ import (
 )
 
 const (
-	totpIssuer        = "1Backend"
-	totpIssuerMaxLen  = 128
-	totpPeriod        = 30
-	totpSecretSize    = 20
-	totpQRSize        = 256
-	missingTOTPUserID = "__missing_totp_user__"
+	totpIssuer            = "1Backend"
+	totpDisplayTextMaxLen = 128
+	totpPeriod            = 30
+	totpSecretSize        = 20
+	totpQRSize            = 256
+	missingTOTPUserID     = "__missing_totp_user__"
 )
 
 var (
@@ -87,10 +89,15 @@ func (s *UserService) BeginTOTPSetup(w http.ResponseWriter, r *http.Request) {
 		endpoint.WriteString(w, http.StatusBadRequest, err.Error())
 		return
 	}
+	accountName, err := s.totpSetupAccountName(req.AccountName, usr)
+	if err != nil {
+		endpoint.WriteString(w, http.StatusBadRequest, err.Error())
+		return
+	}
 
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer:      issuer,
-		AccountName: usr.Slug,
+		AccountName: accountName,
 		Period:      totpPeriod,
 		SecretSize:  totpSecretSize,
 		Digits:      otp.DigitsSix,
@@ -138,25 +145,158 @@ func (s *UserService) BeginTOTPSetup(w http.ResponseWriter, r *http.Request) {
 }
 
 func totpSetupIssuer(raw string) (string, error) {
-	issuer := strings.TrimSpace(raw)
-	if issuer == "" {
-		return totpIssuer, nil
-	}
-	if len(issuer) > totpIssuerMaxLen {
-		return "", errors.New("issuer is too long")
+	return totpSetupDisplayText(raw, totpIssuer, "issuer", true)
+}
+
+func (s *UserService) totpSetupAccountName(raw string, usr *user.User) (string, error) {
+	template := strings.TrimSpace(raw)
+	if template == "" {
+		template = "$slug"
 	}
 
-	for _, r := range issuer {
+	if !strings.Contains(template, "$") {
+		return totpSetupDisplayText(template, "", "accountName", false)
+	}
+
+	contacts, err := s.getContactsByUserId(usr.Id)
+	if err != nil {
+		return "", err
+	}
+
+	accountName, err := renderTOTPAccountNameTemplate(
+		template,
+		totpAccountNameFields(usr, contacts),
+	)
+	if err != nil {
+		return "", err
+	}
+
+	return totpSetupDisplayText(accountName, "", "accountName", false)
+}
+
+func totpSetupDisplayText(
+	raw string,
+	fallback string,
+	field string,
+	rejectLabelDelimiters bool,
+) (string, error) {
+	value := strings.TrimSpace(raw)
+	if value == "" {
+		value = strings.TrimSpace(fallback)
+	}
+	if value == "" {
+		return "", errors.New(field + " is required")
+	}
+	if len(value) > totpDisplayTextMaxLen {
+		return "", errors.New(field + " is too long")
+	}
+
+	for _, r := range value {
 		if r < 0x20 || r == 0x7f || r > 0x7e {
-			return "", errors.New("issuer contains unsupported characters")
+			return "", errors.New(field + " contains unsupported characters")
 		}
-		switch r {
-		case ':', '/', '\\', '?', '#':
-			return "", errors.New("issuer contains unsupported characters")
+		if rejectLabelDelimiters {
+			switch r {
+			case ':', '/', '\\', '?', '#':
+				return "", errors.New(field + " contains unsupported characters")
+			}
 		}
 	}
 
-	return issuer, nil
+	return value, nil
+}
+
+func renderTOTPAccountNameTemplate(
+	template string,
+	fields map[string]string,
+) (string, error) {
+	var out strings.Builder
+	for i := 0; i < len(template); {
+		if template[i] != '$' {
+			out.WriteByte(template[i])
+			i++
+			continue
+		}
+
+		name := ""
+		next := i + 1
+		if next < len(template) && template[next] == '{' {
+			end := strings.IndexByte(template[next+1:], '}')
+			if end == -1 {
+				return "", errors.New("accountName contains an unterminated placeholder")
+			}
+			name = template[next+1 : next+1+end]
+			next = next + 1 + end + 1
+		} else {
+			for next < len(template) && isTOTPPlaceholderChar(template[next]) {
+				next++
+			}
+			if next == i+1 {
+				out.WriteByte(template[i])
+				i++
+				continue
+			}
+			name = template[i+1 : next]
+		}
+
+		value, ok := fields[name]
+		if !ok {
+			return "", fmt.Errorf("accountName contains unknown placeholder %q", "$"+name)
+		}
+		if value == "" {
+			return "", fmt.Errorf("accountName placeholder %q is empty", "$"+name)
+		}
+
+		out.WriteString(value)
+		i = next
+	}
+
+	return out.String(), nil
+}
+
+func isTOTPPlaceholderChar(c byte) bool {
+	return c >= 'A' && c <= 'Z' ||
+		c >= 'a' && c <= 'z' ||
+		c >= '0' && c <= '9' ||
+		c == '_'
+}
+
+func totpAccountNameFields(
+	usr *user.User,
+	contacts []user.Contact,
+) map[string]string {
+	fields := map[string]string{
+		"name":       usr.Name,
+		"slug":       usr.Slug,
+		"contactId":  "",
+		"contactIds": "",
+		"email":      "",
+		"phone":      "",
+	}
+
+	sort.SliceStable(contacts, func(i int, j int) bool {
+		if contacts[i].IsPrimary != contacts[j].IsPrimary {
+			return contacts[i].IsPrimary
+		}
+		if contacts[i].Platform != contacts[j].Platform {
+			return contacts[i].Platform < contacts[j].Platform
+		}
+		return contacts[i].Id < contacts[j].Id
+	})
+
+	contactIds := []string{}
+	for _, contact := range contacts {
+		contactIds = append(contactIds, contact.Id)
+		if fields["contactId"] == "" {
+			fields["contactId"] = contact.Id
+		}
+		if contact.Platform != "" && fields[contact.Platform] == "" {
+			fields[contact.Platform] = contact.Id
+		}
+	}
+	fields["contactIds"] = strings.Join(contactIds, ",")
+
+	return fields
 }
 
 // @ID readTOTPStatus

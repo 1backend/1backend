@@ -28,7 +28,7 @@ import (
 )
 
 // @title           1Backend
-// @version         0.9.15
+// @version         0.9.16
 // @description     AI-native microservices platform.
 // @termsOfService  http://swagger.io/terms/
 
@@ -56,7 +56,7 @@ func main() {
 	logger.Info("Starting...")
 
 	telemetryShutdown, metricsPath, err := telemetry.Setup(context.Background(), telemetry.Config{
-		ServiceVersion: "0.9.15",
+		ServiceVersion: "0.9.16",
 	})
 	if err != nil {
 		logger.Error("Cannot initialize telemetry", slog.Any("error", err))

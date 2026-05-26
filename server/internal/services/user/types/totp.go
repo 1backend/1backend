@@ -35,8 +35,14 @@ func (t *TOTP) GetId() string {
 }
 
 type BeginTOTPSetupRequest struct {
-	// Issuer is an optional authenticator display label. If omitted, 1Backend is used.
+	// Issuer is the optional service name shown by authenticator apps.
+	// If omitted, 1Backend is used.
 	Issuer string `json:"issuer,omitempty" example:"app.example.com"`
+
+	// AccountName is an optional account label template shown by authenticator apps.
+	// It may include $name, $slug, $contactId, $contactIds, $email, $phone, or contact platform placeholders.
+	// If omitted, $slug is used for backward compatibility.
+	AccountName string `json:"accountName,omitempty" example:"$email"`
 }
 
 type BeginTOTPSetupResponse struct {

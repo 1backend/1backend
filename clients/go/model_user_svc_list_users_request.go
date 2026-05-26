@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.15
+API version: 0.9.16
 Contact: sales@singulatron.com
 */
 
@@ -24,6 +24,8 @@ type UserSvcListUsersRequest struct {
 	AfterTime *string `json:"afterTime,omitempty"`
 	// ContactId is the id of the contact the user is associated with. Will return a user list with one element if set.
 	ContactId *string `json:"contactId,omitempty"`
+	// ContactIds are ids of contacts the users are associated with.
+	ContactIds []string `json:"contactIds,omitempty"`
 	// Count is a flag that indicates if the count of the users should be returned.
 	Count *bool `json:"count,omitempty"`
 	// Ids of the users to list.
@@ -114,6 +116,38 @@ func (o *UserSvcListUsersRequest) HasContactId() bool {
 // SetContactId gets a reference to the given string and assigns it to the ContactId field.
 func (o *UserSvcListUsersRequest) SetContactId(v string) {
 	o.ContactId = &v
+}
+
+// GetContactIds returns the ContactIds field value if set, zero value otherwise.
+func (o *UserSvcListUsersRequest) GetContactIds() []string {
+	if o == nil || IsNil(o.ContactIds) {
+		var ret []string
+		return ret
+	}
+	return o.ContactIds
+}
+
+// GetContactIdsOk returns a tuple with the ContactIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcListUsersRequest) GetContactIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ContactIds) {
+		return nil, false
+	}
+	return o.ContactIds, true
+}
+
+// HasContactIds returns a boolean if a field has been set.
+func (o *UserSvcListUsersRequest) HasContactIds() bool {
+	if o != nil && !IsNil(o.ContactIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetContactIds gets a reference to the given []string and assigns it to the ContactIds field.
+func (o *UserSvcListUsersRequest) SetContactIds(v []string) {
+	o.ContactIds = v
 }
 
 // GetCount returns the Count field value if set, zero value otherwise.
@@ -323,6 +357,9 @@ func (o UserSvcListUsersRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.ContactId) {
 		toSerialize["contactId"] = o.ContactId
+	}
+	if !IsNil(o.ContactIds) {
+		toSerialize["contactIds"] = o.ContactIds
 	}
 	if !IsNil(o.Count) {
 		toSerialize["count"] = o.Count

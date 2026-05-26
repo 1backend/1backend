@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.15
+API version: 0.9.16
 Contact: sales@singulatron.com
 */
 
@@ -20,7 +20,9 @@ var _ MappedNullable = &UserSvcBeginTOTPSetupRequest{}
 
 // UserSvcBeginTOTPSetupRequest struct for UserSvcBeginTOTPSetupRequest
 type UserSvcBeginTOTPSetupRequest struct {
-	// Issuer is an optional authenticator display label. If omitted, 1Backend is used.
+	// AccountName is an optional account label template shown by authenticator apps. It may include $name, $slug, $contactId, $contactIds, $email, $phone, or contact platform placeholders. If omitted, $slug is used for backward compatibility.
+	AccountName *string `json:"accountName,omitempty"`
+	// Issuer is the optional service name shown by authenticator apps. If omitted, 1Backend is used.
 	Issuer *string `json:"issuer,omitempty"`
 }
 
@@ -39,6 +41,38 @@ func NewUserSvcBeginTOTPSetupRequest() *UserSvcBeginTOTPSetupRequest {
 func NewUserSvcBeginTOTPSetupRequestWithDefaults() *UserSvcBeginTOTPSetupRequest {
 	this := UserSvcBeginTOTPSetupRequest{}
 	return &this
+}
+
+// GetAccountName returns the AccountName field value if set, zero value otherwise.
+func (o *UserSvcBeginTOTPSetupRequest) GetAccountName() string {
+	if o == nil || IsNil(o.AccountName) {
+		var ret string
+		return ret
+	}
+	return *o.AccountName
+}
+
+// GetAccountNameOk returns a tuple with the AccountName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcBeginTOTPSetupRequest) GetAccountNameOk() (*string, bool) {
+	if o == nil || IsNil(o.AccountName) {
+		return nil, false
+	}
+	return o.AccountName, true
+}
+
+// HasAccountName returns a boolean if a field has been set.
+func (o *UserSvcBeginTOTPSetupRequest) HasAccountName() bool {
+	if o != nil && !IsNil(o.AccountName) {
+		return true
+	}
+
+	return false
+}
+
+// SetAccountName gets a reference to the given string and assigns it to the AccountName field.
+func (o *UserSvcBeginTOTPSetupRequest) SetAccountName(v string) {
+	o.AccountName = &v
 }
 
 // GetIssuer returns the Issuer field value if set, zero value otherwise.
@@ -83,6 +117,9 @@ func (o UserSvcBeginTOTPSetupRequest) MarshalJSON() ([]byte, error) {
 
 func (o UserSvcBeginTOTPSetupRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
+	if !IsNil(o.AccountName) {
+		toSerialize["accountName"] = o.AccountName
+	}
 	if !IsNil(o.Issuer) {
 		toSerialize["issuer"] = o.Issuer
 	}

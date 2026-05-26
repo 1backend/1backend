@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.15
+API version: 0.9.16
 Contact: sales@singulatron.com
 */
 
