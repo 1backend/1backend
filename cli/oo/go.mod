@@ -7,7 +7,7 @@ go 1.25.0
 //replace github.com/1backend/1backend/sdk/go => ../../sdk/go
 
 require (
-	github.com/1backend/1backend/clients/go v0.0.0-20260527190032-5031d5e69a6c
+	github.com/1backend/1backend/clients/go v0.0.0-20260527203156-e20f357dcbc6
 	github.com/1backend/1backend/sdk/go v0.0.0-20260419050317-f51dc9940178
 	github.com/fatih/color v1.18.0
 	github.com/ghodss/yaml v1.0.0
