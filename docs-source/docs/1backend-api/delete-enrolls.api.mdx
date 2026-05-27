@@ -1,0 +1,73 @@
+---
+id: delete-enrolls
+title: "Delete Enrolls"
+description: "Delete enrolls by ID."
+sidebar_label: "Delete Enrolls"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVk1v4zYQ/SvEnFpAkeJmi0V1arIxCrdBdxFvTo6BHVNjixuKZEjKXtfQfy9GtGIn8RbtJUAvFk3Nx5sZvkftoKIgvXJRWQMlXJOmSIKMt1oHsdiKyXV+b27psVWegog1iS9tIH8W1rJMZiVVKn4RjnyjQlDWZGJTK1mzd0VLbHUUqLVgtyBqXFN+bz6g1uSFRCOs0Wz4LLFdCm91SrgVdmPED63RFPYb6EmgEVg1yvyYQwbWkUeuYVJBCSnYOMWCDDw9thTila22UO5AWhPJRF6ic1rJ3rP4GrgFOwiypgZ55TzHjYoC/1NVekRq+kXcOoISQvTKrKDLhg30HrfQdSmv8lRBOeu95082dvGVZISOrU5OYA9e3CbocBws+pb66MFZExK4n87P+fE81hAk9aMSoZWSQli2Wm8h+/d9eAW6y+DdqYQTs0atKvH79OOfwnrRHwizEpPr8F/yPe87eW/9iYZ3J7rZAxu9BnZnsI219eovqt4QybvvzUQYG8XStubt0Px8emCRvEEtpuTX5MW4j/k2kLoMAsnWq7iFcraDK0JP/rKNNZSzecdkwVVg7twF8mK6lkyghmJtDySHDByyBxSDLBX0RPzQVxX68K3XbFVoK1HXNsRyNLq4eA+caMAx5bpSKcdoXnbt89aRuN+b3INYWq3thipWPBTBoWR5qkS0D2QEykRcsfS26RV0qEfc2JUygkzlrDKRhUxx/JqwIh6DwYabdrk/u/0Q4CA0Tv1BSWl4MLcHlRt/w8ZpelKt2TCJeccplnaQQZT9jKlBxd0JqCn8ypRtNUZvTS5tc4Tj00RMW+esZ0FKDa1jdGVRjBYoH8hU7FDAK1W7nJwZjGpNolHSW56LkhSE0xiX1jdculaSTOhBD/l++3Qj1hf5+bNsoSyKzWaTr0ybW78q9n6hwJXTZxf5eV7HRveCTL4JH5fTlO0ANmxwtSKfK1v0JgX3VEVuGIyuUiGQAR+dBP88/yUfveeQzobYoDkC+Vyw4UXlR7fN//Zy3R+3SN9i4TQqw43o57Hbk28GA2zIYKDfPAOmGb/d7RYY6M7rruPtx5Y8c36ewRq9wgV3fsZnc3/yma8PtIUSPqTunTHleCSo23T0X4hSlw0el1KSi/9oeywj1+Ob8ecxZLDYfx00tmIvjxu+dHEDJfQfGOzfK0O/twONZtXiim1TVOYh7vXiwFAGlQ0Lrmt4ZbZHGF8yPJXCv1zYSZfdLvG/657s06vvejzJSrLmOc67rvsbWKp4iA==
+sidebar_class_name: "delete api-method"
+info_path: docs/1backend-api/1-backend
+custom_edit_url: null
+---
+
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import ParamsDetails from "@theme/ParamsDetails";
+import RequestSchema from "@theme/RequestSchema";
+import StatusCodes from "@theme/StatusCodes";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+import Heading from "@theme/Heading";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Delete Enrolls"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"delete"}
+  path={"/user-svc/enrolls"}
+  context={"endpoint"}
+>
+  
+</MethodEndpoint>
+
+
+
+Delete enrolls by ID.
+Requires the `user-svc:enroll:edit` permission, which by default all users have.
+Caller can only delete enrolls of roles they own (unless they are an admin).
+
+<Heading
+  id={"request"}
+  as={"h2"}
+  className={"openapi-tabs__heading"}
+  children={"Request"}
+>
+</Heading>
+
+<ParamsDetails
+  parameters={undefined}
+>
+  
+</ParamsDetails>
+
+<RequestSchema
+  title={"Body"}
+  body={{"content":{"application/json":{"schema":{"properties":{"ids":{"items":{"type":"string"},"type":"array"}},"required":["ids"],"type":"object"}}},"description":"Delete Enrolls Request","required":true}}
+>
+  
+</RequestSchema>
+
+<StatusCodes
+  id={undefined}
+  label={undefined}
+  responses={{"200":{"description":"Enrolls deleted successfully","content":{"application/json":{"schema":{"type":"object"}}}},"400":{"description":"Invalid JSON or missing IDs","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"401":{"description":"Unauthorized","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"404":{"description":"Enroll not found","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"properties":{"error":{"type":"string"}},"type":"object"}}}}}}
+>
+  
+</StatusCodes>
+
+
+      

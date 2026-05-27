@@ -191,6 +191,7 @@ export * from './userSvcCreateApiKeyResponse';
 export * from './userSvcCreateUserRequest';
 export * from './userSvcDeactivateOrganizationResponse';
 export * from './userSvcDeclineMembershipResponse';
+export * from './userSvcDeleteEnrollsRequest';
 export * from './userSvcDisableTOTPRequest';
 export * from './userSvcEnableTOTPRequest';
 export * from './userSvcEnableTOTPResponse';
@@ -461,6 +462,7 @@ import { UserSvcCreateApiKeyResponse } from './userSvcCreateApiKeyResponse';
 import { UserSvcCreateUserRequest } from './userSvcCreateUserRequest';
 import { UserSvcDeactivateOrganizationResponse } from './userSvcDeactivateOrganizationResponse';
 import { UserSvcDeclineMembershipResponse } from './userSvcDeclineMembershipResponse';
+import { UserSvcDeleteEnrollsRequest } from './userSvcDeleteEnrollsRequest';
 import { UserSvcDisableTOTPRequest } from './userSvcDisableTOTPRequest';
 import { UserSvcEnableTOTPRequest } from './userSvcEnableTOTPRequest';
 import { UserSvcEnableTOTPResponse } from './userSvcEnableTOTPResponse';
@@ -737,6 +739,7 @@ let typeMap: {[index: string]: any} = {
     "UserSvcCreateUserRequest": UserSvcCreateUserRequest,
     "UserSvcDeactivateOrganizationResponse": UserSvcDeactivateOrganizationResponse,
     "UserSvcDeclineMembershipResponse": UserSvcDeclineMembershipResponse,
+    "UserSvcDeleteEnrollsRequest": UserSvcDeleteEnrollsRequest,
     "UserSvcDisableTOTPRequest": UserSvcDisableTOTPRequest,
     "UserSvcEnableTOTPRequest": UserSvcEnableTOTPRequest,
     "UserSvcEnableTOTPResponse": UserSvcEnableTOTPResponse,

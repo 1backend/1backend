@@ -26,6 +26,8 @@ type UserSvcEnroll struct {
 	AppId string `json:"appId"`
 	// ContactId is the the recipient of the enroll. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
 	ContactId *string `json:"contactId,omitempty"`
+	// ContactIds includes ContactId and the contacts associated with UserId, if any.
+	ContactIds []string `json:"contactIds,omitempty"`
 	CreatedAt string `json:"createdAt"`
 	// CreatedBy contains the ID of the user who created the Enroll.
 	CreatedBy *string `json:"createdBy,omitempty"`
@@ -117,6 +119,38 @@ func (o *UserSvcEnroll) HasContactId() bool {
 // SetContactId gets a reference to the given string and assigns it to the ContactId field.
 func (o *UserSvcEnroll) SetContactId(v string) {
 	o.ContactId = &v
+}
+
+// GetContactIds returns the ContactIds field value if set, zero value otherwise.
+func (o *UserSvcEnroll) GetContactIds() []string {
+	if o == nil || IsNil(o.ContactIds) {
+		var ret []string
+		return ret
+	}
+	return o.ContactIds
+}
+
+// GetContactIdsOk returns a tuple with the ContactIds field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcEnroll) GetContactIdsOk() ([]string, bool) {
+	if o == nil || IsNil(o.ContactIds) {
+		return nil, false
+	}
+	return o.ContactIds, true
+}
+
+// HasContactIds returns a boolean if a field has been set.
+func (o *UserSvcEnroll) HasContactIds() bool {
+	if o != nil && !IsNil(o.ContactIds) {
+		return true
+	}
+
+	return false
+}
+
+// SetContactIds gets a reference to the given []string and assigns it to the ContactIds field.
+func (o *UserSvcEnroll) SetContactIds(v []string) {
+	o.ContactIds = v
 }
 
 // GetCreatedAt returns the CreatedAt field value
@@ -356,6 +390,9 @@ func (o UserSvcEnroll) ToMap() (map[string]interface{}, error) {
 	toSerialize["appId"] = o.AppId
 	if !IsNil(o.ContactId) {
 		toSerialize["contactId"] = o.ContactId
+	}
+	if !IsNil(o.ContactIds) {
+		toSerialize["contactIds"] = o.ContactIds
 	}
 	toSerialize["createdAt"] = o.CreatedAt
 	if !IsNil(o.CreatedBy) {

@@ -54,12 +54,13 @@ oo enroll save ./enrolls.yaml
 	saveCmd.Flags().StringVar(&userId, "userId", "", "User ID to associate with the enroll")
 	saveCmd.Flags().StringVar(&contactId, "contactId", "", "Contact ID to associate with the enroll")
 
-	// var removeCmd = &cobra.Command{
-	// 	Use:     "remove [id]",
-	// 	Short:   "Delete a enroll",
-	// 	Aliases: []string{"rm"},
-	// 	RunE:    Remove,
-	// }
+	var removeCmd = &cobra.Command{
+		Use:     "delete [id...]",
+		Short:   "Delete enrolls",
+		Aliases: []string{"del", "remove", "rm"},
+		Args:    cobra.MinimumNArgs(1),
+		RunE:    Remove,
+	}
 
 	var listCmd = &cobra.Command{
 		Use:     "list",
@@ -75,7 +76,7 @@ oo enroll save ./enrolls.yaml
 	listCmd.Flags().StringVar(&role, "role", "", "Contact ID associated with the enrolls")
 
 	enrollCmd.AddCommand(saveCmd)
-	// enrollCmd.AddCommand(removeCmd)
+	enrollCmd.AddCommand(removeCmd)
 	enrollCmd.AddCommand(listCmd)
 
 	rootCmd.AddCommand(enrollCmd)

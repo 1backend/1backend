@@ -654,6 +654,12 @@ const sidebar: SidebarsConfig = {
         },
         {
           type: "doc",
+          id: "1backend-api/delete-enrolls",
+          label: "Delete Enrolls",
+          className: "api-method delete",
+        },
+        {
+          type: "doc",
           id: "1backend-api/list-enrolls",
           label: "List Enrolls",
           className: "api-method post",

@@ -18,6 +18,10 @@ export declare class UserSvcEnroll {
     * ContactId is the the recipient of the enroll. If the user is already registered, the role is assigned immediately; otherwise, it is applied upon registration.
     */
     'contactId'?: string;
+    /**
+    * ContactIds includes ContactId and the contacts associated with UserId, if any.
+    */
+    'contactIds'?: Array<string>;
     'createdAt': string;
     /**
     * CreatedBy contains the ID of the user who created the Enroll.

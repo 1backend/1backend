@@ -29,6 +29,7 @@ import type {
   UserSvcCreateUserRequest,
   UserSvcDeactivateOrganizationResponse,
   UserSvcDeclineMembershipResponse,
+  UserSvcDeleteEnrollsRequest,
   UserSvcDisableTOTPRequest,
   UserSvcEnableTOTPRequest,
   UserSvcEnableTOTPResponse,
@@ -110,6 +111,8 @@ import {
     UserSvcDeactivateOrganizationResponseToJSON,
     UserSvcDeclineMembershipResponseFromJSON,
     UserSvcDeclineMembershipResponseToJSON,
+    UserSvcDeleteEnrollsRequestFromJSON,
+    UserSvcDeleteEnrollsRequestToJSON,
     UserSvcDisableTOTPRequestFromJSON,
     UserSvcDisableTOTPRequestToJSON,
     UserSvcEnableTOTPRequestFromJSON,
@@ -259,6 +262,10 @@ export interface CreateUserRequest {
 export interface DeclineMembershipRequest {
     organizationId: string;
     body?: object;
+}
+
+export interface DeleteEnrollsRequest {
+    body: UserSvcDeleteEnrollsRequest;
 }
 
 export interface DeleteMembershipRequest {
@@ -893,6 +900,51 @@ export class UserSvcApi extends runtime.BaseAPI {
      */
     async declineMembership(requestParameters: DeclineMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcDeclineMembershipResponse> {
         const response = await this.declineMembershipRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Delete enrolls by ID. Requires the `user-svc:enroll:edit` permission, which by default all users have. Caller can only delete enrolls of roles they own (unless they are an admin).
+     * Delete Enrolls
+     */
+    async deleteEnrollsRaw(requestParameters: DeleteEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters['body'] == null) {
+            throw new runtime.RequiredError(
+                'body',
+                'Required parameter "body" was null or undefined when calling deleteEnrolls().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = await this.configuration.apiKey("Authorization"); // BearerAuth authentication
+        }
+
+
+        let urlPath = `/user-svc/enrolls`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UserSvcDeleteEnrollsRequestToJSON(requestParameters['body']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Delete enrolls by ID. Requires the `user-svc:enroll:edit` permission, which by default all users have. Caller can only delete enrolls of roles they own (unless they are an admin).
+     * Delete Enrolls
+     */
+    async deleteEnrolls(requestParameters: DeleteEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+        const response = await this.deleteEnrollsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

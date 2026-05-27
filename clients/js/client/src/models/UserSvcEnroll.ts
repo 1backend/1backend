@@ -36,6 +36,12 @@ export interface UserSvcEnroll {
      */
     contactId?: string;
     /**
+     * ContactIds includes ContactId and the contacts associated with UserId, if any.
+     * @type {Array<string>}
+     * @memberof UserSvcEnroll
+     */
+    contactIds?: Array<string>;
+    /**
      * 
      * @type {string}
      * @memberof UserSvcEnroll
@@ -116,6 +122,7 @@ export function UserSvcEnrollFromJSONTyped(json: any, ignoreDiscriminator: boole
         
         'appId': json['appId'],
         'contactId': json['contactId'] == null ? undefined : json['contactId'],
+        'contactIds': json['contactIds'] == null ? undefined : json['contactIds'],
         'createdAt': json['createdAt'],
         'createdBy': json['createdBy'] == null ? undefined : json['createdBy'],
         'deletedAt': json['deletedAt'] == null ? undefined : json['deletedAt'],
@@ -140,6 +147,7 @@ export function UserSvcEnrollToJSONTyped(value?: UserSvcEnroll | null, ignoreDis
         
         'appId': value['appId'],
         'contactId': value['contactId'],
+        'contactIds': value['contactIds'],
         'createdAt': value['createdAt'],
         'createdBy': value['createdBy'],
         'deletedAt': value['deletedAt'],

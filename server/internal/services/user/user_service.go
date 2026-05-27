@@ -421,6 +421,11 @@ func (us *UserService) RegisterRoutes(router *mux.Router) {
 	})).
 		Methods("OPTIONS", "POST")
 
+	router.HandleFunc("/user-svc/enrolls", appl(func(w http.ResponseWriter, r *http.Request) {
+		us.DeleteEnrolls(w, r)
+	})).
+		Methods("OPTIONS", "DELETE")
+
 	router.HandleFunc("/user-svc/refresh-token", appl(func(w http.ResponseWriter, r *http.Request) {
 		us.RefreshToken(w, r)
 	})).

@@ -191,6 +191,7 @@ export * from './UserSvcCreateApiKeyResponse';
 export * from './UserSvcCreateUserRequest';
 export * from './UserSvcDeactivateOrganizationResponse';
 export * from './UserSvcDeclineMembershipResponse';
+export * from './UserSvcDeleteEnrollsRequest';
 export * from './UserSvcDisableTOTPRequest';
 export * from './UserSvcEnableTOTPRequest';
 export * from './UserSvcEnableTOTPResponse';

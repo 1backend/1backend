@@ -39,6 +39,9 @@ type Enroll struct {
 	// otherwise, it is applied upon registration.
 	ContactId string `json:"contactId,omitempty"`
 
+	// ContactIds includes ContactId and the contacts associated with UserId, if any.
+	ContactIds []string `json:"contactIds"`
+
 	// UserId is the recipient of the enroll.
 	// If the user is already registered, the role is assigned immediately;
 	// otherwise, it is applied upon registration.
@@ -77,6 +80,12 @@ type SaveEnrollsRequest struct {
 type SaveEnrollsResponse struct {
 	Enrolls []Enroll `json:"enrolls" binding:"required"`
 }
+
+type DeleteEnrollsRequest struct {
+	Ids []string `json:"ids" binding:"required"`
+}
+
+type DeleteEnrollsResponse struct{}
 
 type ListEnrollsRequest struct {
 	UserId    string `json:"userId,omitempty"`

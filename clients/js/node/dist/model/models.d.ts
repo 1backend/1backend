@@ -190,6 +190,7 @@ export * from './userSvcCreateApiKeyResponse';
 export * from './userSvcCreateUserRequest';
 export * from './userSvcDeactivateOrganizationResponse';
 export * from './userSvcDeclineMembershipResponse';
+export * from './userSvcDeleteEnrollsRequest';
 export * from './userSvcDisableTOTPRequest';
 export * from './userSvcEnableTOTPRequest';
 export * from './userSvcEnableTOTPResponse';

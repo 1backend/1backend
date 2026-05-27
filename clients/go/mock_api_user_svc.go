@@ -368,6 +368,36 @@ func (mr *MockUserSvcAPIMockRecorder) DeclineMembershipExecute(r any) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeclineMembershipExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).DeclineMembershipExecute), r)
 }
 
+// DeleteEnrolls mocks base method.
+func (m *MockUserSvcAPI) DeleteEnrolls(ctx context.Context) ApiDeleteEnrollsRequest {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteEnrolls", ctx)
+	ret0, _ := ret[0].(ApiDeleteEnrollsRequest)
+	return ret0
+}
+
+// DeleteEnrolls indicates an expected call of DeleteEnrolls.
+func (mr *MockUserSvcAPIMockRecorder) DeleteEnrolls(ctx any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteEnrolls", reflect.TypeOf((*MockUserSvcAPI)(nil).DeleteEnrolls), ctx)
+}
+
+// DeleteEnrollsExecute mocks base method.
+func (m *MockUserSvcAPI) DeleteEnrollsExecute(r ApiDeleteEnrollsRequest) (map[string]any, *http.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteEnrollsExecute", r)
+	ret0, _ := ret[0].(map[string]any)
+	ret1, _ := ret[1].(*http.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// DeleteEnrollsExecute indicates an expected call of DeleteEnrollsExecute.
+func (mr *MockUserSvcAPIMockRecorder) DeleteEnrollsExecute(r any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteEnrollsExecute", reflect.TypeOf((*MockUserSvcAPI)(nil).DeleteEnrollsExecute), r)
+}
+
 // DeleteMembership mocks base method.
 func (m *MockUserSvcAPI) DeleteMembership(ctx context.Context, organizationId, userId string) ApiDeleteMembershipRequest {
 	m.ctrl.T.Helper()

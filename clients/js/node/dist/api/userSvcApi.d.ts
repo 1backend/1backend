@@ -24,6 +24,7 @@ import { UserSvcCreateApiKeyResponse } from '../model/userSvcCreateApiKeyRespons
 import { UserSvcCreateUserRequest } from '../model/userSvcCreateUserRequest';
 import { UserSvcDeactivateOrganizationResponse } from '../model/userSvcDeactivateOrganizationResponse';
 import { UserSvcDeclineMembershipResponse } from '../model/userSvcDeclineMembershipResponse';
+import { UserSvcDeleteEnrollsRequest } from '../model/userSvcDeleteEnrollsRequest';
 import { UserSvcDisableTOTPRequest } from '../model/userSvcDisableTOTPRequest';
 import { UserSvcEnableTOTPRequest } from '../model/userSvcEnableTOTPRequest';
 import { UserSvcEnableTOTPResponse } from '../model/userSvcEnableTOTPResponse';
@@ -245,6 +246,19 @@ export declare class UserSvcApi {
     }): Promise<{
         response: http.IncomingMessage;
         body: UserSvcDeclineMembershipResponse;
+    }>;
+    /**
+     * Delete enrolls by ID. Requires the `user-svc:enroll:edit` permission, which by default all users have. Caller can only delete enrolls of roles they own (unless they are an admin).
+     * @summary Delete Enrolls
+     * @param body Delete Enrolls Request
+     */
+    deleteEnrolls(body: UserSvcDeleteEnrollsRequest, options?: {
+        headers: {
+            [name: string]: string;
+        };
+    }): Promise<{
+        response: http.IncomingMessage;
+        body: object;
     }>;
     /**
      * Allows an organization admin to remove a user from an organization.

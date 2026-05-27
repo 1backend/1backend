@@ -183,6 +183,99 @@ func TestEnrollForRegisteredUser(t *testing.T) {
 	})
 }
 
+func TestListEnrollsReturnsContactIdsForContactEnroll(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	require.NoError(t, err)
+
+	userClient := manyClients[0]
+
+	const contactId = "contact-enrolled-user"
+	const role = "test-user-slug-0:custom-role"
+
+	saveRsp, hrsp, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+		Body(openapi.UserSvcSaveEnrollsRequest{
+			Enrolls: []openapi.UserSvcEnrollInput{
+				{
+					ContactId: openapi.PtrString(contactId),
+					Role:      role,
+				},
+			},
+		}).Execute()
+	require.NoError(t, err, hrsp)
+	require.Len(t, saveRsp.Enrolls, 1)
+	require.Contains(t, saveRsp.Enrolls[0].ContactIds, contactId)
+
+	listRsp, hrsp, err := userClient.UserSvcAPI.ListEnrolls(context.Background()).
+		Body(openapi.UserSvcListEnrollsRequest{
+			Role: openapi.PtrString(role),
+		}).Execute()
+	require.NoError(t, err, hrsp)
+	require.Len(t, listRsp.Enrolls, 1)
+	require.Equal(t, contactId, listRsp.Enrolls[0].GetContactId())
+	require.Contains(t, listRsp.Enrolls[0].ContactIds, contactId)
+}
+
+func TestDeleteEnrolls(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
+	require.NoError(t, err)
+
+	userClient := manyClients[0]
+	secondUserClient := manyClients[1]
+
+	const enrollId = "delete-enroll-test"
+	const contactId = "contact-delete-enroll"
+	const role = "test-user-slug-0:custom-role"
+
+	_, hrsp, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+		Body(openapi.UserSvcSaveEnrollsRequest{
+			Enrolls: []openapi.UserSvcEnrollInput{
+				{
+					Id:        openapi.PtrString(enrollId),
+					ContactId: openapi.PtrString(contactId),
+					Role:      role,
+				},
+			},
+		}).Execute()
+	require.NoError(t, err, hrsp)
+
+	_, hrsp, err = secondUserClient.UserSvcAPI.DeleteEnrolls(context.Background()).
+		Body(openapi.UserSvcDeleteEnrollsRequest{
+			Ids: []string{enrollId},
+		}).Execute()
+	require.Error(t, err, hrsp)
+
+	_, hrsp, err = userClient.UserSvcAPI.DeleteEnrolls(context.Background()).
+		Body(openapi.UserSvcDeleteEnrollsRequest{
+			Ids: []string{enrollId},
+		}).Execute()
+	require.NoError(t, err, hrsp)
+
+	listRsp, hrsp, err := userClient.UserSvcAPI.ListEnrolls(context.Background()).
+		Body(openapi.UserSvcListEnrollsRequest{
+			Role: openapi.PtrString(role),
+		}).Execute()
+	require.NoError(t, err, hrsp)
+	require.Empty(t, listRsp.Enrolls)
+}
+
 func TestListEnrollAuthorization(t *testing.T) {
 	t.Parallel()
 

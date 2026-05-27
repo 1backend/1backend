@@ -56,6 +56,15 @@ func (s *UserService) ListEnrolls(w http.ResponseWriter, r *http.Request) {
 		endpoint.Unauthorized(w)
 		return
 	}
+	_, hasUserViewPermission, _, err := s.hasPermission(r, user.PermissionUserView)
+	if err != nil {
+		logger.Error(
+			"Failed to check user view permission",
+			slog.Any("error", err),
+		)
+		endpoint.InternalServerError(w)
+		return
+	}
 
 	req := &user.ListEnrollsRequest{}
 	err = json.NewDecoder(r.Body).Decode(req)
@@ -87,7 +96,7 @@ func (s *UserService) ListEnrolls(w http.ResponseWriter, r *http.Request) {
 	effectiveClaims := *claims
 	effectiveClaims.Roles = roles
 
-	enrolls, err := s.listEnrolls(&effectiveClaims, req)
+	enrolls, err := s.listEnrolls(&effectiveClaims, req, hasUserViewPermission)
 	switch {
 	case errors.Is(err, cannotListUnowned):
 		endpoint.Unauthorized(w)
@@ -110,6 +119,7 @@ func (s *UserService) ListEnrolls(w http.ResponseWriter, r *http.Request) {
 func (s *UserService) listEnrolls(
 	claims *auth.Claims,
 	req *user.ListEnrollsRequest,
+	canViewAllUserContactIds bool,
 ) ([]user.Enroll, error) {
 
 	isAdmin := lo.Contains(claims.Roles, user.RoleAdmin)
@@ -152,5 +162,86 @@ func (s *UserService) listEnrolls(
 		}
 	}
 
+	if err := s.hydrateEnrollContactIds(
+		enrolls,
+		visibleContactUserIds(claims, enrolls, isAdmin || canViewAllUserContactIds),
+	); err != nil {
+		return nil, err
+	}
+
 	return enrolls, nil
+}
+
+func visibleContactUserIds(
+	claims *auth.Claims,
+	enrolls []user.Enroll,
+	canViewAll bool,
+) map[string]struct{} {
+	userIds := map[string]struct{}{}
+	for _, enroll := range enrolls {
+		if enroll.UserId == "" {
+			continue
+		}
+		if canViewAll || (claims != nil && enroll.UserId == claims.UserId) {
+			userIds[enroll.UserId] = struct{}{}
+		}
+	}
+	return userIds
+}
+
+func (s *UserService) hydrateEnrollContactIds(
+	enrolls []user.Enroll,
+	visibleUserContactIds map[string]struct{},
+) error {
+	userIdSet := map[string]struct{}{}
+	for _, enroll := range enrolls {
+		if enroll.UserId == "" {
+			continue
+		}
+		if _, ok := visibleUserContactIds[enroll.UserId]; !ok {
+			continue
+		}
+		userIdSet[enroll.UserId] = struct{}{}
+	}
+
+	contactsByUserId := map[string][]string{}
+	if len(userIdSet) > 0 {
+		userIds := make([]any, 0, len(userIdSet))
+		for userId := range userIdSet {
+			userIds = append(userIds, userId)
+		}
+
+		contactIs, err := s.contactStore.Query(
+			datastore.IsInList(datastore.Field("userId"), userIds...),
+		).Find()
+		if err != nil {
+			return errors.Wrap(err, "error querying contacts for enrolls")
+		}
+
+		for _, contactI := range contactIs {
+			contact := contactI.(*user.Contact)
+			contactsByUserId[contact.UserId] = append(contactsByUserId[contact.UserId], contact.Id)
+		}
+	}
+
+	for i := range enrolls {
+		contactIds := []string{}
+		seen := map[string]struct{}{}
+
+		if enrolls[i].ContactId != "" {
+			contactIds = append(contactIds, enrolls[i].ContactId)
+			seen[enrolls[i].ContactId] = struct{}{}
+		}
+
+		for _, contactId := range contactsByUserId[enrolls[i].UserId] {
+			if _, ok := seen[contactId]; ok {
+				continue
+			}
+			contactIds = append(contactIds, contactId)
+		}
+
+		enrolls[i].ContactIds = contactIds
+	}
+
+	return nil
 }

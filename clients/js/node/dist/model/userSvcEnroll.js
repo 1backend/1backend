@@ -27,6 +27,11 @@ UserSvcEnroll.attributeTypeMap = [
         "type": "string"
     },
     {
+        "name": "contactIds",
+        "baseName": "contactIds",
+        "type": "Array<string>"
+    },
+    {
         "name": "createdAt",
         "baseName": "createdAt",
         "type": "string"

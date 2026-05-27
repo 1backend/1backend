@@ -21,7 +21,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as runtime from '../runtime';
-import { UserSvcAcceptMembershipRequestToJSON, UserSvcAcceptMembershipResponseFromJSON, UserSvcActivateOrganizationRequestToJSON, UserSvcActivateOrganizationResponseFromJSON, UserSvcBeginTOTPSetupRequestToJSON, UserSvcBeginTOTPSetupResponseFromJSON, UserSvcChangePasswordRequestToJSON, UserSvcContactAuthLoginRequestToJSON, UserSvcContactAuthLoginResponseFromJSON, UserSvcCreateApiKeyRequestToJSON, UserSvcCreateApiKeyResponseFromJSON, UserSvcCreateUserRequestToJSON, UserSvcDeactivateOrganizationResponseFromJSON, UserSvcDeclineMembershipResponseFromJSON, UserSvcDisableTOTPRequestToJSON, UserSvcEnableTOTPRequestToJSON, UserSvcEnableTOTPResponseFromJSON, UserSvcExchangeApiKeyResponseFromJSON, UserSvcExchangeTokenRequestToJSON, UserSvcExchangeTokenResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListApiKeysRequestToJSON, UserSvcListApiKeysResponseFromJSON, UserSvcListAppsRequestToJSON, UserSvcListAppsResponseFromJSON, UserSvcListContactAuthProvidersResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListMembershipsRequestToJSON, UserSvcListMembershipsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadAppRequestToJSON, UserSvcReadAppResponseFromJSON, UserSvcReadSelfRequestToJSON, UserSvcReadSelfResponseFromJSON, UserSvcReadTOTPStatusRequestToJSON, UserSvcReadTOTPStatusResponseFromJSON, UserSvcRefreshTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcRevokeApiKeysRequestToJSON, UserSvcRevokeTokensRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveMembershipRequestToJSON, UserSvcSaveMembershipResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveSelfRequestToJSON, UserSvcSaveUserRequestToJSON, UserSvcSendOtpRequestToJSON, UserSvcSendOtpResponseFromJSON, UserSvcUpdateAppRequestToJSON, } from '../models/index';
+import { UserSvcAcceptMembershipRequestToJSON, UserSvcAcceptMembershipResponseFromJSON, UserSvcActivateOrganizationRequestToJSON, UserSvcActivateOrganizationResponseFromJSON, UserSvcBeginTOTPSetupRequestToJSON, UserSvcBeginTOTPSetupResponseFromJSON, UserSvcChangePasswordRequestToJSON, UserSvcContactAuthLoginRequestToJSON, UserSvcContactAuthLoginResponseFromJSON, UserSvcCreateApiKeyRequestToJSON, UserSvcCreateApiKeyResponseFromJSON, UserSvcCreateUserRequestToJSON, UserSvcDeactivateOrganizationResponseFromJSON, UserSvcDeclineMembershipResponseFromJSON, UserSvcDeleteEnrollsRequestToJSON, UserSvcDisableTOTPRequestToJSON, UserSvcEnableTOTPRequestToJSON, UserSvcEnableTOTPResponseFromJSON, UserSvcExchangeApiKeyResponseFromJSON, UserSvcExchangeTokenRequestToJSON, UserSvcExchangeTokenResponseFromJSON, UserSvcGetPublicKeyResponseFromJSON, UserSvcHasPermissionResponseFromJSON, UserSvcListApiKeysRequestToJSON, UserSvcListApiKeysResponseFromJSON, UserSvcListAppsRequestToJSON, UserSvcListAppsResponseFromJSON, UserSvcListContactAuthProvidersResponseFromJSON, UserSvcListEnrollsRequestToJSON, UserSvcListEnrollsResponseFromJSON, UserSvcListMembershipsRequestToJSON, UserSvcListMembershipsResponseFromJSON, UserSvcListOrganizationsRequestToJSON, UserSvcListOrganizationsResponseFromJSON, UserSvcListPermissionsResponseFromJSON, UserSvcListPermitsRequestToJSON, UserSvcListPermitsResponseFromJSON, UserSvcListUsersRequestToJSON, UserSvcListUsersResponseFromJSON, UserSvcLoginRequestToJSON, UserSvcLoginResponseFromJSON, UserSvcReadAppRequestToJSON, UserSvcReadAppResponseFromJSON, UserSvcReadSelfRequestToJSON, UserSvcReadSelfResponseFromJSON, UserSvcReadTOTPStatusRequestToJSON, UserSvcReadTOTPStatusResponseFromJSON, UserSvcRefreshTokenResponseFromJSON, UserSvcRegisterRequestToJSON, UserSvcRegisterResponseFromJSON, UserSvcResetPasswordRequestToJSON, UserSvcRevokeApiKeysRequestToJSON, UserSvcRevokeTokensRequestToJSON, UserSvcSaveEnrollsRequestToJSON, UserSvcSaveEnrollsResponseFromJSON, UserSvcSaveMembershipRequestToJSON, UserSvcSaveMembershipResponseFromJSON, UserSvcSaveOrganizationRequestToJSON, UserSvcSaveOrganizationResponseFromJSON, UserSvcSavePermitsRequestToJSON, UserSvcSaveSelfRequestToJSON, UserSvcSaveUserRequestToJSON, UserSvcSendOtpRequestToJSON, UserSvcSendOtpResponseFromJSON, UserSvcUpdateAppRequestToJSON, } from '../models/index';
 /**
  *
  */
@@ -417,6 +417,42 @@ export class UserSvcApi extends runtime.BaseAPI {
     declineMembership(requestParameters, initOverrides) {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.declineMembershipRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Delete enrolls by ID. Requires the `user-svc:enroll:edit` permission, which by default all users have. Caller can only delete enrolls of roles they own (unless they are an admin).
+     * Delete Enrolls
+     */
+    deleteEnrollsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['body'] == null) {
+                throw new runtime.RequiredError('body', 'Required parameter "body" was null or undefined when calling deleteEnrolls().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && this.configuration.apiKey) {
+                headerParameters["Authorization"] = yield this.configuration.apiKey("Authorization"); // BearerAuth authentication
+            }
+            let urlPath = `/user-svc/enrolls`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+                body: UserSvcDeleteEnrollsRequestToJSON(requestParameters['body']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * Delete enrolls by ID. Requires the `user-svc:enroll:edit` permission, which by default all users have. Caller can only delete enrolls of roles they own (unless they are an admin).
+     * Delete Enrolls
+     */
+    deleteEnrolls(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.deleteEnrollsRaw(requestParameters, initOverrides);
             return yield response.value();
         });
     }

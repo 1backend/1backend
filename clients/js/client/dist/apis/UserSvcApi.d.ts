@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 import * as runtime from '../runtime';
-import type { UserSvcAcceptMembershipRequest, UserSvcAcceptMembershipResponse, UserSvcActivateOrganizationRequest, UserSvcActivateOrganizationResponse, UserSvcBeginTOTPSetupRequest, UserSvcBeginTOTPSetupResponse, UserSvcChangePasswordRequest, UserSvcContactAuthLoginRequest, UserSvcContactAuthLoginResponse, UserSvcCreateApiKeyRequest, UserSvcCreateApiKeyResponse, UserSvcCreateUserRequest, UserSvcDeactivateOrganizationResponse, UserSvcDeclineMembershipResponse, UserSvcDisableTOTPRequest, UserSvcEnableTOTPRequest, UserSvcEnableTOTPResponse, UserSvcExchangeApiKeyResponse, UserSvcExchangeTokenRequest, UserSvcExchangeTokenResponse, UserSvcGetPublicKeyResponse, UserSvcHasPermissionResponse, UserSvcListApiKeysRequest, UserSvcListApiKeysResponse, UserSvcListAppsRequest, UserSvcListAppsResponse, UserSvcListContactAuthProvidersResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListMembershipsRequest, UserSvcListMembershipsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadAppRequest, UserSvcReadAppResponse, UserSvcReadSelfRequest, UserSvcReadSelfResponse, UserSvcReadTOTPStatusRequest, UserSvcReadTOTPStatusResponse, UserSvcRefreshTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcRevokeApiKeysRequest, UserSvcRevokeTokensRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveMembershipRequest, UserSvcSaveMembershipResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveSelfRequest, UserSvcSaveUserRequest, UserSvcSendOtpRequest, UserSvcSendOtpResponse, UserSvcUpdateAppRequest } from '../models/index';
+import type { UserSvcAcceptMembershipRequest, UserSvcAcceptMembershipResponse, UserSvcActivateOrganizationRequest, UserSvcActivateOrganizationResponse, UserSvcBeginTOTPSetupRequest, UserSvcBeginTOTPSetupResponse, UserSvcChangePasswordRequest, UserSvcContactAuthLoginRequest, UserSvcContactAuthLoginResponse, UserSvcCreateApiKeyRequest, UserSvcCreateApiKeyResponse, UserSvcCreateUserRequest, UserSvcDeactivateOrganizationResponse, UserSvcDeclineMembershipResponse, UserSvcDeleteEnrollsRequest, UserSvcDisableTOTPRequest, UserSvcEnableTOTPRequest, UserSvcEnableTOTPResponse, UserSvcExchangeApiKeyResponse, UserSvcExchangeTokenRequest, UserSvcExchangeTokenResponse, UserSvcGetPublicKeyResponse, UserSvcHasPermissionResponse, UserSvcListApiKeysRequest, UserSvcListApiKeysResponse, UserSvcListAppsRequest, UserSvcListAppsResponse, UserSvcListContactAuthProvidersResponse, UserSvcListEnrollsRequest, UserSvcListEnrollsResponse, UserSvcListMembershipsRequest, UserSvcListMembershipsResponse, UserSvcListOrganizationsRequest, UserSvcListOrganizationsResponse, UserSvcListPermissionsResponse, UserSvcListPermitsRequest, UserSvcListPermitsResponse, UserSvcListUsersRequest, UserSvcListUsersResponse, UserSvcLoginRequest, UserSvcLoginResponse, UserSvcReadAppRequest, UserSvcReadAppResponse, UserSvcReadSelfRequest, UserSvcReadSelfResponse, UserSvcReadTOTPStatusRequest, UserSvcReadTOTPStatusResponse, UserSvcRefreshTokenResponse, UserSvcRegisterRequest, UserSvcRegisterResponse, UserSvcResetPasswordRequest, UserSvcRevokeApiKeysRequest, UserSvcRevokeTokensRequest, UserSvcSaveEnrollsRequest, UserSvcSaveEnrollsResponse, UserSvcSaveMembershipRequest, UserSvcSaveMembershipResponse, UserSvcSaveOrganizationRequest, UserSvcSaveOrganizationResponse, UserSvcSavePermitsRequest, UserSvcSaveSelfRequest, UserSvcSaveUserRequest, UserSvcSendOtpRequest, UserSvcSendOtpResponse, UserSvcUpdateAppRequest } from '../models/index';
 export interface AcceptMembershipRequest {
     organizationId: string;
     body?: UserSvcAcceptMembershipRequest;
@@ -47,6 +47,9 @@ export interface CreateUserRequest {
 export interface DeclineMembershipRequest {
     organizationId: string;
     body?: object;
+}
+export interface DeleteEnrollsRequest {
+    body: UserSvcDeleteEnrollsRequest;
 }
 export interface DeleteMembershipRequest {
     organizationId: string;
@@ -271,6 +274,16 @@ export declare class UserSvcApi extends runtime.BaseAPI {
      * Decline Membership
      */
     declineMembership(requestParameters: DeclineMembershipRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserSvcDeclineMembershipResponse>;
+    /**
+     * Delete enrolls by ID. Requires the `user-svc:enroll:edit` permission, which by default all users have. Caller can only delete enrolls of roles they own (unless they are an admin).
+     * Delete Enrolls
+     */
+    deleteEnrollsRaw(requestParameters: DeleteEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>>;
+    /**
+     * Delete enrolls by ID. Requires the `user-svc:enroll:edit` permission, which by default all users have. Caller can only delete enrolls of roles they own (unless they are an admin).
+     * Delete Enrolls
+     */
+    deleteEnrolls(requestParameters: DeleteEnrollsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object>;
     /**
      * Allows an organization admin to remove a user from an organization.
      * Delete Membership

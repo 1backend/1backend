@@ -227,6 +227,7 @@ docs/UserSvcCreateApiKeyResponse.md
 docs/UserSvcCreateUserRequest.md
 docs/UserSvcDeactivateOrganizationResponse.md
 docs/UserSvcDeclineMembershipResponse.md
+docs/UserSvcDeleteEnrollsRequest.md
 docs/UserSvcDisableTOTPRequest.md
 docs/UserSvcEnableTOTPRequest.md
 docs/UserSvcEnableTOTPResponse.md
@@ -486,6 +487,7 @@ model_user_svc_create_api_key_response.go
 model_user_svc_create_user_request.go
 model_user_svc_deactivate_organization_response.go
 model_user_svc_decline_membership_response.go
+model_user_svc_delete_enrolls_request.go
 model_user_svc_disable_totp_request.go
 model_user_svc_enable_totp_request.go
 model_user_svc_enable_totp_response.go

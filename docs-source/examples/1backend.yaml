@@ -3203,6 +3203,17 @@ definitions:
     required:
     - membership
     type: object
+  user_svc.DeleteEnrollsRequest:
+    properties:
+      ids:
+        items:
+          type: string
+        type: array
+    required:
+    - ids
+    type: object
+  user_svc.DeleteEnrollsResponse:
+    type: object
   user_svc.DeleteMembershipRequest:
     type: object
   user_svc.DeleteMembershipResponse:
@@ -3248,6 +3259,12 @@ definitions:
           If the user is already registered, the role is assigned immediately;
           otherwise, it is applied upon registration.
         type: string
+      contactIds:
+        description: ContactIds includes ContactId and the contacts associated with
+          UserId, if any.
+        items:
+          type: string
+        type: array
       createdAt:
         type: string
       createdBy:
@@ -7604,6 +7621,49 @@ paths:
       tags:
       - User Svc
   /user-svc/enrolls:
+    delete:
+      consumes:
+      - application/json
+      description: |-
+        Delete enrolls by ID.
+        Requires the `user-svc:enroll:edit` permission, which by default all users have.
+        Caller can only delete enrolls of roles they own (unless they are an admin).
+      operationId: deleteEnrolls
+      parameters:
+      - description: Delete Enrolls Request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/user_svc.DeleteEnrollsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Enrolls deleted successfully
+          schema:
+            $ref: '#/definitions/user_svc.DeleteEnrollsResponse'
+        "400":
+          description: Invalid JSON or missing IDs
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "404":
+          description: Enroll not found
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/user_svc.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete Enrolls
+      tags:
+      - User Svc
     post:
       consumes:
       - application/json

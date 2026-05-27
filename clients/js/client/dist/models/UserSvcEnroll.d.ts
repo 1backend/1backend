@@ -32,6 +32,12 @@ export interface UserSvcEnroll {
      */
     contactId?: string;
     /**
+     * ContactIds includes ContactId and the contacts associated with UserId, if any.
+     * @type {Array<string>}
+     * @memberof UserSvcEnroll
+     */
+    contactIds?: Array<string>;
+    /**
      *
      * @type {string}
      * @memberof UserSvcEnroll

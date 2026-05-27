@@ -169,6 +169,7 @@ Class | Method | HTTP request | Description
 *UserSvcAPI* | [**CreateUser**](docs/UserSvcAPI.md#createuser) | **Post** /user-svc/user | Create a New User
 *UserSvcAPI* | [**DeactivateOrganization**](docs/UserSvcAPI.md#deactivateorganization) | **Post** /user-svc/organization/deactivate | Deactivate Organization
 *UserSvcAPI* | [**DeclineMembership**](docs/UserSvcAPI.md#declinemembership) | **Post** /user-svc/organization/{organizationId}/membership/decline | Decline Membership
+*UserSvcAPI* | [**DeleteEnrolls**](docs/UserSvcAPI.md#deleteenrolls) | **Delete** /user-svc/enrolls | Delete Enrolls
 *UserSvcAPI* | [**DeleteMembership**](docs/UserSvcAPI.md#deletemembership) | **Delete** /user-svc/organization/{organizationId}/user/{userId} | Delete Membership
 *UserSvcAPI* | [**DeleteUser**](docs/UserSvcAPI.md#deleteuser) | **Delete** /user-svc/user/{userId} | Delete a User
 *UserSvcAPI* | [**DisableTOTP**](docs/UserSvcAPI.md#disabletotp) | **Delete** /user-svc/totp | Disable TOTP
@@ -401,6 +402,7 @@ Class | Method | HTTP request | Description
  - [UserSvcCreateUserRequest](docs/UserSvcCreateUserRequest.md)
  - [UserSvcDeactivateOrganizationResponse](docs/UserSvcDeactivateOrganizationResponse.md)
  - [UserSvcDeclineMembershipResponse](docs/UserSvcDeclineMembershipResponse.md)
+ - [UserSvcDeleteEnrollsRequest](docs/UserSvcDeleteEnrollsRequest.md)
  - [UserSvcDisableTOTPRequest](docs/UserSvcDisableTOTPRequest.md)
  - [UserSvcEnableTOTPRequest](docs/UserSvcEnableTOTPRequest.md)
  - [UserSvcEnableTOTPResponse](docs/UserSvcEnableTOTPResponse.md)

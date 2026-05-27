@@ -337,5 +337,9 @@ func (s *UserService) saveEnrolls(
 		return nil, err
 	}
 
+	if err := s.hydrateEnrollContactIds(enrolls, nil); err != nil {
+		return nil, err
+	}
+
 	return enrolls, nil
 }
