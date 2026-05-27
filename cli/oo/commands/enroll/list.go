@@ -47,6 +47,7 @@ func List(cmd *cobra.Command, args []string, role, userId, contactId string) err
 
 	contactIdsByUserId := map[string]string{}
 	slugsByUserId := map[string]string{}
+	totpEnabledByUserId := map[string]string{}
 	userIds := userIdsFromEnrolls(rsp.Enrolls)
 	contactIdFallbackUserIds := stringSet(userIdsMissingContactIdsFromEnrolls(rsp.Enrolls))
 	if len(userIds) > 0 {
@@ -65,6 +66,7 @@ func List(cmd *cobra.Command, args []string, role, userId, contactId string) err
 		} else {
 			for _, user := range usersRsp.Users {
 				slugsByUserId[user.Id] = user.Slug
+				totpEnabledByUserId[user.Id] = boolPtrString(user.TotpEnabled)
 				if _, ok := contactIdFallbackUserIds[user.Id]; ok {
 					contactIdsByUserId[user.Id] = strings.Join(user.ContactIds, ", ")
 				}
@@ -77,7 +79,7 @@ func List(cmd *cobra.Command, args []string, role, userId, contactId string) err
 
 	fmt.Fprintln(
 		writer,
-		"ENROLL ID\tROLE\tUSER ID\tUSER SLUG\tCONTACT IDS",
+		"ENROLL ID\tROLE\tUSER ID\tUSER SLUG\tTOTP\tCONTACT IDS",
 	)
 
 	for _, enroll := range rsp.Enrolls {
@@ -91,15 +93,21 @@ func List(cmd *cobra.Command, args []string, role, userId, contactId string) err
 			userSlug = slugsByUserId[userId]
 		}
 
+		totpEnabled := ""
+		if userId != "" {
+			totpEnabled = totpEnabledByUserId[userId]
+		}
+
 		contactIds := contactIdsForEnroll(enroll, contactIdsByUserId)
 
 		fmt.Fprintf(
 			writer,
-			"%s\t%s\t%s\t%s\t%s\n",
+			"%s\t%s\t%s\t%s\t%s\t%s\n",
 			enroll.Id,
 			enroll.Role,
 			userId,
 			userSlug,
+			totpEnabled,
 			contactIds,
 		)
 	}
@@ -168,4 +176,11 @@ func stringSet(values []string) map[string]struct{} {
 		set[value] = struct{}{}
 	}
 	return set
+}
+
+func boolPtrString(value *bool) string {
+	if value != nil && *value {
+		return "true"
+	}
+	return "false"
 }

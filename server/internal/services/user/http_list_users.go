@@ -200,6 +200,15 @@ func (s *UserService) listUsers(
 		return nil, 0, err
 	}
 
+	userIds := make([]string, 0, len(res))
+	for _, v := range res {
+		userIds = append(userIds, v.(*user.User).Id)
+	}
+	totpEnabledByUserId, err := s.enabledTOTPByUserId(userIds)
+	if err != nil {
+		return nil, 0, err
+	}
+
 	var count int64
 	if request.Count {
 		var err error
@@ -230,11 +239,47 @@ func (s *UserService) listUsers(
 			CreatedAt: usr.CreatedAt,
 			UpdatedAt: usr.UpdatedAt,
 			// Roles:      roles,
-			ContactIds: contactIds,
+			ContactIds:  contactIds,
+			TOTPEnabled: totpEnabledByUserId[usr.Id],
 		})
 	}
 
 	return users, count, nil
+}
+
+func (s *UserService) enabledTOTPByUserId(userIds []string) (map[string]bool, error) {
+	enabledByUserId := map[string]bool{}
+
+	userIdAnys := make([]any, 0, len(userIds))
+	seen := map[string]struct{}{}
+	for _, userId := range userIds {
+		if userId == "" {
+			continue
+		}
+		if _, ok := seen[userId]; ok {
+			continue
+		}
+		seen[userId] = struct{}{}
+		userIdAnys = append(userIdAnys, userId)
+	}
+	if len(userIdAnys) == 0 {
+		return enabledByUserId, nil
+	}
+
+	totpIs, err := s.totpStore.Query(
+		datastore.IsInList(datastore.Field("userId"), userIdAnys...),
+		datastore.Equals(datastore.Field("enabled"), true),
+	).Find()
+	if err != nil {
+		return nil, errors.Wrap(err, "error querying enabled TOTP records")
+	}
+
+	for _, totpI := range totpIs {
+		totp := totpI.(*user.TOTP)
+		enabledByUserId[totp.UserId] = true
+	}
+
+	return enabledByUserId, nil
 }
 
 func hasContactIdFilter(request *user.ListUsersRequest) bool {

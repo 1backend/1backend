@@ -4218,6 +4218,8 @@ definitions:
           for the `user`.
         example: jane-doe
         type: string
+      totpEnabled:
+        type: boolean
       updatedAt:
         type: string
     required:
@@ -4241,7 +4243,7 @@ info:
     url: https://www.gnu.org/licenses/agpl-3.0.html
   termsOfService: http://swagger.io/terms/
   title: 1Backend
-  version: 0.9.17
+  version: 0.9.18
 paths:
   /chat-svc/events:
     get:

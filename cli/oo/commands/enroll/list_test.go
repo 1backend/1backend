@@ -84,3 +84,14 @@ func TestUserIdsMissingContactIdsFromEnrolls(t *testing.T) {
 		}),
 	)
 }
+
+func TestBoolPtrString(t *testing.T) {
+	t.Parallel()
+
+	enabled := true
+	disabled := false
+
+	require.Equal(t, "true", boolPtrString(&enabled))
+	require.Equal(t, "false", boolPtrString(&disabled))
+	require.Equal(t, "false", boolPtrString(nil))
+}

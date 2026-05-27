@@ -10,9 +10,10 @@ func AddEnrollCommands(rootCmd *cobra.Command) {
 	}
 
 	var (
-		userId    string
-		contactId string
-		role      string
+		userId       string
+		contactId    string
+		role         string
+		patchAppHost string
 	)
 
 	var saveCmd = &cobra.Command{
@@ -62,6 +63,17 @@ oo enroll save ./enrolls.yaml
 		RunE:    Remove,
 	}
 
+	var patchRoleCmd = &cobra.Command{
+		Use:     "patch-role [enrollId] [role]",
+		Aliases: []string{"patch"},
+		Short:   "Patch an existing enroll with a different role",
+		Args:    cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return PatchRole(cmd, args, patchAppHost)
+		},
+	}
+	patchRoleCmd.Flags().StringVar(&patchAppHost, "appHost", "", "App host of the enroll")
+
 	var listCmd = &cobra.Command{
 		Use:     "list",
 		Short:   "List enrolls",
@@ -73,10 +85,11 @@ oo enroll save ./enrolls.yaml
 
 	listCmd.Flags().StringVar(&contactId, "contactId", "", "Contact ID associated with the enrolls")
 	listCmd.Flags().StringVar(&userId, "userId", "", "User ID associated with the enrolls")
-	listCmd.Flags().StringVar(&role, "role", "", "Contact ID associated with the enrolls")
+	listCmd.Flags().StringVar(&role, "role", "", "Role associated with the enrolls")
 
 	enrollCmd.AddCommand(saveCmd)
 	enrollCmd.AddCommand(removeCmd)
+	enrollCmd.AddCommand(patchRoleCmd)
 	enrollCmd.AddCommand(listCmd)
 
 	rootCmd.AddCommand(enrollCmd)

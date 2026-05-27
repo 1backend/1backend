@@ -20,6 +20,7 @@ func AddUserCommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(usersCmd)
 
 	addListUsersCommand(usersCmd)
+	addPatchRoleCommand(usersCmd)
 }
 
 func addLoginCommand(rootCmd *cobra.Command) {
@@ -140,6 +141,24 @@ func addListUsersCommand(rootCmd *cobra.Command) {
 	runCmd.Flags().StringVarP(&userId, "userId", "u", "", "Filter by user Id")
 	runCmd.Flags().StringVarP(&contactId, "contactId", "c", "", "Filter by contact Id")
 	runCmd.Flags().Int64VarP(&limit, "limit", "l", 0, "Limit result set")
+
+	rootCmd.AddCommand(runCmd)
+}
+
+func addPatchRoleCommand(rootCmd *cobra.Command) {
+	var fromRole string
+
+	var runCmd = &cobra.Command{
+		Use:     "patch-role [userId] [role]",
+		Aliases: []string{"patch"},
+		Args:    cobra.ExactArgs(2),
+		Short:   "Patch a user with a different role.",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return PatchRole(cmd, args, fromRole)
+		},
+	}
+
+	runCmd.Flags().StringVar(&fromRole, "from-role", "", "Role to remove after assigning the new role")
 
 	rootCmd.AddCommand(runCmd)
 }

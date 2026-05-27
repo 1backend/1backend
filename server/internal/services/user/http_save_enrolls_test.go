@@ -224,6 +224,134 @@ func TestListEnrollsReturnsContactIdsForContactEnroll(t *testing.T) {
 	require.Contains(t, listRsp.Enrolls[0].ContactIds, contactId)
 }
 
+func TestSaveEnrollsPatchesExistingContactEnrollRoleByID(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	manyClients, _, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	require.NoError(t, err)
+
+	userClient := manyClients[0]
+
+	const enrollId = "patch-contact-enroll-role"
+	const contactId = "patch-contact-enroll-role@example.com"
+	const oldRole = "test-user-slug-0:old-role"
+	const newRole = "test-user-slug-0:new-role"
+
+	_, hrsp, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+		Body(openapi.UserSvcSaveEnrollsRequest{
+			Enrolls: []openapi.UserSvcEnrollInput{
+				{
+					Id:        openapi.PtrString(enrollId),
+					ContactId: openapi.PtrString(contactId),
+					Role:      oldRole,
+				},
+			},
+		}).Execute()
+	require.NoError(t, err, hrsp)
+
+	_, hrsp, err = userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+		Body(openapi.UserSvcSaveEnrollsRequest{
+			Enrolls: []openapi.UserSvcEnrollInput{
+				{
+					Id:   openapi.PtrString(enrollId),
+					Role: newRole,
+				},
+			},
+		}).Execute()
+	require.NoError(t, err, hrsp)
+
+	oldRsp, hrsp, err := userClient.UserSvcAPI.ListEnrolls(context.Background()).
+		Body(openapi.UserSvcListEnrollsRequest{
+			Role: openapi.PtrString(oldRole),
+		}).Execute()
+	require.NoError(t, err, hrsp)
+	require.Empty(t, oldRsp.Enrolls)
+
+	newRsp, hrsp, err := userClient.UserSvcAPI.ListEnrolls(context.Background()).
+		Body(openapi.UserSvcListEnrollsRequest{
+			Role: openapi.PtrString(newRole),
+		}).Execute()
+	require.NoError(t, err, hrsp)
+	require.Len(t, newRsp.Enrolls, 1)
+	require.Equal(t, enrollId, newRsp.Enrolls[0].Id)
+	require.Equal(t, contactId, newRsp.Enrolls[0].GetContactId())
+	require.Contains(t, newRsp.Enrolls[0].ContactIds, contactId)
+}
+
+func TestSaveEnrollsPatchesExistingUserEnrollRoleByID(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 2)
+	require.NoError(t, err)
+
+	userClient := manyClients[0]
+
+	const oldRole = "test-user-slug-0:user-old-role"
+	const newRole = "test-user-slug-0:user-new-role"
+	targetUserId := tokens[1].UserId
+
+	_, hrsp, err := userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+		Body(openapi.UserSvcSaveEnrollsRequest{
+			Enrolls: []openapi.UserSvcEnrollInput{
+				{
+					UserId: openapi.PtrString(targetUserId),
+					Role:   oldRole,
+				},
+			},
+		}).Execute()
+	require.NoError(t, err, hrsp)
+
+	oldRsp, hrsp, err := userClient.UserSvcAPI.ListEnrolls(context.Background()).
+		Body(openapi.UserSvcListEnrollsRequest{
+			Role: openapi.PtrString(oldRole),
+		}).Execute()
+	require.NoError(t, err, hrsp)
+	require.Len(t, oldRsp.Enrolls, 1)
+	enrollId := oldRsp.Enrolls[0].Id
+	require.Equal(t, targetUserId, oldRsp.Enrolls[0].GetUserId())
+
+	_, hrsp, err = userClient.UserSvcAPI.SaveEnrolls(context.Background()).
+		Body(openapi.UserSvcSaveEnrollsRequest{
+			Enrolls: []openapi.UserSvcEnrollInput{
+				{
+					Id:   openapi.PtrString(enrollId),
+					Role: newRole,
+				},
+			},
+		}).Execute()
+	require.NoError(t, err, hrsp)
+
+	oldRsp, hrsp, err = userClient.UserSvcAPI.ListEnrolls(context.Background()).
+		Body(openapi.UserSvcListEnrollsRequest{
+			Role: openapi.PtrString(oldRole),
+		}).Execute()
+	require.NoError(t, err, hrsp)
+	require.Empty(t, oldRsp.Enrolls)
+
+	newRsp, hrsp, err := userClient.UserSvcAPI.ListEnrolls(context.Background()).
+		Body(openapi.UserSvcListEnrollsRequest{
+			Role: openapi.PtrString(newRole),
+		}).Execute()
+	require.NoError(t, err, hrsp)
+	require.Len(t, newRsp.Enrolls, 1)
+	require.Equal(t, enrollId, newRsp.Enrolls[0].Id)
+	require.Equal(t, targetUserId, newRsp.Enrolls[0].GetUserId())
+}
+
 func TestDeleteEnrolls(t *testing.T) {
 	t.Parallel()
 

@@ -171,3 +171,45 @@ func TestListUsers(t *testing.T) {
 		}
 	})
 }
+
+func TestListUsersIncludesTOTPEnabled(t *testing.T) {
+	t.Parallel()
+
+	server, err := test.StartService(test.Options{
+		Test: true,
+	})
+	require.NoError(t, err)
+	defer server.Cleanup(t)
+
+	clientFactory := client.NewApiClientFactory(server.Url)
+
+	manyClients, tokens, err := test.MakeClients(clientFactory, sdk.DefaultTestAppHost, 1)
+	require.NoError(t, err)
+	userClient := manyClients[0]
+
+	setup, _, err := userClient.UserSvcAPI.BeginTOTPSetup(context.Background()).
+		Body(openapi.UserSvcBeginTOTPSetupRequest{}).
+		Execute()
+	require.NoError(t, err)
+
+	_, _, err = userClient.UserSvcAPI.EnableTOTP(context.Background()).
+		Body(openapi.UserSvcEnableTOTPRequest{
+			TotpId: openapi.PtrString(setup.TotpId),
+			Code:   currentTOTPCode(t, setup.Secret),
+		}).
+		Execute()
+	require.NoError(t, err)
+
+	adminClient, _, err := test.AdminClient(clientFactory, sdk.DefaultTestAppHost)
+	require.NoError(t, err)
+
+	rsp, _, err := adminClient.UserSvcAPI.ListUsers(
+		context.Background(),
+	).Body(openapi.UserSvcListUsersRequest{
+		Ids: []string{tokens[0].UserId},
+	}).Execute()
+	require.NoError(t, err)
+	require.Len(t, rsp.Users, 1)
+	require.NotNil(t, rsp.Users[0].TotpEnabled)
+	require.True(t, *rsp.Users[0].TotpEnabled)
+}

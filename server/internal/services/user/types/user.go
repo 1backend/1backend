@@ -62,6 +62,8 @@ type UserRecord struct {
 
 	ContactIds []string `json:"contactIds,omitempty"`
 	Roles      []string `json:"roles,omitempty"`
+
+	TOTPEnabled bool `json:"totpEnabled,omitempty"`
 }
 
 func (c *User) GetId() string {

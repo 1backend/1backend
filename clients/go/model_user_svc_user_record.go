@@ -3,7 +3,7 @@
 
 AI-native microservices platform.
 
-API version: 0.9.17
+API version: 0.9.18
 Contact: sales@singulatron.com
 */
 
@@ -30,6 +30,7 @@ type UserSvcUserRecord struct {
 	Roles []string `json:"roles,omitempty"`
 	// URL-friendly unique (inside the 1Backend platform) identifier for the `user`.
 	Slug string `json:"slug"`
+	TotpEnabled *bool `json:"totpEnabled,omitempty"`
 	UpdatedAt string `json:"updatedAt"`
 }
 
@@ -224,6 +225,38 @@ func (o *UserSvcUserRecord) SetSlug(v string) {
 	o.Slug = v
 }
 
+// GetTotpEnabled returns the TotpEnabled field value if set, zero value otherwise.
+func (o *UserSvcUserRecord) GetTotpEnabled() bool {
+	if o == nil || IsNil(o.TotpEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.TotpEnabled
+}
+
+// GetTotpEnabledOk returns a tuple with the TotpEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *UserSvcUserRecord) GetTotpEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.TotpEnabled) {
+		return nil, false
+	}
+	return o.TotpEnabled, true
+}
+
+// HasTotpEnabled returns a boolean if a field has been set.
+func (o *UserSvcUserRecord) HasTotpEnabled() bool {
+	if o != nil && !IsNil(o.TotpEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetTotpEnabled gets a reference to the given bool and assigns it to the TotpEnabled field.
+func (o *UserSvcUserRecord) SetTotpEnabled(v bool) {
+	o.TotpEnabled = &v
+}
+
 // GetUpdatedAt returns the UpdatedAt field value
 func (o *UserSvcUserRecord) GetUpdatedAt() string {
 	if o == nil {
@@ -270,6 +303,9 @@ func (o UserSvcUserRecord) ToMap() (map[string]interface{}, error) {
 		toSerialize["roles"] = o.Roles
 	}
 	toSerialize["slug"] = o.Slug
+	if !IsNil(o.TotpEnabled) {
+		toSerialize["totpEnabled"] = o.TotpEnabled
+	}
 	toSerialize["updatedAt"] = o.UpdatedAt
 	return toSerialize, nil
 }

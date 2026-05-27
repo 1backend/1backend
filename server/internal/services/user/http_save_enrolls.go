@@ -155,9 +155,15 @@ func (s *UserService) saveEnrolls(
 		if isOrgScopedRole(enroll.Role) {
 			return nil, ErrOrgScopedEnroll
 		}
-		contactIds = append(contactIds, enroll.ContactId)
-		enrollIds = append(enrollIds, enroll.Id)
-		callerUserIds = append(callerUserIds, enroll.UserId)
+		if enroll.ContactId != "" {
+			contactIds = append(contactIds, enroll.ContactId)
+		}
+		if enroll.Id != "" {
+			enrollIds = append(enrollIds, enroll.Id)
+		}
+		if enroll.UserId != "" {
+			callerUserIds = append(callerUserIds, enroll.UserId)
+		}
 	}
 
 	var (
@@ -247,6 +253,7 @@ func (s *UserService) saveEnrolls(
 	}
 
 	enrolls := []user.Enroll{}
+	userIdsByAppIdToRefresh := map[string]map[string]struct{}{}
 	for _, enroll := range req.Enrolls {
 		var thisApp *user.App
 		if enroll.AppHost == "" {
@@ -279,18 +286,24 @@ func (s *UserService) saveEnrolls(
 				return nil, fmt.Errorf("enroll id %s already bound to app %v, cannot bind to %v",
 					enroll.Id, existingEnroll.AppId, thisAppId)
 			}
+			if enroll.ContactId == "" {
+				enroll.ContactId = existingEnroll.ContactId
+			}
+			if enroll.UserId == "" {
+				enroll.UserId = existingEnroll.UserId
+			}
 		}
 
 		// Already registered users get applied the role immediately
-		if callerUserId, ok := existingContact[enroll.ContactId]; ok {
-			err = s.assignRole(thisAppId, callerUserId, enroll.Role)
+		if targetUserId, ok := existingContact[enroll.ContactId]; ok && !existing {
+			err = s.assignRole(thisAppId, targetUserId, enroll.Role)
 			if err != nil {
 				return nil, err
 			}
 			continue
 		}
 
-		if _, ok := existingUser[enroll.UserId]; ok {
+		if _, ok := existingUser[enroll.UserId]; ok && !existing {
 			err = s.assignRole(thisAppId, enroll.UserId, enroll.Role)
 			if err != nil {
 				return nil, err
@@ -312,6 +325,7 @@ func (s *UserService) saveEnrolls(
 			Id:         enroll.Id,
 			AppId:      thisAppId,
 			ContactId:  enroll.ContactId,
+			UserId:     enroll.UserId,
 			Role:       enroll.Role,
 			CreatedBy:  callerUserId,
 		}
@@ -319,6 +333,14 @@ func (s *UserService) saveEnrolls(
 		if existing {
 			i.CreatedAt = existingEnroll.CreatedAt
 			i.UpdatedAt = now
+
+			if enroll.UserId != "" &&
+				(existingEnroll.UserId != enroll.UserId || existingEnroll.Role != enroll.Role) {
+				if userIdsByAppIdToRefresh[thisAppId] == nil {
+					userIdsByAppIdToRefresh[thisAppId] = map[string]struct{}{}
+				}
+				userIdsByAppIdToRefresh[thisAppId][enroll.UserId] = struct{}{}
+			}
 		} else {
 			i.CreatedAt = now
 			i.UpdatedAt = now
@@ -339,6 +361,14 @@ func (s *UserService) saveEnrolls(
 
 	if err := s.hydrateEnrollContactIds(enrolls, nil); err != nil {
 		return nil, err
+	}
+
+	for appId, userIds := range userIdsByAppIdToRefresh {
+		for userId := range userIds {
+			if err := s.inactivateTokens(appId, userId); err != nil {
+				return nil, err
+			}
+		}
 	}
 
 	return enrolls, nil
