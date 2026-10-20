@@ -14,12 +14,12 @@ import (
 func Remove(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
 
-	// Retrieve flags for ids and ids
+	// Retrieve the ids to remove
 	ids, _ := cmd.Flags().GetStringArray("id")
 
-	// Ensure that at least one id or id is specified
-	if len(ids) == 0 && len(ids) == 0 {
-		return fmt.Errorf("at least one --id or --id must be specified")
+	// Ensure that at least one id is specified
+	if len(ids) == 0 {
+		return fmt.Errorf("at least one --id must be specified")
 	}
 
 	url, token, err := util.GetSelectedUrlAndToken(cmd)

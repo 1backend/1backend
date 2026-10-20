@@ -111,7 +111,6 @@ Enter secret value:`,
 		RunE:    Remove,
 	}
 
-	removeCmd.Flags().StringArrayP("key", "k", []string{}, "Keys of secrets to remove")
 	removeCmd.Flags().StringArrayP("id", "i", []string{}, "IDs of secrets to remove")
 
 	var (
