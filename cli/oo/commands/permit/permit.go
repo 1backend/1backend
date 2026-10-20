@@ -19,7 +19,7 @@ func AddPermitCommands(rootCmd *cobra.Command) {
 	var saveCmd = &cobra.Command{
 		Use:     "save [filePath | dirPath]",
 		Aliases: []string{"s"},
-		Args:    cobra.MaximumNArgs(2),
+		Args:    cobra.RangeArgs(1, 2),
 		Short:   "Save permits from files",
 		Long: `The 'save' command allows you to save permits in two ways:
 	

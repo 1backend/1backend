@@ -45,6 +45,11 @@ func Save(
 	}
 
 	// Case 2: File or directory-based routes
+	if len(args) == 0 {
+		return errors.New(
+			"route path required unless --id and --target are provided",
+		)
+	}
 	path := args[0]
 
 	routes, err := util.CollectFromPath[openapi.ProxySvcRouteInput](path, "routes")
