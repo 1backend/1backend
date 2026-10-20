@@ -91,12 +91,16 @@ func Register(cmd *cobra.Command, args []string) error {
 
 	if env.Users[slug] == nil {
 		env.Users[slug] = &types.User{
-			Slug:            slug,
-			TokensByAppHost: map[string]string{},
+			Slug: slug,
 		}
 	}
 
+	if env.Users[slug].TokensByAppHost == nil {
+		env.Users[slug].TokensByAppHost = map[string]string{}
+	}
+
 	env.Users[slug].TokensByAppHost[appHost] = token
+	env.Users[slug].SelectedAppHost = appHost
 	env.SelectedUser = slug
 
 	conf.Environments[env.ShortName] = env
