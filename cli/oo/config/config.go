@@ -21,7 +21,7 @@ func addSaveCommand(rootCmd *cobra.Command) {
 	var saveCmd = &cobra.Command{
 		Use:     "save [filePath] | [folderPath]",
 		Aliases: []string{"s"},
-		Args:    cobra.MaximumNArgs(2),
+		Args:    cobra.RangeArgs(1, 2),
 		Short:   "Save config from a file",
 		Long: `The 'save' command allows you to save configs under your own slug, or if you are an admin, under any slug. Can save into any app.
 
